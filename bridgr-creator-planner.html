@@ -101,8 +101,22 @@ html,body{height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif
 
 /* ── FORM ATOMS ── */
 .fg{display:flex;flex-direction:column;gap:6px}
-.fg>label{font-size:12px;font-weight:700;color:var(--cream);display:flex;align-items:center;gap:7px}
-.fg>label .sub{font-size:11px;font-weight:400;color:var(--muted)}
+.fg>label{
+  font-size:12px;
+  font-weight:700;
+  color:var(--cream);
+  display:flex;
+  align-items:flex-start;
+  gap:7px;
+  flex-wrap:wrap;
+  line-height:1.45;
+}
+.fg>label .sub{
+  font-size:11px;
+  font-weight:400;
+  color:var(--muted);
+  display:block;
+}
 .fg input,.fg select,.fg textarea{
   background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;
   padding:12px 15px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;
@@ -115,7 +129,13 @@ html,body{height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif
 .fg select option{background:var(--card)}
 .fg textarea{resize:vertical;min-height:70px}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.fhint{font-size:11px;color:var(--muted);opacity:.7;margin-top:-13px}
+.fhint{
+  font-size:11px;
+  color:var(--muted);
+  opacity:.82;
+  margin-top:2px;
+  line-height:1.5;
+}
 .fdiv{height:1px;background:var(--stroke);margin:2px 0}
 
 /* BUTTONS */

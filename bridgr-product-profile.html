@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouri Vitamin C Serum — Bridgr</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0e14;--surface:#11121a;--card:#1c1f2e;--card2:#222538;
+  --stroke:rgba(255,255,255,0.09);--stroke2:rgba(255,255,255,0.05);
+  --brand:#c03b1b;--brand-g:rgba(192,59,27,0.14);
+  --amber:#c9a245;--amber-g:rgba(201,162,69,0.12);
+  --green:#3aaa78;--green-g:rgba(58,170,120,0.12);
+  --cream:#f2ede4;--cream2:#a09890;--muted:#5a6070;
+}
+html,body{height:100%;background:var(--bg);color:var(--cream);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;line-height:1.6;overflow:hidden}
+
+/* ── NAV ── */
+.nav{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 24px;background:rgba(13,14,20,0.95);border-bottom:1px solid var(--stroke);position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(12px)}
+.nav-logo{font-family:'DM Mono',monospace;font-size:15px;font-weight:500;letter-spacing:.04em;color:var(--cream);text-decoration:none}
+.nav-back{font-size:12px;color:var(--muted);cursor:pointer;transition:color .2s;display:flex;align-items:center;gap:5px}
+.nav-back:hover{color:var(--cream)}
+.nav-r{display:flex;align-items:center;gap:10px}
+.nav-edit{padding:7px 16px;background:transparent;border:1.5px solid var(--stroke);border-radius:7px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;color:var(--cream2);cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.nav-edit:hover{border-color:var(--amber);color:var(--amber)}
+.vis-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--amber-g);color:var(--amber)}
+
+/* ── PAGE LAYOUT ── */
+.page{display:flex;height:100vh;padding-top:52px;overflow:hidden}
+
+/* LEFT: product showcase */
+.showcase{flex:1;overflow-y:auto;position:relative}
+.showcase::-webkit-scrollbar{width:0}
+
+/* IMAGE CAROUSEL */
+.img-carousel{position:relative;height:60vh;min-height:420px;background:var(--card);overflow:hidden}
+.carousel-slide{position:absolute;inset:0;opacity:0;transition:opacity .5s ease;display:flex;align-items:center;justify-content:center}
+.carousel-slide.active{opacity:1}
+.carousel-slide img{width:100%;height:100%;object-fit:cover}
+.carousel-slide .placeholder-img{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:linear-gradient(145deg,#1c1f2e,#111218)}
+.carousel-dots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:10}
+.c-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:all .2s}
+.c-dot.active{background:var(--cream);width:20px;border-radius:4px}
+.carousel-prev,.carousel-next{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:36px;height:36px;border-radius:50%;background:rgba(13,14,20,.7);border:1px solid var(--stroke);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--cream);transition:all .2s;backdrop-filter:blur(6px)}
+.carousel-prev{left:14px}.carousel-next{right:14px}
+.carousel-prev:hover,.carousel-next:hover{background:rgba(13,14,20,.95)}
+
+/* PRODUCT CONTENT */
+.product-content{padding:28px 32px 100px;max-width:720px}
+.p-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.pbadge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.pb-cat{background:var(--amber-g);color:var(--amber)}
+.pb-cert{background:var(--green-g);color:var(--green)}
+.p-title{font-family:'Playfair Display',serif;font-size:clamp(26px,2.5vw,36px);font-weight:700;color:var(--cream);letter-spacing:-.02em;margin-bottom:8px;line-height:1.1}
+.p-tagline{font-size:15px;color:var(--cream2);line-height:1.7;margin-bottom:20px;max-width:560px}
+.p-meta-row{display:flex;align-items:center;gap:18px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--stroke)}
+.p-price{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--amber)}
+.p-commission{font-size:12px;font-weight:600;padding:4px 12px;background:var(--green-g);color:var(--green);border-radius:20px}
+.buy-btn{padding:11px 24px;background:var(--brand);border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .2s}
+.buy-btn:hover{background:#a83018}
+
+/* SECTIONS */
+.p-section{margin-bottom:28px}
+.ps-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ps-label::after{content:'';flex:1;height:1px;background:var(--stroke2)}
+
+/* selling points */
+.sp-list{display:flex;flex-direction:column;gap:10px}
+.sp-item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--card);border-radius:10px;border:1px solid var(--stroke)}
+.sp-n{width:24px;height:24px;border-radius:6px;background:var(--brand-g);border:1px solid rgba(192,59,27,.2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:9px;font-weight:500;color:var(--brand);flex-shrink:0;margin-top:1px}
+.sp-text{font-size:13px;color:var(--cream2);line-height:1.55}
+
+/* description */
+.p-desc{font-size:14px;color:var(--cream2);line-height:1.85;white-space:pre-line}
+
+/* audience */
+.audience-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.aud-card{background:var(--card);border:1px solid var(--stroke);border-radius:10px;padding:12px 14px}
+.aud-l{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px}
+.aud-v{font-size:13px;font-weight:600;color:var(--cream)}
+.chip-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.chip{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;background:var(--card2);color:var(--cream2)}
+
+/* founder */
+.founder-card{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--stroke);border-radius:12px;padding:16px}
+.founder-avatar{width:44px;height:44px;border-radius:50%;background:var(--brand-g);border:2px solid rgba(192,59,27,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.founder-quote{font-size:13px;color:var(--cream2);line-height:1.7;font-style:italic}
+.founder-name{font-size:12px;font-weight:700;color:var(--cream);margin-top:6px}
+
+/* where to buy links */
+.buy-links{display:flex;flex-direction:column;gap:7px}
+.buy-link{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;background:var(--card);border:1px solid var(--stroke);border-radius:9px;text-decoration:none;transition:all .2s}
+.buy-link:hover{background:var(--card2);border-color:rgba(255,255,255,.14)}
+.bl-name{font-size:13px;font-weight:600;color:var(--cream);display:flex;align-items:center;gap:8px}
+.bl-arrow{font-size:12px;color:var(--muted)}
+
+/* ─────────────────────────────────
+   TIKTOK-STYLE RIGHT ACTION BAR
+───────────────────────────────── */
+.action-bar{
+  position:fixed;right:22px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:6px;
+  z-index:90;
+}
+.ab-btn{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;
+}
+.ab-icon-wrap{
+  width:50px;height:50px;border-radius:50%;
+  background:rgba(17,18,26,0.88);
+  border:1.5px solid var(--stroke);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;transition:all .25s;
+  backdrop-filter:blur(10px);
+  box-shadow:0 4px 20px rgba(0,0,0,.35);
+}
+.ab-btn:hover .ab-icon-wrap{background:var(--card2);border-color:rgba(255,255,255,.18);transform:scale(1.08)}
+.ab-btn.liked .ab-icon-wrap{background:rgba(192,59,27,.18);border-color:rgba(192,59,27,.4)}
+.ab-btn.bought .ab-icon-wrap{background:rgba(58,170,120,.15);border-color:rgba(58,170,120,.4)}
+.ab-btn.promoting .ab-icon-wrap{background:var(--amber-g);border-color:rgba(201,162,69,.4)}
+.ab-count{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--cream2);line-height:1}
+.ab-label{font-size:10px;font-weight:600;color:var(--muted);line-height:1}
+.ab-btn.liked .ab-count{color:var(--brand)}
+.ab-btn.bought .ab-count{color:var(--green)}
+.ab-btn.promoting .ab-count{color:var(--amber)}
+
+/* like pop animation */
+@keyframes like-pop{0%{transform:scale(1)}40%{transform:scale(1.35)}70%{transform:scale(.95)}100%{transform:scale(1.08)}}
+.ab-btn.liked .ab-icon-wrap{animation:like-pop .35s cubic-bezier(.22,.68,0,1.3) both}
+
+/* count tick animation */
+@keyframes count-tick{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
+.count-tick{animation:count-tick .25s ease both}
+
+/* COMMENT PANEL */
+.comment-panel{
+  position:fixed;right:86px;top:52px;bottom:0;width:340px;
+  background:var(--surface);border-left:1px solid var(--stroke);
+  display:flex;flex-direction:column;
+  transform:translateX(120%);transition:transform .32s cubic-bezier(.22,.68,0,1.1);
+  z-index:89;
+}
+.comment-panel.open{transform:translateX(0)}
+.cp-head{padding:16px 18px;border-bottom:1px solid var(--stroke);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.cp-title{font-size:13px;font-weight:700;color:var(--cream)}
+.cp-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:0;transition:color .2s}
+.cp-close:hover{color:var(--cream)}
+.cp-feed{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.cp-feed::-webkit-scrollbar{width:3px}
+.cp-feed::-webkit-scrollbar-thumb{background:var(--card2)}
+.comment-item{display:flex;gap:10px;align-items:flex-start}
+.comment-avatar{width:32px;height:32px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;overflow:hidden}
+.comment-body{}
+.comment-name{font-size:12px;font-weight:700;color:var(--amber);margin-bottom:2px;display:flex;align-items:center;gap:6px}
+.comment-badge{font-size:9px;font-weight:600;padding:1px 6px;border-radius:20px;background:var(--green-g);color:var(--green)}
+.comment-text{font-size:13px;color:var(--cream2);line-height:1.55}
+.comment-time{font-size:10px;color:var(--muted);margin-top:3px}
+.cp-input-wrap{padding:12px 14px;border-top:1px solid var(--stroke);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;background:var(--surface)}
+.cp-input{flex:1;background:var(--card);border:1.5px solid var(--stroke);border-radius:10px;padding:10px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);outline:none;transition:border-color .2s;resize:none;max-height:100px;min-height:40px}
+.cp-input:focus{border-color:rgba(201,162,69,.5)}
+.cp-input::placeholder{color:var(--muted);opacity:.6}
+.cp-send{width:38px;height:38px;border-radius:9px;background:var(--brand);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:background .2s}
+.cp-send:hover{background:#a83018}
+
+/* DM PAYWALL TOOLTIP */
+.dm-paywall{
+  position:fixed;right:88px;z-index:200;
+  background:var(--card);border:1.5px solid var(--stroke);border-radius:12px;
+  padding:16px 18px;width:260px;box-shadow:0 20px 40px rgba(0,0,0,.4);
+  display:none;
+}
+.dm-paywall.show{display:block;animation:modal-in .25s ease both}
+@keyframes modal-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.dm-paywall-title{font-size:13px;font-weight:700;color:var(--cream);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.dm-paywall-text{font-size:12px;color:var(--cream2);line-height:1.6;margin-bottom:12px}
+.dm-upgrade-btn{width:100%;padding:9px;background:var(--amber);border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;color:#111;cursor:pointer;transition:all .2s}
+.dm-upgrade-btn:hover{background:#d4aa50}
+.dm-close{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0}
+
+/* PROMOTE PANEL */
+.promote-panel{
+  position:fixed;right:86px;z-index:200;width:300px;
+  background:var(--surface);border:1.5px solid var(--stroke);border-radius:14px;
+  padding:20px;box-shadow:0 24px 48px rgba(0,0,0,.45);
+  display:none;
+}
+.promote-panel.show{display:block;animation:modal-in .28s ease both}
+.pp-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--cream);margin-bottom:6px}
+.pp-desc{font-size:12px;color:var(--cream2);line-height:1.65;margin-bottom:14px}
+.pp-form{display:flex;flex-direction:column;gap:9px}
+.pp-input{background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;padding:10px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);outline:none;width:100%;transition:border-color .2s}
+.pp-input:focus{border-color:rgba(201,162,69,.5)}
+.pp-input::placeholder{color:var(--muted);opacity:.6}
+.pp-submit{padding:11px;background:var(--amber);border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#111;cursor:pointer;transition:all .2s}
+.pp-submit:hover{background:#d4aa50}
+.pp-cancel{padding:8px;background:transparent;border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;transition:color .2s;text-align:center;width:100%}
+.pp-cancel:hover{color:var(--cream)}
+
+/* AI CHATBOT */
+.chat-fab{
+  position:fixed;bottom:28px;right:90px;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--card2);border:1.5px solid var(--stroke);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;cursor:pointer;
+  box-shadow:0 4px 20px rgba(0,0,0,.35);
+  transition:all .22s;z-index:91;
+  backdrop-filter:blur(10px);
+}
+.chat-fab:hover{transform:scale(1.08);border-color:var(--amber)}
+.chat-fab-label{
+  position:absolute;right:58px;background:var(--card2);
+  border:1px solid var(--stroke);border-radius:8px;
+  padding:5px 10px;font-size:11px;font-weight:600;color:var(--cream2);
+  white-space:nowrap;pointer-events:none;
+}
+.chat-window{
+  position:fixed;bottom:90px;right:90px;width:320px;height:400px;
+  background:var(--surface);border:1.5px solid var(--stroke);border-radius:16px;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 24px 48px rgba(0,0,0,.45);
+  transform:scale(.92) translateY(20px);opacity:0;
+  transition:all .28s cubic-bezier(.22,.68,0,1.1);
+  pointer-events:none;z-index:91;
+}
+.chat-window.open{transform:none;opacity:1;pointer-events:all}
+.cw-head{padding:13px 16px;border-bottom:1px solid var(--stroke);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.cw-avatar{width:32px;height:32px;border-radius:50%;background:var(--amber-g);border:1px solid rgba(201,162,69,.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.cw-info{}
+.cw-name{font-size:12px;font-weight:700;color:var(--cream)}
+.cw-sub{font-size:10px;color:var(--green);display:flex;align-items:center;gap:4px}
+.cw-sub::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block}
+.cw-close{margin-left:auto;background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0;transition:color .2s}
+.cw-close:hover{color:var(--cream)}
+.cw-messages{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.cw-messages::-webkit-scrollbar{width:0}
+.msg{max-width:85%;padding:9px 12px;border-radius:10px;font-size:12px;line-height:1.55}
+.msg.bot{background:var(--card);color:var(--cream2);align-self:flex-start;border-bottom-left-radius:3px}
+.msg.user{background:var(--brand);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+.msg.typing{display:flex;gap:4px;align-items:center;padding:11px 14px}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:typing-blink 1.2s ease-in-out infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typing-blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.cw-input-wrap{padding:10px 12px;border-top:1px solid var(--stroke);display:flex;gap:7px;flex-shrink:0}
+.cw-input{flex:1;background:var(--card);border:1.5px solid var(--stroke);border-radius:8px;padding:8px 11px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;color:var(--cream);outline:none;transition:border-color .2s}
+.cw-input:focus{border-color:rgba(201,162,69,.4)}
+.cw-input::placeholder{color:var(--muted);opacity:.6}
+.cw-send{width:34px;height:34px;border-radius:7px;background:var(--brand);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:background .2s}
+.cw-send:hover{background:#a83018}
+
+/* overlay backdrop for panels */
+.panel-backdrop{position:fixed;inset:0;z-index:88;display:none}
+.panel-backdrop.show{display:block}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="bridgr-product-profile-editor.html" class="nav-logo">Bridgr</a>
+  <span class="nav-back" onclick="window.location.href='bridgr-product-profile-editor.html'">← Back to dashboard</span>
+  <div class="nav-r">
+    <span class="vis-tag">Registered creators only</span>
+    <a href="bridgr-product-profile-editor.html" class="nav-edit">✏️ Edit profile</a>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+<div class="showcase">
+
+  <!-- IMAGE CAROUSEL -->
+  <div class="img-carousel" id="carousel">
+    <!-- Slide 1: placeholder (would be extracted from product URL) -->
+    <div class="carousel-slide active" id="slide-0">
+      <div class="placeholder-img" style="background:linear-gradient(145deg,#1c1f2e 0%,#111218 100%)">
+        <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--amber-g),var(--brand-g));display:flex;align-items:center;justify-content:center;font-size:40px">🧴</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--cream);margin-top:16px">Nouri Vitamin C Serum</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px">Product image auto-extracted from URL · or uploaded in edit mode</div>
+      </div>
+    </div>
+    <div class="carousel-slide" id="slide-1">
+      <div class="placeholder-img" style="background:linear-gradient(145deg,#1a2030,#0f1018)">
+        <div style="font-size:48px">✨</div>
+        <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--cream);margin-top:12px;font-style:italic">15% L-Ascorbic Acid</div>
+        <div style="font-size:13px;color:var(--cream2);margin-top:6px">High-efficacy antioxidant formula</div>
+      </div>
+    </div>
+    <div class="carousel-slide" id="slide-2">
+      <div class="placeholder-img" style="background:linear-gradient(145deg,#141820,#0e1014)">
+        <div style="font-size:48px">🌿</div>
+        <div style="font-family:'Playfair Display',serif;font-size:20px;color:var(--green);margin-top:12px">Cruelty-free · Fragrance-free</div>
+        <div style="font-size:13px;color:var(--cream2);margin-top:6px">UK-manufactured · Clinically tested</div>
+      </div>
+    </div>
+    <!-- Carousel controls -->
+    <div class="carousel-prev" onclick="prevSlide()">‹</div>
+    <div class="carousel-next" onclick="nextSlide()">›</div>
+    <div class="carousel-dots">
+      <div class="c-dot active" onclick="goSlide(0)"></div>
+      <div class="c-dot" onclick="goSlide(1)"></div>
+      <div class="c-dot" onclick="goSlide(2)"></div>
+    </div>
+  </div>
+
+  <!-- PRODUCT CONTENT -->
+  <div class="product-content">
+    <div class="p-badges">
+      <span class="pbadge pb-cat">Active Skincare</span>
+      <span class="pbadge pb-cert">UKCA Certified</span>
+      <span class="pbadge pb-cert">Cruelty-free</span>
+      <span class="pbadge pb-cert">Fragrance-free</span>
+    </div>
+    <div class="p-title">Nouri Vitamin C Serum</div>
+    <div class="p-tagline">High-efficacy antioxidant serum with 15% L-Ascorbic Acid. Developed in the UK for sensitive skin — fragrance-free, clinically tested, no compromises.</div>
+
+    <div class="p-meta-row">
+      <div class="p-price">£45</div>
+      <div class="p-commission">20% creator commission</div>
+      <button class="buy-btn" onclick="handleBuyClick()">Buy now →</button>
+    </div>
+
+    <!-- Key selling points -->
+    <div class="p-section">
+      <div class="ps-label">Key selling points</div>
+      <div class="sp-list">
+        <div class="sp-item"><div class="sp-n">1</div><div class="sp-text">15% L-Ascorbic Acid — the highest clinically effective concentration at this price point</div></div>
+        <div class="sp-item"><div class="sp-n">2</div><div class="sp-text">100% fragrance-free and tested for sensitive and reactive skin types</div></div>
+        <div class="sp-item"><div class="sp-n">3</div><div class="sp-text">UK-manufactured. Third-party efficacy tested. Cruelty-free certified.</div></div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="p-section">
+      <div class="ps-label">About this product</div>
+      <div class="p-desc">Nouri Vitamin C Serum is formulated with 15% L-Ascorbic Acid — the most clinically validated form of Vitamin C — combined with Hyaluronic Acid and Ferulic Acid for enhanced stability and skin penetration.
+
+Developed in the UK for sensitive skin, it is entirely free from synthetic fragrance, parabens, and artificial colourants. Every batch is third-party tested for efficacy and tolerance.
+
+Designed for women who want genuinely effective skincare at a price that doesn't require compromise.</div>
+    </div>
+
+    <!-- Target audience -->
+    <div class="p-section">
+      <div class="ps-label">This product is made for</div>
+      <div class="audience-grid">
+        <div class="aud-card"><div class="aud-l">Age range</div><div class="aud-v">25 – 44</div></div>
+        <div class="aud-card"><div class="aud-l">Price tier</div><div class="aud-v">Mid-range</div></div>
+        <div class="aud-card" style="grid-column:1/-1">
+          <div class="aud-l">Skin concerns &amp; goals</div>
+          <div class="chip-row"><span class="chip">Anti-ageing</span><span class="chip">Hyperpigmentation</span><span class="chip">Sensitive skin</span><span class="chip">Uneven tone</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Founder note -->
+    <div class="p-section">
+      <div class="ps-label">From the founder</div>
+      <div class="founder-card">
+        <div class="founder-avatar">👩</div>
+        <div>
+          <div class="founder-quote">"I created Nouri after spending years looking for a Vitamin C serum that actually worked without irritating my sensitive skin — and finding nothing in the accessible price bracket that delivered. That gap is exactly what we built to fill."</div>
+          <div class="founder-name">— Sarah Chen, Founder &amp; CEO, Nouri Skincare</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Where to buy -->
+    <div class="p-section">
+      <div class="ps-label">Where to buy</div>
+      <div class="buy-links">
+        <a href="#" class="buy-link"><span class="bl-name">🌐 Nouri official website</span><span class="bl-arrow">→</span></a>
+        <a href="#" class="buy-link"><span class="bl-name">🛒 Amazon</span><span class="bl-arrow">→</span></a>
+        <a href="#" class="buy-link"><span class="bl-name">📦 TikTok Shop</span><span class="bl-arrow">→</span></a>
+      </div>
+    </div>
+
+  </div><!-- /product-content -->
+</div><!-- /showcase -->
+
+<!-- ── TIKTOK-STYLE ACTION BAR ── -->
+<div class="action-bar">
+
+  <!-- Like -->
+  <div class="ab-btn" id="btn-like" onclick="handleLike()">
+    <div class="ab-icon-wrap">❤️</div>
+    <span class="ab-count" id="like-count">142</span>
+    <span class="ab-label">Like</span>
+  </div>
+
+  <!-- Comment -->
+  <div class="ab-btn" id="btn-comment" onclick="toggleComments()">
+    <div class="ab-icon-wrap">💬</div>
+    <span class="ab-count" id="comment-count">38</span>
+    <span class="ab-label">Comment</span>
+  </div>
+
+  <!-- Buy intent -->
+  <div class="ab-btn" id="btn-buy" onclick="handleBuyIntent()">
+    <div class="ab-icon-wrap">🛍️</div>
+    <span class="ab-count" id="buy-count">67</span>
+    <span class="ab-label">Want it</span>
+  </div>
+
+  <!-- Promote intent -->
+  <div class="ab-btn" id="btn-promote" onclick="togglePromotePanel()">
+    <div class="ab-icon-wrap">📣</div>
+    <span class="ab-count" id="promote-count">29</span>
+    <span class="ab-label">Promote</span>
+  </div>
+
+  <!-- Private DM — subscription only -->
+  <div class="ab-btn" id="btn-dm" onclick="toggleDmPaywall()">
+    <div class="ab-icon-wrap" style="position:relative">
+      💌
+      <span style="position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#111">✦</span>
+    </div>
+    <span class="ab-count" style="color:var(--amber)">DM</span>
+    <span class="ab-label">Private</span>
+  </div>
+
+</div>
+
+<!-- ── COMMENT PANEL ── -->
+<div class="comment-panel" id="comment-panel">
+  <div class="cp-head">
+    <div class="cp-title">Comments <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)" id="cp-count-head">38</span></div>
+    <button class="cp-close" onclick="toggleComments()">×</button>
+  </div>
+  <div class="cp-feed" id="comment-feed">
+    <div class="comment-item">
+      <div class="comment-avatar">👩</div>
+      <div class="comment-body">
+        <div class="comment-name">@skincare.with.jade <span class="comment-badge">Creator</span></div>
+        <div class="comment-text">This is genuinely the best mid-range Vitamin C I've tried. My hyperpigmentation has faded noticeably in 3 weeks. Already planning a full review video!</div>
+        <div class="comment-time">2 hours ago</div>
+      </div>
+    </div>
+    <div class="comment-item">
+      <div class="comment-avatar">🧴</div>
+      <div class="comment-body">
+        <div class="comment-name">@dermafocus.uk <span class="comment-badge">Creator</span></div>
+        <div class="comment-text">15% AA at this price point is impressive. No irritation on my sensitive skin after a week. The fragrance-free formulation is a big plus for my audience.</div>
+        <div class="comment-time">5 hours ago</div>
+      </div>
+    </div>
+    <div class="comment-item">
+      <div class="comment-avatar">✨</div>
+      <div class="comment-body">
+        <div class="comment-name">@glowroutines</div>
+        <div class="comment-text">Really like the packaging and the texture. Absorbs quickly with no stickiness. Would love to know more about the pH level?</div>
+        <div class="comment-time">1 day ago</div>
+      </div>
+    </div>
+    <div class="comment-item">
+      <div class="comment-avatar">🌿</div>
+      <div class="comment-body">
+        <div class="comment-name">@cleanbeautyclub</div>
+        <div class="comment-text">UK-made and cruelty-free — ticks all the boxes for my community. Definitely interested in a collaboration.</div>
+        <div class="comment-time">2 days ago</div>
+      </div>
+    </div>
+  </div>
+  <div class="cp-input-wrap">
+    <textarea class="cp-input" id="cp-input" placeholder="Leave a public comment…" rows="1" oninput="autoResize(this)" onkeydown="handleCommentKey(event)"></textarea>
+    <button class="cp-send" onclick="submitComment()">↑</button>
+  </div>
+</div>
+
+<!-- ── DM PAYWALL ── -->
+<div class="dm-paywall" id="dm-paywall">
+  <button class="dm-close" onclick="closeDmPaywall()">×</button>
+  <div class="dm-paywall-title">✦ Subscription feature</div>
+  <div class="dm-paywall-text">Private DM with this brand is available to <strong style="color:var(--amber)">Bridgr Pro</strong> subscribers. Upgrade to send direct, private messages to brands and receive replies outside the public comment feed.</div>
+  <button class="dm-upgrade-btn" onclick="closeDmPaywall()">Upgrade to Pro →</button>
+</div>
+
+<!-- ── PROMOTE PANEL ── -->
+<div class="promote-panel" id="promote-panel">
+  <div style="position:absolute;top:12px;right:14px;cursor:pointer;color:var(--muted);font-size:16px" onclick="togglePromotePanel()">×</div>
+  <div class="pp-title">I want to promote this</div>
+  <div class="pp-desc">Express your interest in collaborating with this brand. They will receive your signal and can reach out to discuss a partnership.</div>
+  <div class="pp-form">
+    <input class="pp-input" placeholder="Your name or creator handle">
+    <input class="pp-input" placeholder="Your TikTok / Instagram link">
+    <input class="pp-input" placeholder="Your niche (e.g. Skincare, Wellness)">
+    <button class="pp-submit" onclick="submitPromotion()">Send collaboration signal →</button>
+    <button class="pp-cancel" onclick="togglePromotePanel()">Cancel</button>
+  </div>
+</div>
+
+<!-- ── AI CHATBOT ── -->
+<div class="chat-fab" id="chat-fab" onclick="toggleChat()">
+  🤖
+</div>
+
+<div class="chat-window" id="chat-window">
+  <div class="cw-head">
+    <div class="cw-avatar">🤖</div>
+    <div class="cw-info">
+      <div class="cw-name">Nouri Product Assistant</div>
+      <div class="cw-sub">Online · answers from product profile</div>
+    </div>
+    <button class="cw-close" onclick="toggleChat()">×</button>
+  </div>
+  <div class="cw-messages" id="cw-messages">
+    <div class="msg bot">Hi! I can answer any questions about the Nouri Vitamin C Serum — ingredients, suitability, usage, or stockists. What would you like to know?</div>
+  </div>
+  <div class="cw-input-wrap">
+    <input class="cw-input" id="cw-input" placeholder="Ask about this product…" onkeydown="handleChatKey(event)">
+    <button class="cw-send" onclick="sendChat()">↑</button>
+  </div>
+</div>
+
+<!-- backdrop -->
+<div class="panel-backdrop" id="panel-backdrop" onclick="closeAllPanels()"></div>
+
+<script>
+/* ── Carousel ── */
+let slideIdx = 0;
+const slides = document.querySelectorAll('.carousel-slide');
+const dots = document.querySelectorAll('.c-dot');
+function goSlide(n) {
+  slides[slideIdx].classList.remove('active');
+  dots[slideIdx].classList.remove('active');
+  slideIdx = (n + slides.length) % slides.length;
+  slides[slideIdx].classList.add('active');
+  dots[slideIdx].classList.add('active');
+}
+function nextSlide() { goSlide(slideIdx + 1); }
+function prevSlide() { goSlide(slideIdx - 1); }
+setInterval(() => goSlide(slideIdx + 1), 5000);
+
+/* ── Like ── */
+let liked = false;
+let likeCount = 142;
+function handleLike() {
+  const btn = document.getElementById('btn-like');
+  liked = !liked;
+  if (liked) {
+    likeCount++;
+    btn.classList.add('liked');
+  } else {
+    likeCount--;
+    btn.classList.remove('liked');
+  }
+  const el = document.getElementById('like-count');
+  el.textContent = likeCount;
+  el.classList.remove('count-tick');
+  void el.offsetWidth;
+  el.classList.add('count-tick');
+}
+
+/* ── Buy intent ── */
+let bought = false;
+let buyCount = 67;
+function handleBuyIntent() {
+  const btn = document.getElementById('btn-buy');
+  if (!bought) {
+    bought = true;
+    buyCount++;
+    btn.classList.add('bought');
+    const el = document.getElementById('buy-count');
+    el.textContent = buyCount;
+    el.classList.remove('count-tick');
+    void el.offsetWidth;
+    el.classList.add('count-tick');
+    // redirect to buy link
+    setTimeout(() => window.open('https://nouriskin.co.uk', '_blank'), 400);
+  }
+}
+function handleBuyClick() {
+  handleBuyIntent();
+}
+
+/* ── Comments ── */
+let commentsOpen = false;
+function toggleComments() {
+  commentsOpen = !commentsOpen;
+  document.getElementById('comment-panel').classList.toggle('open', commentsOpen);
+  document.getElementById('panel-backdrop').classList.toggle('show', commentsOpen);
+  if (commentsOpen) setTimeout(() => document.getElementById('cp-input').focus(), 350);
+}
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+function handleCommentKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitComment(); }
+}
+let commentCount = 38;
+function submitComment() {
+  const input = document.getElementById('cp-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const feed = document.getElementById('comment-feed');
+  const item = document.createElement('div'); item.className = 'comment-item';
+  item.innerHTML = `
+    <div class="comment-avatar">😊</div>
+    <div class="comment-body">
+      <div class="comment-name">You</div>
+      <div class="comment-text">${text.replace(/</g,'&lt;')}</div>
+      <div class="comment-time">Just now</div>
+    </div>`;
+  feed.appendChild(item);
+  feed.scrollTop = feed.scrollHeight;
+  input.value = ''; input.style.height = '40px';
+  commentCount++;
+  document.getElementById('comment-count').textContent = commentCount;
+  document.getElementById('cp-count-head').textContent = commentCount;
+}
+
+/* ── DM Paywall ── */
+function toggleDmPaywall() {
+  const pw = document.getElementById('dm-paywall');
+  const isShown = pw.classList.contains('show');
+  closeAllPanels();
+  if (!isShown) {
+    pw.classList.add('show');
+    // position near DM button
+    const btn = document.getElementById('btn-dm');
+    const rect = btn.getBoundingClientRect();
+    pw.style.top = (rect.top - 10) + 'px';
+  }
+}
+function closeDmPaywall() {
+  document.getElementById('dm-paywall').classList.remove('show');
+}
+
+/* ── Promote panel ── */
+let promoting = false;
+let promoteCount = 29;
+function togglePromotePanel() {
+  const panel = document.getElementById('promote-panel');
+  const isShown = panel.classList.contains('show');
+  closeAllPanels();
+  if (!isShown) {
+    panel.classList.add('show');
+    // position near promote button
+    const btn = document.getElementById('btn-promote');
+    const rect = btn.getBoundingClientRect();
+    panel.style.top = Math.max(60, rect.top - 80) + 'px';
+    document.getElementById('panel-backdrop').classList.add('show');
+  }
+}
+function submitPromotion() {
+  const panel = document.getElementById('promote-panel');
+  panel.innerHTML = `
+    <div style="text-align:center;padding:10px 0">
+      <div style="font-size:36px;margin-bottom:12px">📣</div>
+      <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--cream);margin-bottom:8px">Signal sent!</div>
+      <div style="font-size:12px;color:var(--cream2);line-height:1.7;margin-bottom:16px">Nouri Skincare will receive your collaboration interest. They'll reach out if there's a fit.</div>
+      <button onclick="togglePromotePanel()" style="padding:9px 20px;background:var(--amber);border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;color:#111;cursor:pointer">Done</button>
+    </div>`;
+  if (!promoting) {
+    promoting = true;
+    promoteCount++;
+    const el = document.getElementById('promote-count');
+    el.textContent = promoteCount;
+    document.getElementById('btn-promote').classList.add('promoting');
+  }
+}
+
+/* ── Close all panels ── */
+function closeAllPanels() {
+  document.getElementById('dm-paywall').classList.remove('show');
+  document.getElementById('promote-panel').classList.remove('show');
+  document.getElementById('panel-backdrop').classList.remove('show');
+  if (commentsOpen) {
+    commentsOpen = false;
+    document.getElementById('comment-panel').classList.remove('open');
+  }
+}
+
+/* ── AI Chatbot ── */
+let chatOpen = false;
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById('chat-window').classList.toggle('open', chatOpen);
+  if (chatOpen) setTimeout(() => document.getElementById('cw-input').focus(), 300);
+}
+function handleChatKey(e) { if (e.key === 'Enter') sendChat(); }
+
+const botAnswers = {
+  'ingredient': 'The active ingredient is 15% L-Ascorbic Acid — the most bioavailable form of Vitamin C. It also contains Hyaluronic Acid for hydration and Ferulic Acid for enhanced stability.',
+  'sensitive': 'Yes, it was specifically formulated for sensitive and reactive skin. It\'s 100% fragrance-free, paraben-free, and third-party tested for tolerance.',
+  'ph': 'The formula is optimised at pH 3.2, which is the clinically validated range for L-Ascorbic Acid efficacy and skin absorption.',
+  'price': 'The serum retails at £45. Creators can earn 20% commission on every sale through their affiliate link.',
+  'where': 'Available on the official Nouri website (nouriskin.co.uk), Amazon, and TikTok Shop.',
+  'how': 'Apply 3–5 drops to clean, dry skin every morning before moisturiser and SPF. Start every other day if you\'re new to Vitamin C serums.',
+  'default': 'That\'s a great question about this product. Based on the product profile, I\'d suggest checking the full description above or reaching out to the brand directly via the DM feature (subscription required).',
+};
+
+function sendChat() {
+  const input = document.getElementById('cw-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const messages = document.getElementById('cw-messages');
+  // user message
+  const userMsg = document.createElement('div'); userMsg.className = 'msg user';
+  userMsg.textContent = text; messages.appendChild(userMsg);
+  input.value = ''; messages.scrollTop = messages.scrollHeight;
+  // typing indicator
+  const typing = document.createElement('div'); typing.className = 'msg bot typing';
+  typing.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  messages.appendChild(typing); messages.scrollTop = messages.scrollHeight;
+  // bot response
+  setTimeout(() => {
+    typing.remove();
+    const lower = text.toLowerCase();
+    let reply = botAnswers.default;
+    if (lower.includes('ingredient') || lower.includes('ascorbic') || lower.includes('formula')) reply = botAnswers.ingredient;
+    else if (lower.includes('sensitive') || lower.includes('irritat') || lower.includes('reactive')) reply = botAnswers.sensitive;
+    else if (lower.includes('ph') || lower.includes('p.h')) reply = botAnswers.ph;
+    else if (lower.includes('price') || lower.includes('cost') || lower.includes('commission')) reply = botAnswers.price;
+    else if (lower.includes('where') || lower.includes('buy') || lower.includes('stock') || lower.includes('amazon')) reply = botAnswers.where;
+    else if (lower.includes('how') || lower.includes('use') || lower.includes('apply') || lower.includes('routine')) reply = botAnswers.how;
+    const botMsg = document.createElement('div'); botMsg.className = 'msg bot';
+    botMsg.textContent = reply; messages.appendChild(botMsg);
+    messages.scrollTop = messages.scrollHeight;
+  }, 1200);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bridgr — Creator Profile Editor</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0e12;--panel:#0f1119;--form:#13161e;--card:#1a1e2c;--card2:#202438;
+  --stroke:rgba(255,255,255,0.08);--focus:rgba(58,170,120,0.55);
+  --creator:#1c5c3f;--green:#3aaa78;--green-d:#2d8a60;--green-g:rgba(58,170,120,0.12);
+  --amber:#c9a245;--amber-g:rgba(201,162,69,0.11);
+  --brand:#c03b1b;--brand-g:rgba(192,59,27,0.12);
+  --cream:#f0ece4;--cream2:#9e9890;--muted:#545a6e;
+}
+html,body{height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--cream);font-size:14px;line-height:1.6}
+
+.nav{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 28px;background:var(--panel);border-bottom:1px solid var(--stroke);flex-shrink:0}
+.nav-l{display:flex;align-items:center;gap:12px}
+.nav-logo{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;letter-spacing:.04em;color:var(--cream)}
+.nav-crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.nav-crumb span{color:var(--cream2)}
+.nav-r{display:flex;align-items:center;gap:10px}
+.vis-pill{display:flex;align-items:center;gap:7px;padding:8px 14px;background:var(--card);border:1.5px solid var(--stroke);border-radius:8px;font-size:13px;font-weight:600;color:var(--cream2);cursor:pointer}
+.vis-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.btn-out{padding:9px 18px;background:transparent;border:1.5px solid var(--stroke);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;color:var(--cream2);cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-out:hover{border-color:var(--cream2);color:var(--cream)}
+.btn-pub{padding:9px 22px;background:var(--green-d);border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .2s}
+.btn-pub:hover{background:var(--creator)}
+
+.shell{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 56px);overflow:hidden}
+.sidebar{background:var(--panel);border-right:1px solid var(--stroke);display:flex;flex-direction:column}
+.sb-hd{padding:18px 16px 8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sb-ls{flex:1;padding:0 10px 16px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.sb-ls::-webkit-scrollbar{width:0}
+.sb-it{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:8px;cursor:pointer;transition:all .2s;font-size:13px;font-weight:500;color:var(--muted)}
+.sb-it:hover{background:var(--card);color:var(--cream2)}
+.sb-it.active{background:var(--card2);color:var(--cream)}
+.sb-it.filled .sb-d{background:var(--green)}
+.sb-d{width:6px;height:6px;border-radius:50%;background:var(--stroke);flex-shrink:0;transition:background .2s}
+.sb-it.active .sb-d{background:var(--amber)}
+.sb-ft{padding:14px 16px;border-top:1px solid var(--stroke)}
+.comp-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.comp-lbl{font-size:11px;color:var(--muted)}
+.comp-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--green)}
+.comp-bar{height:4px;background:var(--stroke);border-radius:2px;overflow:hidden}
+.comp-fill{height:100%;background:var(--green);border-radius:2px;transition:width .5s ease}
+
+.editor{flex:1;overflow-y:auto;padding:32px 40px;display:flex;flex-direction:column;gap:0}
+.editor::-webkit-scrollbar{width:4px}
+.editor::-webkit-scrollbar-thumb{background:var(--card2);border-radius:2px}
+
+/* Profile header */
+.prof-head{display:flex;align-items:flex-start;gap:24px;padding-bottom:28px;border-bottom:1px solid var(--stroke);margin-bottom:28px}
+.avatar-area{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.avatar-main{width:120px;height:120px;border-radius:50%;background:var(--card);border:2px solid var(--stroke);display:flex;align-items:center;justify-content:center;font-size:40px;cursor:pointer;transition:border-color .2s;overflow:hidden;position:relative}
+.avatar-main:hover{border-color:var(--green)}
+.avatar-main img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.avatar-hint{font-size:10px;color:var(--muted);text-align:center}
+.prof-meta{flex:1;display:flex;flex-direction:column;gap:12px}
+.meta-badges{display:flex;gap:6px;flex-wrap:wrap}
+.mbadge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.mb-g{background:var(--green-g);color:var(--green)}
+.mb-a{background:var(--amber-g);color:var(--amber)}
+.mb-n{background:var(--card2);color:var(--muted)}
+.edit-name{background:transparent;border:none;border-bottom:1.5px solid transparent;font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--cream);outline:none;width:100%;transition:border-color .2s;padding:2px 0;letter-spacing:-.02em}
+.edit-name:hover{border-bottom-color:var(--stroke)}
+.edit-name:focus{border-bottom-color:var(--green)}
+.edit-handle{background:transparent;border:none;border-bottom:1.5px solid transparent;font-family:'DM Mono',monospace;font-size:15px;color:var(--green);outline:none;width:100%;transition:border-color .2s;padding:2px 0}
+.edit-handle:hover{border-bottom-color:var(--stroke)}
+.edit-handle:focus{border-bottom-color:var(--green)}
+.edit-tagline{background:transparent;border:none;border-bottom:1.5px solid transparent;font-size:14px;font-weight:400;color:var(--cream2);outline:none;width:100%;transition:border-color .2s;padding:2px 0}
+.edit-tagline:hover{border-bottom-color:var(--stroke)}
+.edit-tagline:focus{border-bottom-color:var(--green)}
+
+/* Sections */
+.es{margin-bottom:24px;border:1.5px solid var(--stroke);border-radius:12px;overflow:hidden;transition:border-color .2s}
+.es:hover{border-color:rgba(255,255,255,.12)}
+.es-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--card);cursor:pointer;user-select:none}
+.es-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cream2);display:flex;align-items:center;gap:8px}
+.es-ico{font-size:14px}
+.es-acts{display:flex;align-items:center;gap:8px}
+.es-filled{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--green-g);color:var(--green)}
+.es-chev{font-size:12px;color:var(--muted);transition:transform .2s}
+.es-chev.open{transform:rotate(180deg)}
+.es-body{padding:18px;display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--stroke)}
+.es-body.closed{display:none}
+
+.ef{display:flex;flex-direction:column;gap:6px}
+.ef label{font-size:12px;font-weight:600;color:var(--muted)}
+.ef label span{font-weight:400;color:var(--muted);opacity:.7}
+.ef input,.ef select,.ef textarea{background:var(--bg);border:1.5px solid var(--stroke);border-radius:9px;padding:11px 14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);outline:none;transition:border-color .2s;width:100%}
+.ef input:focus,.ef select:focus,.ef textarea:focus{border-color:var(--focus);background:var(--card)}
+.ef input::placeholder,.ef textarea::placeholder{color:var(--muted);opacity:.6}
+.ef select option{background:var(--card)}
+.ef textarea{resize:vertical;min-height:72px}
+.ef-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chip-row{display:flex;flex-wrap:wrap;gap:5px}
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--card2);border:1px solid var(--stroke);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;color:var(--cream2)}
+.chip-x{cursor:pointer;opacity:.4;font-size:11px;transition:opacity .15s}
+.chip-x:hover{opacity:1}
+
+/* Platform links in editor */
+.plat-list{display:flex;flex-direction:column;gap:6px}
+.plat-row{display:flex;gap:8px;align-items:center}
+.plat-icon{width:28px;height:28px;border-radius:6px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.plat-link{flex:1;font-family:'DM Mono',monospace;font-size:12px;color:var(--green);text-decoration:none;word-break:break-all}
+
+/* Visibility */
+.vis-section{margin-bottom:28px}
+.vis-title{font-size:13px;font-weight:700;color:var(--cream);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.vis-opts{display:flex;flex-direction:column;gap:8px}
+.vis-opt{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;border-radius:10px;border:1.5px solid var(--stroke);cursor:pointer;transition:all .2s}
+.vis-opt:hover{background:var(--card)}
+.vis-opt.sel{background:var(--card2);border-color:rgba(58,170,120,.35)}
+.vis-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--stroke);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.vis-opt.sel .vis-radio{border-color:var(--green);background:var(--green)}
+.vis-opt.sel .vis-radio::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
+.vo-name{font-size:13px;font-weight:700;color:var(--cream2);margin-bottom:2px}
+.vis-opt.sel .vo-name{color:var(--cream)}
+.vo-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.pub-hint{text-align:center;padding:8px 0 16px;font-size:12px;color:var(--muted)}
+
+.save-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--green-g);border:1px solid rgba(58,170,120,.3);border-radius:8px;padding:10px 20px;font-size:12px;font-weight:600;color:var(--green);opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;display:flex;align-items:center;gap:7px}
+.save-toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-l">
+    <span class="nav-logo">Bridgr</span>
+    <div class="nav-crumb"><span>/</span><span>Creator dashboard</span><span>/</span><span>Edit profile</span></div>
+  </div>
+  <div class="nav-r">
+    <div class="vis-pill"><div class="vis-dot" style="background:var(--amber)"></div><span>Open to brands</span><span style="font-size:10px;color:var(--muted)">&#9662;</span></div>
+    <a href="bridgr-creator-profile.html" class="btn-out">Preview live profile &#8594;</a>
+    <button class="btn-pub" onclick="window.location.href='bridgr-creator-profile.html'">Publish profile</button>
+  </div>
+</nav>
+
+<div class="shell">
+
+<div class="sidebar">
+  <div class="sb-hd">Profile sections</div>
+  <div class="sb-ls">
+    <div class="sb-it filled active" onclick="sTo('sec-identity')"><div class="sb-d"></div>Identity &amp; bio</div>
+    <div class="sb-it filled" onclick="sTo('sec-platforms')"><div class="sb-d"></div>Platforms</div>
+    <div class="sb-it filled" onclick="sTo('sec-authority')"><div class="sb-d"></div>Authority pillar</div>
+    <div class="sb-it filled" onclick="sTo('sec-capabilities')"><div class="sb-d"></div>Capabilities</div>
+    <div class="sb-it filled" onclick="sTo('sec-content')"><div class="sb-d"></div>Content strategy</div>
+    <div class="sb-it filled" onclick="sTo('sec-categories')"><div class="sb-d"></div>Product categories</div>
+    <div class="sb-it" onclick="sTo('sec-collab')"><div class="sb-d"></div>Collaboration prefs</div>
+    <div class="sb-it" onclick="sTo('sec-visibility')"><div class="sb-d"></div>Visibility settings</div>
+  </div>
+  <div class="sb-ft">
+    <div class="comp-row"><span class="comp-lbl">Profile completeness</span><span class="comp-val">78%</span></div>
+    <div class="comp-bar"><div class="comp-fill" style="width:78%"></div></div>
+  </div>
+</div>
+
+<div class="editor" id="editor">
+
+  <!-- Header -->
+  <div class="prof-head" id="sec-identity">
+    <div class="avatar-area">
+      <div class="avatar-main" title="Click to upload avatar">&#128105;</div>
+      <div class="avatar-hint">Click to upload</div>
+    </div>
+    <div class="prof-meta">
+      <div class="meta-badges">
+        <span class="mbadge mb-g">Skincare</span>
+        <span class="mbadge mb-g">Active creator</span>
+        <span class="mbadge mb-a">Ingredient science</span>
+      </div>
+      <input class="edit-name" value="Jessica Huang" placeholder="Your full name" oninput="autoSave()">
+      <input class="edit-handle" value="@jessicaglows" placeholder="@yourhandle" oninput="autoSave()">
+      <input class="edit-tagline" value="I break down complex skincare ingredients into honest, no-nonsense reviews for sensitive skin." placeholder="Your strength pitch — one sentence" oninput="autoSave()">
+    </div>
+  </div>
+
+  <!-- Self-introduction -->
+  <div class="es" id="sec-intro">
+    <div class="es-hd" onclick="togSec(this)">
+      <div class="es-title"><span class="es-ico">&#9997;&#65039;</span>Self-introduction</div>
+      <div class="es-acts"><span class="es-filled">Filled</span><span class="es-chev open">&#9662;</span></div>
+    </div>
+    <div class="es-body">
+      <div class="ef"><label>About me <span>(first person — this is the first thing brands read)</span></label>
+        <textarea oninput="autoSave()">I'm a UK-based skincare creator with a focus on sensitive and melanin-rich skin. I test every product for at least 4 weeks before sharing it with my audience. I say no to anything that doesn't meet my standards — because that's exactly why my community trusts me. I'm looking for brand partners whose values genuinely align: transparency, efficacy, and accessibility.</textarea>
+      </div>
+      <div class="ef-row">
+        <div class="ef"><label>Location</label><input value="London, UK" oninput="autoSave()"></div>
+        <div class="ef"><label>Audience region</label><input value="United Kingdom" oninput="autoSave()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Platforms -->
+  <div class="es" id="sec-platforms">
+    <div class="es-hd" onclick="togSec(this)">
+      <div class="es-title"><span class="es-ico">&#128279;</span>Platform profiles</div>
+      <div class="es-acts"><span class="es-filled">Filled</span><span class="es-chev open">&#9662;</span></div>
+    </div>
+    <div class="es-body">
+      <div class="plat-list">
+        <div class="plat-row"><div class="plat-icon">&#128247;</div><input class="ef" value="https://instagram.com/jessicaglows" style="flex:1;font-family:'DM Mono',monospace;font-size:12px;color:var(--green);background:var(--bg);border:1.5px solid var(--stroke);border-radius:9px;padding:11px 14px;outline:none" oninput="autoSave()"></div>
+        <div class="plat-row"><div class="plat-icon">&#127916;</div><input class="ef" value="https://tiktok.com/@jessicaglows" style="flex:1;font-family:'DM Mono',monospace;font-size:12px;color:var(--green);background:var(--bg);border:1.5px solid var(--stroke);border-radius:9px;padding:11px 14px;outline:none" oninput="autoSave()"></div>
+        <div class="plat-row"><div class="plat-icon">&#9654;&#65039;</div><input class="ef" value="" placeholder="https://youtube.com/@..." style="flex:1;font-family:'DM Mono',monospace;font-size:12px;color:var(--green);background:var(--bg);border:1.5px solid var(--stroke);border-radius:9px;padding:11px 14px;outline:none" oninput="autoSave()"></div>
+      </div>
+      <div class="ef-row" style="margin-top:10px">
+        <div class="ef"><label>Posting frequency</label><select oninput="autoSave()"><option>4&#8211;6 times per week</option><option>2&#8211;3 times per week</option><option>Daily</option><option>Weekly</option></select></div>
+        <div class="ef"><label>Self-reported engagement rate</label><select oninput="autoSave()"><option>3&#8211;6% (above average)</option><option>1&#8211;3% (average)</option><option>6&#8211;10% (high)</option><option>Over 10%</option></select></div>
+      </div>
+      <div class="ef"><label>Best-performing content example</label><input value="https://www.tiktok.com/@jessicaglows/video/7312..." placeholder="Paste a link to your best work" oninput="autoSave()"></div>
+    </div>
+  </div>
+
+  <!-- Authority pillar -->
+  <div class="es" id="sec-authority">
+    <div class="es-hd" onclick="togSec(this)">
+      <div class="es-title"><span class="es-ico">&#127919;</span>Authority pillar &amp; expertise</div>
+      <div class="es-acts"><span class="es-filled">Filled</span><span class="es-chev open">&#9662;</span></div>
+    </div>
+    <div class="es-body">
+      <div class="ef"><label>Primary content pillar</label><select oninput="autoSave()"><option selected>Skincare &#8212; Ingredient science &amp; formulation</option><option>Skincare &#8212; Sensitive &amp; reactive skin</option><option>Skincare &#8212; Anti-ageing &amp; longevity</option><option>Health &#8212; Supplements &amp; nutrition</option></select></div>
+      <div class="ef"><label>Sub-niches</label>
+        <div class="chip-row">
+          <div class="chip">Hyperpigmentation <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+          <div class="chip">SPF education <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+          <div class="chip">Fragrance-free <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+          <div class="chip">Sensitive skin <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+        </div>
+      </div>
+      <div class="ef"><label>Typical audience profile</label><input value="Women 28&#8211;42, UK-based, ingredient-conscious, spending &#163;30&#8211;80 on skincare monthly" oninput="autoSave()"></div>
+    </div>
+  </div>
+
+  <!-- Capabilities -->
+  <div class="es" id="sec-capabilities">
+    <div class="es-hd" onclick="togSec(this)">
+      <div class="es-title"><span class="es-ico">&#127909;</span>Technical capabilities</div>
+      <div class="es-acts"><span class="es-filled">Filled</span><span class="es-chev">&#9662;</span></div>
+    </div>
+    <div class="es-body closed">
+      <div class="chip-row">
+        <div class="chip">On-camera presenting <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+        <div class="chip">Video editing <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+        <div class="chip">Photography <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+        <div class="chip">Professional lighting <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+        <div class="chip">Voiceover <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content strategy -->
+  <div class="es" id="sec-content">
+    <div class="es-hd" onclick="togSec(this)">
+      <div class="es-title"><span class="es-ico">&#128202;</span>Content strategy</div>
+      <div class="es-acts"><span class="es-filled">Filled</span><span class="es-chev">&#9662;</span></div>
+    </div>
+    <div class="es-body closed">
+      <div class="ef-row">
+        <div class="ef"><label>Best format</label><select oninput="autoSave()"><option selected>Short-form video (Reels / TikTok)</option><option>Long-form YouTube</option><option>Photo carousel</option></select></div>
+        <div class="ef"><label>Creator role</label><select oninput="autoSave()"><option selected>Hybrid &#8212; UGC + own audience</option><option>UGC only</option><option>Influencer only</option></select></div>
+      </div>
+      <div class="ef"><label>Content approach</label>
+        <div class="chip-row">
+          <div class="chip">The Educator <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+          <div class="chip">The Honest Reviewer <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+          <div class="chip">The Transformer <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="es" id="sec-categories">
+    <div class="es-hd" onclick="togSec(this)">
+      <div class="es-title"><span class="es-ico">&#128722;</span>Product categories</div>
+      <div class="es-acts"><span class="es-filled">Filled</span><span class="es-chev">&#9662;</span></div>
+    </div>
+    <div class="es-body closed">
+      <div class="chip-row">
+        <div class="chip">Functional Skincare <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+        <div class="chip">Clean Beauty <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+        <div class="chip">Supplements &amp; Vitamins <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Collaboration prefs -->
+  <div class="es" id="sec-collab">
+    <div class="es-hd" onclick="togSec(this)">
+      <div class="es-title"><span class="es-ico">&#129309;</span>Collaboration preferences</div>
+      <div class="es-acts"><span class="es-chev">&#9662;</span></div>
+    </div>
+    <div class="es-body closed">
+      <div class="chip-row">
+        <div class="chip">Affiliate / commission <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+        <div class="chip">Long-term ambassador <span class="chip-x" onclick="this.parentElement.remove()">&#215;</span></div>
+      </div>
+      <div class="ef-row">
+        <div class="ef"><label>Monthly availability</label><input value="8 hours / month" oninput="autoSave()"></div>
+        <div class="ef"><label>Preferred commission rate</label><input value="20%" oninput="autoSave()"></div>
+      </div>
+      <div class="ef"><label>Working style notes <span>(visible to matched brands)</span></label>
+        <textarea rows="2" oninput="autoSave()">I only work with fragrance-free products due to my own skin sensitivities. I require a 2-week usage period before posting any review.</textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visibility -->
+  <div class="vis-section" id="sec-visibility">
+    <div class="vis-title">&#128274; Who can see this profile?</div>
+    <div class="vis-opts">
+      <div class="vis-opt" onclick="selVis(this)"><div class="vis-radio"></div><div><div class="vo-name">&#127758; Open to all</div><div class="vo-desc">Anyone on Bridgr or the web can view your creator profile and reach out.</div></div></div>
+      <div class="vis-opt sel" onclick="selVis(this)"><div class="vis-radio"></div><div><div class="vo-name">&#128100; Open to brands (recommended)</div><div class="vo-desc">Visible to verified brands on Bridgr. Not searchable outside the platform.</div></div></div>
+      <div class="vis-opt" onclick="selVis(this)"><div class="vis-radio"></div><div><div class="vo-name">&#128274; Selective &#8212; engaged brands only</div><div class="vo-desc">Only visible to brands whose products you've reviewed or expressed interest in.</div></div></div>
+      <div class="vis-opt" onclick="selVis(this)"><div class="vis-radio"></div><div><div class="vo-name">&#128683; Private</div><div class="vo-desc">Not visible to any brands. Only platform managers can see your profile.</div></div></div>
+    </div>
+    <div class="pub-hint">Changes save automatically. Hitting <strong style="color:var(--cream)">Publish profile</strong> makes your page live.</div>
+  </div>
+
+</div>
+</div>
+
+<div class="save-toast" id="save-toast">&#10003; Changes saved automatically</div>
+
+<script>
+function togSec(hd){var b=hd.nextElementSibling;var c=hd.querySelector('.es-chev');b.classList.toggle('closed');if(c)c.classList.toggle('open',!b.classList.contains('closed'))}
+function selVis(el){document.querySelectorAll('.vis-opt').forEach(function(o){o.classList.remove('sel')});el.classList.add('sel')}
+function sTo(id){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+var st;function autoSave(){clearTimeout(st);st=setTimeout(function(){var t=document.getElementById('save-toast');t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2200)},800)}
+</script>
+</body>
+</html>

@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bridgr — Brand Intelligence Planner</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0e14;
+  --panel:#11121a;
+  --form:#151620;
+  --card:#1c1f2e;
+  --card-hover:#222538;
+  --card-active:#272b3f;
+  --stroke:rgba(255,255,255,0.09);
+  --stroke-focus:rgba(201,162,69,0.55);
+  --brand:#c03b1b;
+  --brand-g:rgba(192,59,27,0.12);
+  --amber:#c9a245;
+  --amber-soft:rgba(201,162,69,0.11);
+  --green:#3aaa78;
+  --green-soft:rgba(58,170,120,0.11);
+  --cream:#f2ede4;
+  --cream2:#a09890;
+  --muted:#5a6070;
+  --danger-bg:rgba(192,59,27,0.08);
+  --success-bg:rgba(58,170,120,0.08);
+  --warning-bg:rgba(201,162,69,0.08);
+}
+
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg);
+  color:var(--cream);
+  font-size:15px;
+  line-height:1.65;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ════════════════════════
+   NAV
+════════════════════════ */
+.nav{
+  height:58px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;
+  background:var(--panel);
+  border-bottom:1px solid var(--stroke);
+  flex-shrink:0;
+  z-index:100;
+}
+.nav-l{display:flex;align-items:center;gap:12px}
+.nav-logo{font-family:'DM Mono',monospace;font-size:17px;font-weight:500;letter-spacing:.04em;color:var(--cream)}
+.nav-badge{
+  font-size:11px;font-weight:600;padding:4px 12px;
+  background:var(--amber-soft);color:var(--amber);
+  border-radius:20px;letter-spacing:.05em;
+}
+.nav-stepper{font-size:14px;font-weight:500;color:var(--cream2)}
+.nav-r{display:flex;align-items:center;gap:16px}
+.eng-status{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.eng-led{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s}
+.eng-led.on{background:var(--green);box-shadow:0 0 6px var(--green);animation:led-blink 2s ease-in-out infinite}
+@keyframes led-blink{0%,100%{opacity:1}50%{opacity:.4}}
+.nav-next{
+  padding:9px 20px;background:var(--brand);border:none;border-radius:8px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;
+  color:#fff;cursor:pointer;transition:background .2s;letter-spacing:.02em;
+}
+.nav-next:hover{background:#a83018}
+
+/* ════════════════════════
+   THREE-PANE SHELL
+════════════════════════ */
+.shell{
+  display:grid;
+  grid-template-columns:290px 1fr 430px;
+  height:calc(100vh - 58px);
+  overflow:hidden;
+}
+
+/* ════════════════════════
+   SIDEBAR
+════════════════════════ */
+.sidebar{
+  background:var(--panel);
+  border-right:1px solid var(--stroke);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.sb-list{
+  flex:1;padding:24px 16px;
+  display:flex;flex-direction:column;gap:4px;
+  overflow-y:auto;
+}
+.sb-list::-webkit-scrollbar{width:0}
+
+/* Step nav item */
+.snav{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:14px 14px;border-radius:10px;
+  cursor:pointer;transition:all .2s;
+  border:1.5px solid transparent;
+  position:relative;
+}
+.snav:hover{background:var(--card)}
+.snav.active{
+  background:var(--card-active);
+  border-color:rgba(192,59,27,.22);
+}
+.snav.active::before{
+  content:'';position:absolute;
+  left:0;top:14px;bottom:14px;width:3px;
+  background:var(--brand);border-radius:0 3px 3px 0;
+}
+.snav.done .sn-bubble{
+  background:var(--green-soft);
+  border-color:rgba(58,170,120,.4);
+  color:var(--green);
+}
+.sn-bubble{
+  width:34px;height:34px;border-radius:8px;
+  background:var(--card);border:1.5px solid var(--stroke);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:11px;font-weight:500;
+  color:var(--muted);transition:all .2s;flex-shrink:0;margin-top:1px;
+}
+.snav.active .sn-bubble{background:var(--brand);border-color:var(--brand);color:#fff}
+.sn-text{}
+.sn-step{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+.snav.active .sn-step{color:rgba(192,59,27,.75)}
+.sn-name{font-size:14px;font-weight:700;color:var(--cream2);line-height:1.2}
+.snav.active .sn-name{color:var(--cream)}
+.sn-hint{font-size:11px;color:var(--muted);margin-top:2px}
+.sb-foot{
+  padding:16px 18px;border-top:1px solid var(--stroke);
+  font-family:'DM Mono',monospace;font-size:9px;
+  color:var(--muted);line-height:2;letter-spacing:.04em;
+}
+
+/* ════════════════════════
+   CENTRE — FORM AREA
+════════════════════════ */
+.centre{background:var(--form);display:flex;flex-direction:column;overflow:hidden}
+
+.stepview{display:none;flex-direction:column;height:100%}
+.stepview.show{display:flex}
+
+/* Step header */
+.sv-head{
+  padding:32px 40px 22px;
+  border-bottom:1px solid var(--stroke);
+  flex-shrink:0;
+}
+.sv-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--brand);margin-bottom:10px;
+}
+.sv-h{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(24px,2vw,32px);font-weight:700;
+  color:var(--cream);letter-spacing:-.02em;
+  margin-bottom:7px;line-height:1.1;
+}
+.sv-d{font-size:14px;color:var(--cream2);line-height:1.7;max-width:480px}
+
+/* Scrollable fields */
+.sv-body{
+  flex:1;
+  padding:28px 40px 24px;
+  display:flex;flex-direction:column;gap:24px;
+  overflow-y:auto;
+}
+.sv-body::-webkit-scrollbar{width:4px}
+.sv-body::-webkit-scrollbar-thumb{background:var(--card-hover);border-radius:2px}
+
+/* Bottom bar */
+.sv-foot{
+  padding:16px 40px;
+  border-top:1px solid var(--stroke);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;background:var(--form);
+}
+.prog-track{display:flex;gap:6px}
+.prog-pip{
+  width:26px;height:4px;border-radius:3px;
+  background:var(--stroke);transition:background .3s;
+}
+.prog-pip.done{background:var(--green)}
+.prog-pip.now{background:var(--amber)}
+.foot-btns{display:flex;gap:10px}
+
+/* ════════════════════════
+   FORM COMPONENT STYLES
+════════════════════════ */
+
+/* Field group */
+.fg{display:flex;flex-direction:column;gap:8px}
+.fg>label{
+  font-size:13px;font-weight:700;color:var(--cream);
+  display:flex;align-items:center;gap:8px;
+}
+.fg>label .sub{
+  font-size:12px;font-weight:400;color:var(--muted);
+}
+
+/* Input, select, textarea */
+.fg input,
+.fg select,
+.fg textarea{
+  background:var(--card);
+  border:1.5px solid var(--stroke);
+  border-radius:10px;
+  padding:13px 16px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:14px;
+  color:var(--cream);
+  outline:none;
+  transition:border-color .2s, background .2s;
+  width:100%;
+  appearance:none;
+  -webkit-appearance:none;
+}
+.fg input:focus,
+.fg select:focus,
+.fg textarea:focus{
+  border-color:var(--stroke-focus);
+  background:var(--card-hover);
+}
+.fg input::placeholder,
+.fg textarea::placeholder{color:var(--muted);opacity:.7}
+.fg select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6070' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  padding-right:36px;
+}
+.fg select option{background:var(--card)}
+.fg textarea{resize:vertical;min-height:72px}
+
+/* Two-column row */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+/* Field hint */
+.fhint{font-size:12px;color:var(--muted);margin-top:-14px}
+
+/* Divider */
+.fdiv{height:1px;background:var(--stroke);margin:4px 0}
+
+/* ── BUTTONS ── */
+.btn-primary{
+  padding:12px 26px;background:var(--brand);border:none;border-radius:10px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;
+  color:#fff;cursor:pointer;transition:background .2s;
+}
+.btn-primary:hover{background:#a83018}
+.btn-back{
+  padding:12px 18px;background:transparent;
+  border:1.5px solid var(--stroke);border-radius:10px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500;
+  color:var(--cream2);cursor:pointer;transition:all .2s;
+}
+.btn-back:hover{border-color:var(--cream2);color:var(--cream)}
+.btn-skip{
+  padding:12px 18px;background:var(--card);
+  border:1.5px solid var(--stroke);border-radius:10px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500;
+  color:var(--cream2);cursor:pointer;transition:all .2s;
+}
+.btn-skip:hover{border-color:var(--amber);color:var(--amber)}
+
+/* ── TAG INPUT ── */
+.tagwrap{
+  background:var(--card);border:1.5px solid var(--stroke);border-radius:10px;
+  padding:10px 14px;display:flex;flex-wrap:wrap;gap:7px;
+  cursor:text;min-height:50px;
+  transition:border-color .2s, background .2s;
+  align-items:center;
+}
+.tagwrap:focus-within{border-color:var(--stroke-focus);background:var(--card-hover)}
+.tagwrap input{
+  background:transparent;border:none;outline:none;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:14px;color:var(--cream);
+  min-width:90px;flex:1;padding:2px 0;
+}
+.tagwrap input::placeholder{color:var(--muted);opacity:.7}
+.tchip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--card-active);border:1px solid var(--stroke);
+  border-radius:20px;padding:4px 11px;
+  font-size:12px;font-weight:500;color:var(--cream2);
+}
+.tchip-x{cursor:pointer;opacity:.45;font-size:11px;line-height:1;transition:opacity .15s}
+.tchip-x:hover{opacity:1}
+
+/* ── CHANNEL LINKS ── */
+.link-list{display:flex;flex-direction:column;gap:9px}
+.link-row{display:flex;gap:10px;align-items:center}
+.link-row input{
+  flex:1;background:var(--card);border:1.5px solid var(--stroke);border-radius:10px;
+  padding:13px 16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;
+  color:var(--cream);outline:none;transition:border-color .2s, background .2s;
+}
+.link-row input:focus{border-color:var(--stroke-focus);background:var(--card-hover)}
+.link-row input::placeholder{color:var(--muted);opacity:.7}
+.link-del{
+  width:44px;height:44px;background:var(--card);border:1.5px solid var(--stroke);
+  border-radius:10px;color:var(--muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;transition:all .15s;
+}
+.link-del:hover{border-color:var(--brand);color:var(--brand)}
+.add-link{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:13px;font-weight:600;color:var(--muted);
+  cursor:pointer;background:none;border:none;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  padding:4px 0;transition:color .2s;
+}
+.add-link:hover{color:var(--amber)}
+.add-link::before{content:'+';font-size:16px}
+
+/* ── AGE RANGE ── */
+.age-widget{
+  background:var(--card);border:1.5px solid var(--stroke);
+  border-radius:12px;padding:20px 22px;
+  display:flex;flex-direction:column;gap:18px;
+}
+
+/* Number inputs row */
+.age-nums{display:grid;grid-template-columns:1fr 32px 1fr;gap:10px;align-items:end}
+.age-num-group{display:flex;flex-direction:column;gap:6px}
+.age-num-label{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.age-num-input{
+  background:var(--card-active);border:1.5px solid var(--stroke);
+  border-radius:8px;padding:12px 14px;
+  font-family:'DM Mono',monospace;font-size:22px;font-weight:500;
+  color:var(--amber);text-align:center;outline:none;
+  transition:border-color .2s;width:100%;
+  -moz-appearance:textfield;
+}
+.age-num-input::-webkit-outer-spin-button,
+.age-num-input::-webkit-inner-spin-button{-webkit-appearance:none}
+.age-num-input:focus{border-color:var(--stroke-focus)}
+.age-dash{font-size:20px;color:var(--muted);text-align:center;padding-bottom:12px}
+
+/* Slider track */
+.age-slider-wrap{position:relative;height:36px;margin:0 4px}
+.age-track{
+  position:absolute;top:50%;left:0;right:0;
+  height:5px;background:var(--stroke);border-radius:3px;
+  transform:translateY(-50%);
+}
+.age-range-fill{
+  position:absolute;top:50%;height:5px;
+  background:var(--amber);border-radius:3px;
+  transform:translateY(-50%);
+  transition:left .04s,width .04s;
+  pointer-events:none;
+}
+.age-range{
+  position:absolute;width:100%;height:100%;
+  -webkit-appearance:none;appearance:none;
+  background:transparent;pointer-events:none;
+  top:0;left:0;outline:none;
+}
+.age-range::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--amber);
+  border:3px solid var(--form);
+  cursor:pointer;pointer-events:all;
+  box-shadow:0 0 0 3px rgba(201,162,69,.22);
+  transition:box-shadow .2s;
+}
+.age-range::-webkit-slider-thumb:hover{box-shadow:0 0 0 5px rgba(201,162,69,.2)}
+.age-range::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--amber);border:3px solid var(--form);
+  cursor:pointer;pointer-events:all;
+}
+
+/* Quick presets */
+.age-presets{display:flex;gap:8px;flex-wrap:wrap}
+.age-pre{
+  padding:7px 15px;background:var(--card-active);
+  border:1.5px solid var(--stroke);border-radius:20px;
+  font-size:12px;font-weight:600;color:var(--muted);
+  cursor:pointer;transition:all .2s;
+}
+.age-pre:hover{border-color:var(--amber);color:var(--amber)}
+.age-pre.on{background:var(--amber-soft);border-color:var(--amber);color:var(--amber)}
+
+/* ── CHANNEL GRID ── */
+.ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ch-card{
+  display:flex;align-items:center;gap:11px;
+  padding:13px 16px;background:var(--card);
+  border:1.5px solid var(--stroke);border-radius:10px;
+  cursor:pointer;transition:all .2s;
+}
+.ch-card:hover{background:var(--card-hover)}
+.ch-card.on{background:var(--brand-g);border-color:rgba(192,59,27,.32)}
+.ch-icon{font-size:17px;flex-shrink:0}
+.ch-label{font-size:13px;font-weight:600;color:var(--cream2)}
+.ch-card.on .ch-label{color:var(--cream)}
+.ch-check{
+  margin-left:auto;width:18px;height:18px;border-radius:5px;
+  border:1.5px solid var(--stroke);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;flex-shrink:0;transition:all .2s;
+}
+.ch-card.on .ch-check{background:var(--brand);border-color:var(--brand);color:#fff}
+.ch-other-input{
+  width:100%;background:var(--card);border:1.5px solid var(--stroke);border-radius:10px;
+  padding:13px 16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;
+  color:var(--cream);outline:none;transition:border-color .2s, background .2s;margin-top:2px;
+}
+.ch-other-input:focus{border-color:var(--stroke-focus);background:var(--card-hover)}
+.ch-other-input::placeholder{color:var(--muted);opacity:.7}
+
+/* ── BUDGET SLIDER ── */
+.budget-num{
+  font-family:'Playfair Display',serif;
+  font-size:34px;font-weight:700;
+  color:var(--amber);letter-spacing:-.02em;
+  margin-bottom:10px;
+}
+.budget-range{
+  -webkit-appearance:none;width:100%;
+  height:5px;background:var(--stroke);border-radius:3px;
+  outline:none;margin-top:4px;
+}
+.budget-range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;
+  border-radius:50%;background:var(--amber);
+  cursor:pointer;border:3px solid var(--form);
+  box-shadow:0 0 0 3px rgba(201,162,69,.22);
+}
+
+/* ── COMPETITOR ROWS ── */
+.comp-list{display:flex;flex-direction:column;gap:9px}
+.comp-r{display:flex;gap:10px}
+.comp-r input{
+  flex:1;background:var(--card);border:1.5px solid var(--stroke);border-radius:10px;
+  padding:13px 16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;
+  color:var(--cream);outline:none;transition:border-color .2s, background .2s;
+}
+.comp-r input:focus{border-color:var(--stroke-focus);background:var(--card-hover)}
+.comp-r input::placeholder{color:var(--muted);opacity:.7}
+.comp-del{
+  width:44px;height:44px;background:var(--card);border:1.5px solid var(--stroke);
+  border-radius:10px;color:var(--muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;transition:all .15s;
+}
+.comp-del:hover{border-color:var(--brand);color:var(--brand)}
+.add-comp{
+  font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;
+  background:none;border:none;font-family:'Plus Jakarta Sans',sans-serif;
+  padding:4px 0;transition:color .2s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.add-comp:hover{color:var(--amber)}
+
+/* ── COMMISSION TOGGLES ── */
+.comm-row{display:flex;gap:8px;flex-wrap:wrap}
+.comm-opt{
+  padding:11px 20px;border-radius:10px;
+  border:1.5px solid var(--stroke);background:var(--card);
+  font-size:14px;font-weight:600;color:var(--muted);
+  cursor:pointer;transition:all .2s;
+}
+.comm-opt.on{background:var(--amber-soft);border-color:var(--amber);color:var(--amber)}
+
+/* ════════════════════════
+   RIGHT PANEL
+════════════════════════ */
+.rp{
+  background:var(--panel);border-left:1px solid var(--stroke);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.rp-top{
+  padding:16px 22px;border-bottom:1px solid var(--stroke);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.rp-heading{
+  font-size:12px;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--cream2);
+  display:flex;align-items:center;gap:8px;
+}
+.rp-live-badge{
+  font-size:11px;font-weight:600;padding:3px 10px;
+  border-radius:20px;background:var(--card);color:var(--muted);
+  transition:all .3s;
+}
+.rp-live-badge.on{background:var(--green-soft);color:var(--green)}
+.rp-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.rp-scroll::-webkit-scrollbar{width:3px}
+.rp-scroll::-webkit-scrollbar-thumb{background:var(--card-hover);border-radius:2px}
+
+/* Profile sections */
+.psec{
+  padding:16px 20px;border-bottom:1px solid var(--stroke);
+  display:flex;flex-direction:column;gap:11px;
+  transition:opacity .4s;
+}
+.psec.dim{opacity:.25}
+.psec-head{display:flex;align-items:center;justify-content:space-between}
+.psec-title{
+  font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted);
+}
+.psec-title.filled{color:var(--green)}
+.psec-tag{
+  font-size:10px;font-weight:600;padding:2px 9px;
+  border-radius:20px;background:var(--card);color:var(--muted);
+}
+.psec-tag.done{background:var(--green-soft);color:var(--green)}
+.psec-tag.running{background:var(--amber-soft);color:var(--amber)}
+.ph{height:22px;border-radius:5px;background:var(--card);border:1px dashed rgba(255,255,255,.05)}
+
+/* ─ data tiles ─ */
+.dtiles{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.dtile{background:var(--card);border:1px solid var(--stroke);border-radius:9px;padding:12px 14px}
+.dt-l{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;display:block}
+.dt-v{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1;display:block;margin-bottom:2px}
+.tv-a{color:var(--amber)}.tv-g{color:var(--green)}.tv-r{color:var(--brand)}
+.dt-s{font-size:10px;color:var(--muted);display:block}
+
+/* ─ kv rows ─ */
+.dkv{display:flex;flex-direction:column}
+.kvr{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);
+}
+.kvr:last-child{border-bottom:none}
+.kv-k{font-size:12px;color:var(--muted)}
+.kv-v{font-size:12px;font-weight:700;color:var(--cream);font-family:'DM Mono',monospace;text-align:right}
+.kv-v.a{color:var(--amber)}.kv-v.g{color:var(--green)}
+
+/* ─ chips ─ */
+.dchips{display:flex;flex-wrap:wrap;gap:5px}
+.dchip{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px}
+.dc-a{background:var(--amber-soft);color:var(--amber)}
+.dc-g{background:var(--green-soft);color:var(--green)}
+.dc-n{background:var(--card-active);color:var(--muted)}
+
+/* ─ bars ─ */
+.dbars{display:flex;flex-direction:column;gap:8px}
+.dbar{display:flex;align-items:center;gap:9px}
+.dbar-l{font-size:11px;color:var(--muted);width:105px;flex-shrink:0;line-height:1.3}
+.dbar-t{flex:1;height:4px;background:var(--stroke);border-radius:2px;overflow:hidden}
+.dbar-f{height:100%;border-radius:2px;transition:width 1.2s ease}
+.dbf-a{background:var(--amber)}.dbf-g{background:var(--green)}.dbf-r{background:var(--brand)}
+.dbar-v{font-family:'DM Mono',monospace;font-size:10px;width:32px;text-align:right;flex-shrink:0}
+.dbv-a{color:var(--amber)}.dbv-g{color:var(--green)}
+
+/* ─ map ─ */
+.dmap{
+  width:100%;background:var(--card);
+  border:1px solid var(--stroke);border-radius:9px;
+  position:relative;overflow:hidden;
+}
+.dm-ax{position:absolute;background:rgba(255,255,255,.05)}
+.dm-ax.x{top:50%;left:0;right:0;height:1px}
+.dm-ax.y{left:50%;top:0;bottom:0;width:1px}
+.dm-lbl{position:absolute;font-size:8px;color:var(--muted);font-weight:600;letter-spacing:.04em}
+.dm-dot{position:absolute;border-radius:50%;transform:translate(-50%,-50%)}
+.dm-you{width:11px;height:11px;background:var(--brand);box-shadow:0 0 8px var(--brand-g)}
+.dm-comp{width:7px;height:7px;background:var(--muted);opacity:.5}
+
+/* ─ table ─ */
+.dtbl{width:100%;border-collapse:collapse;font-size:11px}
+.dtbl th{font-size:10px;font-weight:700;color:var(--muted);padding:6px 9px;text-align:left;border-bottom:1px solid var(--stroke);letter-spacing:.05em;text-transform:uppercase}
+.dtbl td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--cream2);vertical-align:top;line-height:1.4}
+.dtbl td:first-child{font-weight:600;color:var(--cream)}
+.dtbl tr.you-r td{background:var(--brand-g)}
+.dtbl tr:last-child td{border-bottom:none}
+.edge{color:var(--amber)!important}
+
+/* ─ budget alloc ─ */
+.dalloc{display:flex;flex-direction:column;gap:9px}
+.da-head{display:flex;justify-content:space-between;margin-bottom:3px}
+.da-name{font-size:12px;color:var(--cream2);font-weight:500}
+.da-amt{font-family:'DM Mono',monospace;font-size:11px;color:var(--amber)}
+.da-bar-t{height:4px;background:var(--stroke);border-radius:2px;overflow:hidden;margin-bottom:3px}
+.da-bar-f{height:100%;border-radius:2px;background:var(--amber);transition:width 1s ease}
+.da-note{font-size:10px;color:var(--muted)}
+
+/* ─ score ring ─ */
+.dscore{display:flex;align-items:center;gap:14px;padding:4px 0}
+.dscore-ring{width:68px;height:68px;flex-shrink:0;position:relative}
+.dscore-ring svg{transform:rotate(-90deg)}
+.dscore-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--amber)}
+.dscore-tag{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px;display:block}
+.dscore-verdict{font-size:15px;font-weight:700;color:var(--cream)}
+.dscore-note{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* ─ action items ─ */
+.dactions{display:flex;flex-direction:column;gap:6px}
+.dact{display:flex;gap:9px;padding:10px 12px;border-radius:8px;border-left:3px solid var(--stroke)}
+.dact.risk{border-left-color:var(--brand);background:var(--danger-bg)}
+.dact.oppo{border-left-color:var(--green);background:var(--success-bg)}
+.dact.todo{border-left-color:var(--amber);background:var(--warning-bg)}
+.dact-ico{font-size:11px;flex-shrink:0;margin-top:1px;opacity:.7}
+.dact-txt{font-size:11px;color:var(--cream2);line-height:1.55}
+.dact-txt strong{color:var(--cream);font-weight:700}
+
+/* apply CTA */
+.apply-wrap{padding:14px 20px 20px}
+.apply-card{
+  background:var(--brand-g);
+  border:1.5px solid rgba(192,59,27,.22);
+  border-radius:12px;padding:18px;
+}
+.apply-card p{font-size:13px;color:var(--cream2);line-height:1.65;margin-bottom:14px}
+.apply-card button{
+  width:100%;padding:12px;background:var(--brand);border:none;border-radius:9px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;color:#fff;cursor:pointer;
+  transition:background .2s;
+}
+.apply-card button:hover{background:#a83018}
+
+/* shimmer */
+.shimmer{
+  height:13px;border-radius:4px;
+  background:linear-gradient(90deg,var(--card) 25%,var(--card-hover) 50%,var(--card) 75%);
+  background-size:200% 100%;animation:shm 1.4s infinite;
+}
+@keyframes shm{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+
+<!-- ════ NAV ════ -->
+<nav class="nav">
+  <div class="nav-l">
+    <span class="nav-logo">Bridgr</span>
+    <span class="nav-badge">Planner</span>
+  </div>
+  <span class="nav-stepper" id="nav-stepper">Step 1 — Product Exposure</span>
+  <div class="nav-r">
+    <div class="eng-status">
+      <div class="eng-led" id="eng-led"></div>
+      <span id="eng-label">Ready</span>
+    </div>
+    <button class="nav-next" onclick="nextStep()">Next Phase →</button>
+  </div>
+</nav>
+
+<div class="shell">
+
+<!-- ════ SIDEBAR ════ -->
+<aside class="sidebar">
+  <nav class="sb-list">
+    <div class="snav active" id="snav-1" onclick="goStep(1)">
+      <div class="sn-bubble" id="sn-1">1</div>
+      <div class="sn-text">
+        <div class="sn-step">Step 1</div>
+        <div class="sn-name">Product Exposure</div>
+        <div class="sn-hint">Market footprint</div>
+      </div>
+    </div>
+    <div class="snav" id="snav-2" onclick="goStep(2)">
+      <div class="sn-bubble" id="sn-2">2</div>
+      <div class="sn-text">
+        <div class="sn-step">Step 2</div>
+        <div class="sn-name">Target Audience</div>
+        <div class="sn-hint">Who buys it</div>
+      </div>
+    </div>
+    <div class="snav" id="snav-3" onclick="goStep(3)">
+      <div class="sn-bubble" id="sn-3">3</div>
+      <div class="sn-text">
+        <div class="sn-step">Step 3</div>
+        <div class="sn-name">Competition</div>
+        <div class="sn-hint">Where you fit</div>
+      </div>
+    </div>
+    <div class="snav" id="snav-4" onclick="goStep(4)">
+      <div class="sn-bubble" id="sn-4">4</div>
+      <div class="sn-text">
+        <div class="sn-step">Step 4</div>
+        <div class="sn-name">Launch Strategy</div>
+        <div class="sn-hint">Channels &amp; budget</div>
+      </div>
+    </div>
+    <div class="snav" id="snav-5" onclick="goStep(5)">
+      <div class="sn-bubble" id="sn-5">5</div>
+      <div class="sn-text">
+        <div class="sn-step">Step 5</div>
+        <div class="sn-name">Market Report</div>
+        <div class="sn-hint">Readiness &amp; plan</div>
+      </div>
+    </div>
+  </nav>
+  <div class="sb-foot">
+    Intelligence Engine v1.0<br>
+    UK Market Data 2025–2026<br>
+    Status: Development
+  </div>
+</aside>
+
+<!-- ════ CENTRE FORMS ════ -->
+<main class="centre">
+
+  <!-- ─ STEP 1 ─ -->
+  <div class="stepview show" id="view-1">
+    <div class="sv-head">
+      <span class="sv-eyebrow">Step 1 — Product Exposure</span>
+      <div class="sv-h">Establish Your Market Footprint</div>
+      <div class="sv-d">Submit your product profile and channel presence. The engine benchmarks your current market position, distribution coverage, and regulatory standing in real time.</div>
+    </div>
+    <div class="sv-body">
+      <div class="row2">
+        <div class="fg">
+          <label>Primary launch market</label>
+          <select id="s1-mkt">
+            <option value="uk">United Kingdom</option>
+            <option value="fr">France</option>
+            <option value="de">Germany</option>
+            <option value="us">United States</option>
+            <option value="sg">Singapore</option>
+            <option value="hk">Hong Kong</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Product category</label>
+          <select id="s1-cat">
+            <option value="">Select a category</option>
+            <option>Skincare</option>
+            <option>Hair Care</option>
+            <option>Supplements</option>
+            <option>Cosmetics</option>
+            <option>Wellness</option>
+            <option>Health Food</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Sales channel links <span class="sub">— paste one URL per row</span></label>
+        <div class="link-list" id="link-list">
+          <div class="link-row">
+            <input type="url" placeholder="https://www.amazon.co.uk/your-product">
+            <button class="link-del" onclick="delLink(this)">×</button>
+          </div>
+        </div>
+        <button class="add-link" onclick="addLink()">Add another channel</button>
+      </div>
+
+      <div class="fg">
+        <label>Product description or key claims</label>
+        <textarea id="s1-desc" placeholder="e.g. Vitamin C serum with 15% L-Ascorbic Acid. Cruelty-free, fragrance-free. Clinically tested for sensitive skin."></textarea>
+      </div>
+
+      <div class="row2">
+        <div class="fg">
+          <label>Retail price (£)</label>
+          <input type="number" id="s1-price" placeholder="e.g. 45">
+        </div>
+        <div class="fg">
+          <label>Compliance certifications <span class="sub">— type + Enter</span></label>
+          <div class="tagwrap" id="tw-cert"><input id="ti-cert" placeholder="UKCA, FDA, CE, Vegan Society…"></div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Additional target markets <span class="sub">— type + Enter</span></label>
+        <div class="tagwrap" id="tw-mkt"><input id="ti-mkt" placeholder="France, Germany, Singapore…"></div>
+      </div>
+    </div>
+    <div class="sv-foot">
+      <div class="prog-track">
+        <div class="prog-pip now"></div>
+        <div class="prog-pip"></div><div class="prog-pip"></div>
+        <div class="prog-pip"></div><div class="prog-pip"></div>
+      </div>
+      <div class="foot-btns">
+        <button class="btn-primary" onclick="runStep(1)">Analyse ↗</button>
+        <button class="btn-skip" onclick="goStep(2)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─ STEP 2 ─ -->
+  <div class="stepview" id="view-2">
+    <div class="sv-head">
+      <span class="sv-eyebrow">Step 2 — Target Audience</span>
+      <div class="sv-h">Define Your Customer Profile</div>
+      <div class="sv-d">Map your primary buyer persona — demographics, psychographics, and purchase behaviour. This drives demand modelling and creator matching precision.</div>
+    </div>
+    <div class="sv-body">
+
+      <!-- AGE RANGE widget -->
+      <div class="fg">
+        <label>Age range</label>
+        <div class="age-widget">
+          <!-- typed number inputs -->
+          <div class="age-nums">
+            <div class="age-num-group">
+              <div class="age-num-label">Minimum age</div>
+              <input class="age-num-input" id="age-min-n" type="number" value="25" min="13" max="79" oninput="ageFromNum('min')">
+            </div>
+            <div class="age-dash">—</div>
+            <div class="age-num-group">
+              <div class="age-num-label">Maximum age</div>
+              <input class="age-num-input" id="age-max-n" type="number" value="44" min="14" max="80" oninput="ageFromNum('max')">
+            </div>
+          </div>
+          <!-- dual range slider -->
+          <div class="age-slider-wrap">
+            <div class="age-track"></div>
+            <div class="age-range-fill" id="age-fill"></div>
+            <input type="range" class="age-range" id="age-min-r" min="13" max="80" value="25" oninput="ageFromRange()">
+            <input type="range" class="age-range" id="age-max-r" min="13" max="80" value="44" oninput="ageFromRange()">
+          </div>
+          <!-- presets -->
+          <div class="age-presets">
+            <div class="age-pre" onclick="setAgePreset(18,80,this)">18+</div>
+            <div class="age-pre" onclick="setAgePreset(18,34,this)">18 – 34</div>
+            <div class="age-pre on" onclick="setAgePreset(25,44,this)">25 – 44</div>
+            <div class="age-pre" onclick="setAgePreset(35,54,this)">35 – 54</div>
+            <div class="age-pre" onclick="setAgePreset(45,80,this)">45+</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Primary gender</label>
+        <select id="s2-gen">
+          <option value="">Select</option>
+          <option>Primarily female</option>
+          <option>Primarily male</option>
+          <option>All genders equally</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label>Skin concern or health goal <span class="sub">— type + Enter</span></label>
+        <div class="tagwrap" id="tw-con"><input id="ti-con" placeholder="Anti-ageing, acne, hyperpigmentation, gut health…"></div>
+      </div>
+
+      <div class="fg">
+        <label>Lifestyle interests <span class="sub">— type + Enter</span></label>
+        <div class="tagwrap" id="tw-int"><input id="ti-int" placeholder="Clean beauty, wellness, fitness, sustainability…"></div>
+      </div>
+
+      <div class="row2">
+        <div class="fg">
+          <label>Price sensitivity</label>
+          <select id="s2-ps">
+            <option value="">Select</option>
+            <option>Budget — under £20</option>
+            <option>Mid-range — £20 to £60</option>
+            <option>Premium — £60 to £120</option>
+            <option>Luxury — £120+</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>What makes them buy?</label>
+          <select id="s2-pt">
+            <option value="">Select</option>
+            <option>Solving a skin or health problem</option>
+            <option>Aspiration and self-improvement</option>
+            <option>A trusted recommendation</option>
+            <option>Following a trend</option>
+            <option>Ingredient curiosity</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Where do they discover new products? <span class="sub">— type + Enter</span></label>
+        <div class="tagwrap" id="tw-dis"><input id="ti-dis" placeholder="TikTok, Instagram, dermatologist recommendation, Reddit…"></div>
+      </div>
+    </div>
+    <div class="sv-foot">
+      <div class="prog-track">
+        <div class="prog-pip done"></div><div class="prog-pip now"></div>
+        <div class="prog-pip"></div><div class="prog-pip"></div><div class="prog-pip"></div>
+      </div>
+      <div class="foot-btns">
+        <button class="btn-back" onclick="goStep(1)">← Back</button>
+        <button class="btn-primary" onclick="runStep(2)">Analyse ↗</button>
+        <button class="btn-skip" onclick="goStep(3)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─ STEP 3 ─ -->
+  <div class="stepview" id="view-3">
+    <div class="sv-head">
+      <span class="sv-eyebrow">Step 3 — Competitive Landscape</span>
+      <div class="sv-h">Map Your Competitive Position</div>
+      <div class="sv-d">Identify your key competitors and articulate your differentiation. The engine plots your positioning against the market and surfaces your white space opportunity.</div>
+    </div>
+    <div class="sv-body">
+      <div class="fg">
+        <label>Your product name</label>
+        <input id="s3-nm" placeholder="e.g. Nouri Skin Serum">
+      </div>
+      <div class="fg">
+        <label>Key competitors <span class="sub">— name or website URL</span></label>
+        <div class="comp-list" id="comp-list">
+          <div class="comp-r"><input placeholder="Competitor 1 — brand name or URL"><button class="comp-del" onclick="delComp(this)">×</button></div>
+          <div class="comp-r"><input placeholder="Competitor 2 — brand name or URL"><button class="comp-del" onclick="delComp(this)">×</button></div>
+          <div class="comp-r"><input placeholder="Competitor 3 — brand name or URL"><button class="comp-del" onclick="delComp(this)">×</button></div>
+        </div>
+        <button class="add-comp" onclick="addComp()">+ Add another competitor</button>
+      </div>
+      <div class="fg">
+        <label>Your primary differentiation</label>
+        <textarea id="s3-diff" placeholder="e.g. Highest Vitamin C concentration at an accessible price point. No synthetic fragrance. Clinically tested. UK-manufactured."></textarea>
+      </div>
+      <div class="row2">
+        <div class="fg">
+          <label>Price positioning</label>
+          <select id="s3-pos">
+            <option value="">Select</option>
+            <option>Value leader</option><option>Mid-market</option>
+            <option>Premium</option><option>Luxury</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Primary competitive advantage</label>
+          <select id="s3-adv">
+            <option value="">Select</option>
+            <option>Ingredient quality</option>
+            <option>Price / accessibility</option>
+            <option>Ethics / sustainability</option>
+            <option>Clinical efficacy</option>
+            <option>Brand story</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="sv-foot">
+      <div class="prog-track">
+        <div class="prog-pip done"></div><div class="prog-pip done"></div>
+        <div class="prog-pip now"></div><div class="prog-pip"></div><div class="prog-pip"></div>
+      </div>
+      <div class="foot-btns">
+        <button class="btn-back" onclick="goStep(2)">← Back</button>
+        <button class="btn-primary" onclick="runStep(3)">Analyse ↗</button>
+        <button class="btn-skip" onclick="goStep(4)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─ STEP 4 ─ -->
+  <div class="stepview" id="view-4">
+    <div class="sv-head">
+      <span class="sv-eyebrow">Step 4 — Launch Strategy</span>
+      <div class="sv-h">Define Your Go-to-Market Channels</div>
+      <div class="sv-d">Select your activation channels and set your marketing investment. The engine models channel-level ROI projections based on your category, price point, and audience profile.</div>
+    </div>
+    <div class="sv-body">
+      <div class="fg">
+        <label>Channels you're considering</label>
+        <div class="ch-grid">
+          <div class="ch-card" onclick="togCh(this)"><span class="ch-icon">📦</span><span class="ch-label">TikTok Shop</span><span class="ch-check"></span></div>
+          <div class="ch-card" onclick="togCh(this)"><span class="ch-icon">📸</span><span class="ch-label">Instagram / Reels</span><span class="ch-check"></span></div>
+          <div class="ch-card" onclick="togCh(this)"><span class="ch-icon">🛒</span><span class="ch-label">Amazon</span><span class="ch-check"></span></div>
+          <div class="ch-card" onclick="togCh(this)"><span class="ch-icon">🌐</span><span class="ch-label">Own Website</span><span class="ch-check"></span></div>
+          <div class="ch-card" onclick="togCh(this)"><span class="ch-icon">🏪</span><span class="ch-label">Retail / Pop-up</span><span class="ch-check"></span></div>
+          <div class="ch-card" onclick="togCh(this)"><span class="ch-icon">▶️</span><span class="ch-label">YouTube</span><span class="ch-check"></span></div>
+          <div class="ch-card" onclick="togCh(this)"><span class="ch-icon">💬</span><span class="ch-label">Creator / Affiliate</span><span class="ch-check"></span></div>
+          <div class="ch-card" onclick="togCh(this)"><span class="ch-icon">📧</span><span class="ch-label">Email / CRM</span><span class="ch-check"></span></div>
+          <div class="ch-card" id="ch-other-btn" onclick="togChOther(this)" style="grid-column:1/-1">
+            <span class="ch-icon">＋</span><span class="ch-label">Other — add your own</span><span class="ch-check"></span>
+          </div>
+        </div>
+        <div id="ch-other-wrap" style="display:none;margin-top:8px">
+          <input class="ch-other-input" placeholder="e.g. WeChat, Douyin, WhatsApp broadcast, local pop-up events…">
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Monthly marketing budget</label>
+        <div class="budget-num" id="budget-num">£ 2,500 / month</div>
+        <input type="range" class="budget-range" id="bud-sl" min="500" max="20000" step="500" value="2500" oninput="updBudget(this.value)">
+        <div class="fhint">Range: £500 – £20,000 per month</div>
+      </div>
+
+      <div class="row2">
+        <div class="fg">
+          <label>Launch timeline</label>
+          <select id="s4-tl">
+            <option>Ready now</option><option>Within 30 days</option>
+            <option>Within 60 days</option><option>Within 90 days</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Primary goal</label>
+          <select id="s4-g">
+            <option>Brand awareness</option><option>Direct sales</option>
+            <option>Social proof / UGC</option><option>Retail readiness</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Target monthly revenue — first 90 days (£)</label>
+        <input type="number" id="s4-rev" placeholder="e.g. 8,000">
+      </div>
+    </div>
+    <div class="sv-foot">
+      <div class="prog-track">
+        <div class="prog-pip done"></div><div class="prog-pip done"></div>
+        <div class="prog-pip done"></div><div class="prog-pip now"></div><div class="prog-pip"></div>
+      </div>
+      <div class="foot-btns">
+        <button class="btn-back" onclick="goStep(3)">← Back</button>
+        <button class="btn-primary" onclick="runStep(4)">Analyse ↗</button>
+        <button class="btn-skip" onclick="goStep(5)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─ STEP 5 ─ -->
+  <div class="stepview" id="view-5">
+    <div class="sv-head">
+      <span class="sv-eyebrow">Step 5 — Market Readiness Report</span>
+      <div class="sv-h">Complete Your Launch Intelligence Briefing</div>
+      <div class="sv-d">Submit your launch objectives, risk profile, and partnership parameters. The engine generates your full market readiness score and prioritised action plan.</div>
+    </div>
+    <div class="sv-body">
+      <div class="fg">
+        <label>Known risks, challenges or go-to-market blockers</label>
+        <textarea id="s5-ch" placeholder="e.g. Zero existing reviews. Constrained launch budget. Competing against well-established category incumbents."></textarea>
+      </div>
+      <div class="fg">
+        <label>6-month commercial objectives</label>
+        <textarea id="s5-su" placeholder="e.g. 50+ verified reviews, distribution across 3 platforms, £15k MRR, 5 active creator partnerships."></textarea>
+      </div>
+      <div class="fg">
+        <label>Core value proposition — single most compelling claim</label>
+        <input id="s5-hk" placeholder="e.g. The only UK serum delivering 20% Vitamin C at under £40">
+      </div>
+      <div class="fdiv"></div>
+      <div class="fg">
+        <label>Creator commission rate</label>
+        <div class="comm-row" id="comm-row">
+          <div class="comm-opt" onclick="togComm(this)">10%</div>
+          <div class="comm-opt" onclick="togComm(this)">15%</div>
+          <div class="comm-opt on" onclick="togComm(this)">20%</div>
+          <div class="comm-opt" onclick="togComm(this)">25%</div>
+          <div class="comm-opt" onclick="togComm(this)">30%</div>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Trial product allocation for creators</label>
+        <input type="number" id="s5-units" placeholder="e.g. 20 units minimum">
+      </div>
+    </div>
+    <div class="sv-foot">
+      <div class="prog-track">
+        <div class="prog-pip done"></div><div class="prog-pip done"></div>
+        <div class="prog-pip done"></div><div class="prog-pip done"></div>
+        <div class="prog-pip now"></div>
+      </div>
+      <div class="foot-btns">
+        <button class="btn-back" onclick="goStep(4)">← Back</button>
+        <button class="btn-primary" onclick="runStep(5)">Generate Full Report ↗</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ════ RIGHT PANEL ════ -->
+<aside class="rp">
+  <div class="rp-top">
+    <div class="rp-heading">◈ &nbsp;Product Intelligence Profile</div>
+    <div class="rp-live-badge" id="rp-badge">Building…</div>
+  </div>
+  <div class="rp-scroll" id="rp-scroll">
+
+    <div class="psec dim" id="ps-1"><div class="psec-head"><span class="psec-title" id="pst-1">01 — Product</span><span class="psec-tag" id="ptg-1">Pending</span></div><div id="psc-1"><div class="ph" style="margin-bottom:6px"></div><div class="ph" style="width:65%"></div></div></div>
+
+    <div class="psec dim" id="ps-2"><div class="psec-head"><span class="psec-title" id="pst-2">02 — Market Size</span><span class="psec-tag" id="ptg-2">Pending</span></div><div id="psc-2"><div class="ph"></div></div></div>
+
+    <div class="psec dim" id="ps-3"><div class="psec-head"><span class="psec-title" id="pst-3">03 — Target Audience</span><span class="psec-tag" id="ptg-3">Pending</span></div><div id="psc-3"><div class="ph"></div></div></div>
+
+    <div class="psec dim" id="ps-4"><div class="psec-head"><span class="psec-title" id="pst-4">04 — Buying Behaviour</span><span class="psec-tag" id="ptg-4">Pending</span></div><div id="psc-4"><div class="ph"></div></div></div>
+
+    <div class="psec dim" id="ps-5"><div class="psec-head"><span class="psec-title" id="pst-5">05 — Creator Match</span><span class="psec-tag" id="ptg-5">Pending</span></div><div id="psc-5"><div class="ph"></div></div></div>
+
+    <div class="psec dim" id="ps-6"><div class="psec-head"><span class="psec-title" id="pst-6">06 — Competitive Position</span><span class="psec-tag" id="ptg-6">Pending</span></div><div id="psc-6"><div class="ph"></div></div></div>
+
+    <div class="psec dim" id="ps-7"><div class="psec-head"><span class="psec-title" id="pst-7">07 — Launch Plan</span><span class="psec-tag" id="ptg-7">Pending</span></div><div id="psc-7"><div class="ph"></div></div></div>
+
+    <div class="psec dim" id="ps-8" style="display:none"><div class="psec-head"><span class="psec-title" id="pst-8">08 — Market Readiness</span><span class="psec-tag" id="ptg-8">Pending</span></div><div id="psc-8"><div class="ph"></div></div></div>
+
+    <div id="apply-cta" style="display:none">
+      <div class="apply-wrap">
+        <div class="apply-card">
+          <p>Your product intelligence profile is complete. Apply for a launch slot at the next Bridgr event — present to creators who have already reviewed your product and expressed interest.</p>
+          <button onclick="alert('Redirecting to event application…')">Apply for Launch Slot →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</aside>
+
+</div><!-- /shell -->
+
+<script>
+/* ─── NAVIGATION ─── */
+let cur = 1;
+const titles = ['Product Exposure','Target Audience','Competition','Launch Strategy','Market Report'];
+
+function goStep(n) {
+  document.getElementById('view-' + cur).classList.remove('show');
+  document.querySelectorAll('.snav').forEach((el,i) => {
+    el.classList.remove('active');
+    if (i+1 < n) el.classList.add('done'); else el.classList.remove('done');
+  });
+  cur = n;
+  document.getElementById('view-' + n).classList.add('show');
+  document.getElementById('snav-' + n).classList.add('active');
+  document.getElementById('nav-stepper').textContent = 'Step ' + n + ' — ' + titles[n-1];
+}
+function nextStep() { if (cur < 5) goStep(cur+1); }
+
+/* ─── AGE SLIDER (fully bidirectional) ─── */
+const AGE_LO = 13, AGE_HI = 80;
+
+function renderFill() {
+  const lo = +document.getElementById('age-min-r').value;
+  const hi = +document.getElementById('age-max-r').value;
+  const pLo = ((lo - AGE_LO) / (AGE_HI - AGE_LO)) * 100;
+  const pHi = ((hi - AGE_LO) / (AGE_HI - AGE_LO)) * 100;
+  const fill = document.getElementById('age-fill');
+  fill.style.left = pLo + '%';
+  fill.style.width = (pHi - pLo) + '%';
+}
+
+function ageFromRange() {
+  let lo = +document.getElementById('age-min-r').value;
+  let hi = +document.getElementById('age-max-r').value;
+  if (lo >= hi) {
+    // find which handle just moved by comparing to number input
+    const nLo = +document.getElementById('age-min-n').value;
+    if (lo !== nLo) lo = hi - 1; else hi = lo + 1;
+    document.getElementById('age-min-r').value = lo;
+    document.getElementById('age-max-r').value = hi;
+  }
+  document.getElementById('age-min-n').value = lo;
+  document.getElementById('age-max-n').value = hi >= AGE_HI ? '80' : hi;
+  renderFill();
+  document.querySelectorAll('.age-pre').forEach(p => p.classList.remove('on'));
+}
+
+function ageFromNum(side) {
+  let lo = +document.getElementById('age-min-n').value || AGE_LO;
+  let hi = +document.getElementById('age-max-n').value || AGE_HI;
+  lo = Math.max(AGE_LO, Math.min(lo, AGE_HI - 1));
+  hi = Math.max(AGE_LO + 1, Math.min(hi, AGE_HI));
+  if (side === 'min' && lo >= hi) lo = hi - 1;
+  if (side === 'max' && hi <= lo) hi = lo + 1;
+  document.getElementById('age-min-r').value = lo;
+  document.getElementById('age-max-r').value = hi;
+  document.getElementById('age-min-n').value = lo;
+  document.getElementById('age-max-n').value = hi;
+  renderFill();
+  document.querySelectorAll('.age-pre').forEach(p => p.classList.remove('on'));
+}
+
+function setAgePreset(lo, hi, el) {
+  document.querySelectorAll('.age-pre').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('age-min-r').value = lo;
+  document.getElementById('age-max-r').value = Math.min(hi, AGE_HI);
+  document.getElementById('age-min-n').value = lo;
+  document.getElementById('age-max-n').value = hi >= AGE_HI ? '80' : hi;
+  renderFill();
+}
+
+window.addEventListener('load', () => { renderFill(); });
+
+/* ─── TAG INPUTS ─── */
+function initTag(wid, iid) {
+  const wrap = document.getElementById(wid);
+  const inp = document.getElementById(iid);
+  if (!wrap || !inp) return;
+  inp.addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ',') && inp.value.trim()) {
+      e.preventDefault();
+      const chip = document.createElement('div');
+      chip.className = 'tchip';
+      chip.innerHTML = inp.value.trim().replace(',','') +
+        ' <span class="tchip-x" onclick="this.parentElement.remove()">×</span>';
+      wrap.insertBefore(chip, inp);
+      inp.value = '';
+    }
+  });
+  wrap.addEventListener('click', () => inp.focus());
+}
+[['tw-cert','ti-cert'],['tw-mkt','ti-mkt'],['tw-con','ti-con'],['tw-int','ti-int'],['tw-dis','ti-dis']]
+  .forEach(([w,i]) => initTag(w,i));
+
+/* ─── CHANNEL LINKS ─── */
+function addLink() {
+  const list = document.getElementById('link-list');
+  const row = document.createElement('div'); row.className = 'link-row';
+  row.innerHTML = `<input type="url" placeholder="https://…"><button class="link-del" onclick="delLink(this)">×</button>`;
+  list.appendChild(row); row.querySelector('input').focus();
+}
+function delLink(btn) {
+  const list = document.getElementById('link-list');
+  if (list.children.length > 1) btn.parentElement.remove();
+}
+
+/* ─── CHANNELS ─── */
+function togCh(el) {
+  el.classList.toggle('on');
+  el.querySelector('.ch-check').textContent = el.classList.contains('on') ? '✓' : '';
+}
+function togChOther(el) {
+  el.classList.toggle('on');
+  el.querySelector('.ch-check').textContent = el.classList.contains('on') ? '✓' : '';
+  const wrap = document.getElementById('ch-other-wrap');
+  wrap.style.display = el.classList.contains('on') ? 'block' : 'none';
+  if (el.classList.contains('on')) wrap.querySelector('input').focus();
+}
+
+/* ─── BUDGET ─── */
+function updBudget(v) {
+  document.getElementById('budget-num').textContent = '£ ' + Number(v).toLocaleString() + ' / month';
+}
+
+/* ─── COMPETITORS ─── */
+function addComp() {
+  const l = document.getElementById('comp-list');
+  if (l.children.length >= 5) return;
+  const r = document.createElement('div'); r.className = 'comp-r';
+  r.innerHTML = `<input placeholder="Competitor — name or URL"><button class="comp-del" onclick="delComp(this)">×</button>`;
+  l.appendChild(r);
+}
+function delComp(btn) {
+  const l = document.getElementById('comp-list');
+  if (l.children.length > 1) btn.parentElement.remove();
+}
+
+/* ─── COMMISSION ─── */
+function togComm(el) {
+  document.querySelectorAll('#comm-row .comm-opt').forEach(o => o.classList.remove('on'));
+  el.classList.add('on');
+}
+
+/* ─── ENGINE STATUS ─── */
+function setEngine(on) {
+  document.getElementById('eng-led').className = on ? 'eng-led on' : 'eng-led';
+  document.getElementById('eng-label').textContent = on ? 'Analysing…' : 'Ready';
+  const b = document.getElementById('rp-badge');
+  b.className = on ? 'rp-live-badge on' : 'rp-live-badge';
+  b.textContent = on ? 'Live' : 'Building…';
+}
+
+/* ─── SECTION HELPERS ─── */
+function shimSec(id) {
+  const sec = document.getElementById('ps-' + id);
+  sec.classList.remove('dim');
+  document.getElementById('ptg-' + id).className = 'psec-tag running';
+  document.getElementById('ptg-' + id).textContent = 'Analysing…';
+  document.getElementById('psc-' + id).innerHTML =
+    `<div style="display:flex;flex-direction:column;gap:7px">
+       <div class="shimmer" style="width:55%"></div>
+       <div class="shimmer"></div>
+       <div class="shimmer" style="width:72%"></div>
+     </div>`;
+}
+function fillSec(id, html) {
+  document.getElementById('ps-' + id).classList.remove('dim');
+  document.getElementById('pst-' + id).className = 'psec-title filled';
+  document.getElementById('ptg-' + id).className = 'psec-tag done';
+  document.getElementById('ptg-' + id).textContent = 'Done';
+  document.getElementById('psc-' + id).innerHTML = html;
+  setTimeout(() => {
+    document.getElementById('psc-' + id)
+      .querySelectorAll('.dbar-f, .da-bar-f').forEach(b => {
+        const w = b.dataset.w || b.style.width;
+        b.style.width = '0';
+        setTimeout(() => b.style.width = w, 60);
+      });
+  }, 60);
+}
+
+/* ─── RUN STEP ANALYSES ─── */
+function runStep(step) {
+  setEngine(true);
+  setTimeout(() => setEngine(false), 1700);
+
+  if (step === 1) {
+    shimSec(1); shimSec(2);
+    setTimeout(() => {
+      fillSec(1,`
+        <div class="dkv">
+          <div class="kvr"><span class="kv-k">Category</span><span class="kv-v">Active Skincare</span></div>
+          <div class="kvr"><span class="kv-k">Sub-type</span><span class="kv-v">Vitamin C Serum</span></div>
+          <div class="kvr"><span class="kv-k">Retail price</span><span class="kv-v a">£45</span></div>
+          <div class="kvr"><span class="kv-k">Primary market</span><span class="kv-v">United Kingdom</span></div>
+          <div class="kvr"><span class="kv-k">Sales channels</span><span class="kv-v">2 detected</span></div>
+          <div class="kvr"><span class="kv-k">Compliance</span><span class="kv-v g">CPSR viable · UKCA</span></div>
+        </div>
+        <div class="dchips" style="margin-top:9px">
+          <span class="dchip dc-g">Cruelty-free</span>
+          <span class="dchip dc-g">Fragrance-free</span>
+          <span class="dchip dc-a">15% L-Ascorbic Acid</span>
+          <span class="dchip dc-n">Sensitive skin</span>
+        </div>`);
+      fillSec(2,`
+        <div class="dtiles">
+          <div class="dtile"><span class="dt-l">UK Market Value</span><span class="dt-v tv-a">£4.2B</span><span class="dt-s">Skincare · 2025</span></div>
+          <div class="dtile"><span class="dt-l">Annual Growth</span><span class="dt-v tv-g">+8.3%</span><span class="dt-s">CAGR to 2028</span></div>
+        </div>
+        <div class="dbars" style="margin-top:9px">
+          <div class="dbar"><div class="dbar-l">UK retail</div><div class="dbar-t"><div class="dbar-f dbf-a" style="width:35%" data-w="35%"></div></div><div class="dbar-v dbv-a">35%</div></div>
+          <div class="dbar"><div class="dbar-l">Social commerce</div><div class="dbar-t"><div class="dbar-f dbf-a" style="width:20%" data-w="20%"></div></div><div class="dbar-v dbv-a">20%</div></div>
+          <div class="dbar"><div class="dbar-l">EU coverage</div><div class="dbar-t"><div class="dbar-f dbf-a" style="width:12%" data-w="12%"></div></div><div class="dbar-v dbv-a">12%</div></div>
+        </div>`);
+    }, 1600);
+  }
+
+  if (step === 2) {
+    shimSec(3); shimSec(4); shimSec(5);
+    const lo = document.getElementById('age-min-r').value;
+    const hi = +document.getElementById('age-max-r').value;
+    const hiLabel = hi >= AGE_HI ? '80+' : hi;
+    setTimeout(() => {
+      fillSec(3,`
+        <div class="dkv">
+          <div class="kvr"><span class="kv-k">Age range</span><span class="kv-v a">${lo} – ${hiLabel}</span></div>
+          <div class="kvr"><span class="kv-k">Gender</span><span class="kv-v">Primarily female</span></div>
+          <div class="kvr"><span class="kv-k">Price tier</span><span class="kv-v">Mid-range</span></div>
+          <div class="kvr"><span class="kv-k">Purchase trigger</span><span class="kv-v">Trusted recommendation</span></div>
+          <div class="kvr"><span class="kv-k">Addressable UK pool</span><span class="kv-v a">2.4M</span></div>
+        </div>
+        <div class="dchips" style="margin-top:9px">
+          <span class="dchip dc-a">Anti-ageing</span>
+          <span class="dchip dc-a">Hyperpigmentation</span>
+          <span class="dchip dc-n">Clean beauty</span>
+          <span class="dchip dc-n">Wellness</span>
+        </div>`);
+      fillSec(4,`
+        <div class="dbars">
+          <div class="dbar"><div class="dbar-l">TikTok discovery</div><div class="dbar-t"><div class="dbar-f dbf-g" style="width:74%" data-w="74%"></div></div><div class="dbar-v dbv-g">74%</div></div>
+          <div class="dbar"><div class="dbar-l">Ingredient research</div><div class="dbar-t"><div class="dbar-f dbf-g" style="width:61%" data-w="61%"></div></div><div class="dbar-v dbv-g">61%</div></div>
+          <div class="dbar"><div class="dbar-l">Creator review</div><div class="dbar-t"><div class="dbar-f dbf-g" style="width:58%" data-w="58%"></div></div><div class="dbar-v dbv-g">58%</div></div>
+          <div class="dbar"><div class="dbar-l">Price comparison</div><div class="dbar-t"><div class="dbar-f dbf-a" style="width:44%" data-w="44%"></div></div><div class="dbar-v dbv-a">44%</div></div>
+        </div>
+        <div class="dkv" style="margin-top:9px">
+          <div class="kvr"><span class="kv-k">Key signal</span><span class="kv-v a" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:500">Recommendation-led · UGC 3–5× more effective than ads</span></div>
+        </div>`);
+      fillSec(5,`
+        <div class="dtiles">
+          <div class="dtile"><span class="dt-l">Creator Match Pool</span><span class="dt-v tv-g">47</span><span class="dt-s">UK-based · ready now</span></div>
+          <div class="dtile"><span class="dt-l">Avg Engagement Rate</span><span class="dt-v tv-a">4.2%</span><span class="dt-s">Above platform average</span></div>
+        </div>
+        <div class="dbars" style="margin-top:9px">
+          <div class="dbar"><div class="dbar-l">Skincare niche</div><div class="dbar-t"><div class="dbar-f dbf-g" style="width:47%" data-w="47%"></div></div><div class="dbar-v dbv-g">22</div></div>
+          <div class="dbar"><div class="dbar-l">Wellness niche</div><div class="dbar-t"><div class="dbar-f dbf-a" style="width:30%" data-w="30%"></div></div><div class="dbar-v dbv-a">14</div></div>
+          <div class="dbar"><div class="dbar-l">Lifestyle niche</div><div class="dbar-t"><div class="dbar-f dbf-a" style="width:23%" data-w="23%"></div></div><div class="dbar-v dbv-a">11</div></div>
+        </div>`);
+    }, 1600);
+  }
+
+  if (step === 3) {
+    shimSec(6);
+    setTimeout(() => {
+      fillSec(6,`
+        <div class="dmap" style="height:155px">
+          <div class="dm-ax x"></div><div class="dm-ax y"></div>
+          <div class="dm-lbl" style="top:6px;left:8px">High authority</div>
+          <div class="dm-lbl" style="bottom:6px;left:8px">Low authority</div>
+          <div class="dm-lbl" style="top:6px;right:8px">Premium price</div>
+          <div class="dm-lbl" style="bottom:6px;right:8px">Accessible price</div>
+          <div class="dm-dot dm-you" style="left:37%;top:36%"></div>
+          <div style="position:absolute;left:37%;top:36%;transform:translate(-50%,12px);font-size:9px;color:var(--amber);font-weight:700">YOU</div>
+          <div class="dm-dot dm-comp" style="left:38%;top:57%"></div>
+          <div style="position:absolute;left:38%;top:57%;transform:translate(-50%,11px);font-size:8px;color:var(--cream2)">The Ordinary</div>
+          <div class="dm-dot dm-comp" style="left:79%;top:25%"></div>
+          <div style="position:absolute;left:79%;top:25%;transform:translate(-50%,11px);font-size:8px;color:var(--cream2)">SkinCeuticals</div>
+          <div class="dm-dot dm-comp" style="left:22%;top:67%"></div>
+          <div style="position:absolute;left:22%;top:67%;transform:translate(-50%,11px);font-size:8px;color:var(--cream2)">Boots Own</div>
+        </div>
+        <table class="dtbl" style="margin-top:9px">
+          <thead><tr><th>Brand</th><th>Positioning</th><th>Your edge</th></tr></thead>
+          <tbody>
+            <tr class="you-r"><td>Your product</td><td>Accessible clinical</td><td class="edge">Optimal gap</td></tr>
+            <tr><td>The Ordinary</td><td>Budget science</td><td class="edge">Better results</td></tr>
+            <tr><td>SkinCeuticals</td><td>Clinical luxury</td><td class="edge">4× lower price</td></tr>
+            <tr><td>Boots Own</td><td>Mass market</td><td class="edge">Efficacy + transparency</td></tr>
+          </tbody>
+        </table>`);
+    }, 1600);
+  }
+
+  if (step === 4) {
+    shimSec(7);
+    const bud = +document.getElementById('bud-sl').value;
+    const rev = document.getElementById('s4-rev').value;
+    const allocs = [
+      {n:'Creator / Affiliate', p:35, note:'Highest ROI for new skincare brands'},
+      {n:'TikTok + Spark Ads', p:30, note:'Fastest discovery for this audience segment'},
+      {n:'Instagram / Reels', p:20, note:'Credibility via creator content amplification'},
+      {n:'DTC / Email CRM', p:15, note:'Foundation for customer lifetime value'},
+    ];
+    setTimeout(() => {
+      fillSec(7,`
+        <div class="dkv" style="margin-bottom:11px">
+          <div class="kvr"><span class="kv-k">Monthly budget</span><span class="kv-v a">£${bud.toLocaleString()}</span></div>
+          <div class="kvr"><span class="kv-k">Est. ROAS — month 1</span><span class="kv-v g">2.4×</span></div>
+          <div class="kvr"><span class="kv-k">Revenue target (90 days)</span><span class="kv-v">${rev ? '£'+Number(rev).toLocaleString() : '—'}</span></div>
+        </div>
+        <div class="dalloc">
+          ${allocs.map(a => `
+            <div>
+              <div class="da-head">
+                <span class="da-name">${a.n}</span>
+                <span class="da-amt">£${Math.round(bud*a.p/100).toLocaleString()}</span>
+              </div>
+              <div class="da-bar-t"><div class="da-bar-f" data-w="${a.p}%" style="width:0%"></div></div>
+              <div class="da-note">${a.note}</div>
+            </div>`).join('')}
+        </div>`);
+    }, 1600);
+  }
+
+  if (step === 5) {
+    document.getElementById('ps-8').style.display = '';
+    shimSec(8);
+    setTimeout(() => {
+      fillSec(8,`
+        <div class="dscore">
+          <div class="dscore-ring">
+            <svg width="68" height="68" viewBox="0 0 68 68">
+              <circle cx="34" cy="34" r="28" fill="none" stroke="var(--stroke)" stroke-width="5"/>
+              <circle cx="34" cy="34" r="28" fill="none" stroke="var(--amber)" stroke-width="5"
+                stroke-dasharray="${2*Math.PI*28}"
+                stroke-dashoffset="${2*Math.PI*28*(1-0.72)}"
+                stroke-linecap="round"/>
+            </svg>
+            <div class="dscore-num">72</div>
+          </div>
+          <div>
+            <span class="dscore-tag">Market Readiness</span>
+            <div class="dscore-verdict">Launch Ready</div>
+            <div class="dscore-note">Creator-led strategy recommended</div>
+          </div>
+        </div>
+        <div class="dactions" style="margin-top:9px">
+          <div class="dact risk"><span class="dact-ico">⚠</span><div class="dact-txt"><strong>Risk:</strong> Zero reviews create a trust barrier. Aim for 10+ before running paid ads.</div></div>
+          <div class="dact risk"><span class="dact-ico">⚠</span><div class="dact-txt"><strong>Risk:</strong> The Ordinary dominates category SEO. Creator UGC is needed to build indexed reach.</div></div>
+          <div class="dact oppo"><span class="dact-ico">↑</span><div class="dact-txt"><strong>Opportunity:</strong> Fragrance-free at this price is underserved — own the sensitive skin angle.</div></div>
+          <div class="dact oppo"><span class="dact-ico">↑</span><div class="dact-txt"><strong>Opportunity:</strong> TikTok Shop skincare is growing fast. Early mover advantage is still available.</div></div>
+          <div class="dact todo"><span class="dact-ico">→</span><div class="dact-txt"><strong>First:</strong> Partner with 5–8 creators in clean beauty / sensitive skin. UGC before any paid spend.</div></div>
+          <div class="dact todo"><span class="dact-ico">→</span><div class="dact-txt"><strong>Second:</strong> Apply for a Bridgr event slot — creators have already reviewed your product profile.</div></div>
+        </div>`);
+      document.getElementById('apply-cta').style.display = '';
+      setTimeout(() => {
+        document.getElementById('rp-scroll').scrollTop = document.getElementById('rp-scroll').scrollHeight;
+      }, 300);
+    }, 1800);
+  }
+}
+</script>
+</body>
+</html>

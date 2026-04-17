@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@jessicaglows — Bridgr Creator Profile</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0e12;--panel:#0f1119;--card:#1a1e2c;--card2:#202438;
+  --stroke:rgba(255,255,255,0.08);--stroke2:rgba(255,255,255,0.04);
+  --creator:#1c5c3f;--green:#3aaa78;--green-d:#2d8a60;--green-g:rgba(58,170,120,0.12);
+  --amber:#c9a245;--amber-g:rgba(201,162,69,0.11);
+  --brand:#c03b1b;--brand-g:rgba(192,59,27,0.12);
+  --cream:#f0ece4;--cream2:#9e9890;--muted:#545a6e;
+  --danger-bg:rgba(192,59,27,0.07);--success-bg:rgba(58,170,120,0.07);
+}
+html{background:var(--bg);color:var(--cream);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;line-height:1.6}
+body{min-height:100vh}
+
+/* Nav */
+.nav{display:flex;align-items:center;justify-content:space-between;height:54px;padding:0 24px;background:rgba(12,14,18,0.95);border-bottom:1px solid var(--stroke);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.nav-logo{font-family:'DM Mono',monospace;font-size:15px;font-weight:500;letter-spacing:.04em;color:var(--cream);text-decoration:none}
+.nav-r{display:flex;align-items:center;gap:10px}
+.nav-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--green-g);color:var(--green)}
+.nav-edit{padding:7px 16px;background:transparent;border:1.5px solid var(--stroke);border-radius:7px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;color:var(--cream2);cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+.nav-edit:hover{border-color:var(--green);color:var(--green)}
+
+/* Profile layout */
+.profile{max-width:880px;margin:0 auto;padding:32px 24px 80px}
+
+/* Hero card */
+.hero{display:flex;gap:28px;align-items:flex-start;padding:28px;background:var(--panel);border:1px solid var(--stroke);border-radius:16px;margin-bottom:24px}
+.hero-avatar{width:110px;height:110px;border-radius:50%;background:var(--card);border:3px solid var(--green-d);display:flex;align-items:center;justify-content:center;font-size:44px;flex-shrink:0;overflow:hidden}
+.hero-info{flex:1;min-width:0}
+.hero-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.hb{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.hb-g{background:var(--green-g);color:var(--green)}
+.hb-a{background:var(--amber-g);color:var(--amber)}
+.hb-n{background:var(--card2);color:var(--muted)}
+.hero-name{font-family:'Playfair Display',serif;font-size:clamp(24px,2.5vw,32px);font-weight:700;color:var(--cream);letter-spacing:-.02em;margin-bottom:2px}
+.hero-handle{font-family:'DM Mono',monospace;font-size:15px;color:var(--green);margin-bottom:8px}
+.hero-pitch{font-size:14px;color:var(--cream2);line-height:1.65;font-style:italic;max-width:480px;margin-bottom:12px}
+.hero-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.hero-meta span{display:flex;align-items:center;gap:5px}
+
+/* Stats grid */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.stat-card{background:var(--panel);border:1px solid var(--stroke);border-radius:12px;padding:16px;text-align:center}
+.stat-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1;margin-bottom:4px}
+.stat-val.g{color:var(--green)}.stat-val.a{color:var(--amber)}.stat-val.r{color:var(--brand)}
+.stat-label{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+
+/* Platform credit section */
+.section{margin-bottom:24px}
+.section-title{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--stroke2)}
+
+/* Credit cards */
+.credit-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:24px}
+.credit-card{background:var(--panel);border:1px solid var(--stroke);border-radius:10px;padding:14px 12px;text-align:center}
+.cc-icon{font-size:20px;margin-bottom:6px}
+.cc-val{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;margin-bottom:2px}
+.cc-val.g{color:var(--green)}.cc-val.a{color:var(--amber)}.cc-val.r{color:var(--brand)}
+.cc-label{font-size:10px;color:var(--muted);line-height:1.3}
+
+/* Bio section */
+.bio-card{background:var(--panel);border:1px solid var(--stroke);border-radius:12px;padding:20px;margin-bottom:24px}
+.bio-text{font-size:14px;color:var(--cream2);line-height:1.75;white-space:pre-line}
+
+/* Authority + capabilities */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.info-card{background:var(--panel);border:1px solid var(--stroke);border-radius:12px;padding:18px}
+.ic-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.ic-value{font-size:14px;font-weight:700;color:var(--cream);margin-bottom:6px}
+.ic-sub{font-size:12px;color:var(--cream2);line-height:1.55;margin-bottom:8px}
+.chip-row{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px}
+.chip-g{background:var(--green-g);color:var(--green)}
+.chip-a{background:var(--amber-g);color:var(--amber)}
+.chip-n{background:var(--card2);color:var(--muted)}
+
+/* Platform links */
+.plat-links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.plat-link{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--panel);border:1px solid var(--stroke);border-radius:10px;text-decoration:none;transition:all .2s}
+.plat-link:hover{background:var(--card);border-color:rgba(255,255,255,.14)}
+.plat-ico{font-size:16px;flex-shrink:0}
+.plat-name{font-size:13px;font-weight:600;color:var(--cream)}
+.plat-handle{font-family:'DM Mono',monospace;font-size:11px;color:var(--green)}
+
+/* Deals & brand feedback */
+.deal-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.deal-card{display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--panel);border:1px solid var(--stroke);border-radius:12px}
+.deal-brand{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.deal-avatar{width:40px;height:40px;border-radius:8px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.deal-info{min-width:0}
+.deal-name{font-size:14px;font-weight:700;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deal-product{font-size:12px;color:var(--cream2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deal-meta{display:flex;gap:12px;align-items:center;flex-shrink:0}
+.deal-status{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px}
+.ds-live{background:var(--green-g);color:var(--green)}
+.ds-complete{background:var(--amber-g);color:var(--amber)}
+.ds-pending{background:var(--card2);color:var(--muted)}
+.deal-score{display:flex;flex-direction:column;align-items:center;gap:2px}
+.deal-stars{font-family:'DM Mono',monospace;font-size:13px;color:var(--amber);letter-spacing:2px}
+.deal-score-label{font-size:9px;color:var(--muted)}
+
+/* Brand feedback aggregate */
+.feedback-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.fb-card{background:var(--panel);border:1px solid var(--stroke);border-radius:12px;padding:16px;text-align:center}
+.fb-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;line-height:1;margin-bottom:4px}
+.fb-label{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
+.fb-bar{height:4px;background:var(--stroke);border-radius:2px;overflow:hidden;margin:0 auto;width:80%}
+.fb-fill{height:100%;border-radius:2px}
+
+/* Collab prefs */
+.collab-card{background:var(--panel);border:1px solid var(--stroke);border-radius:12px;padding:18px;margin-bottom:24px}
+.collab-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--stroke2)}
+.collab-row:last-child{border-bottom:none}
+.collab-k{font-size:12px;color:var(--muted)}
+.collab-v{font-size:13px;font-weight:600;color:var(--cream);text-align:right}
+.collab-v.g{color:var(--green)}.collab-v.a{color:var(--amber)}
+
+/* Working notes */
+.notes-card{background:var(--panel);border:1px solid var(--stroke);border-radius:12px;padding:18px;margin-bottom:24px}
+.notes-text{font-size:13px;color:var(--cream2);line-height:1.7;font-style:italic}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#" class="nav-logo">Bridgr</a>
+  <div class="nav-r">
+    <span class="nav-tag">Open to brands</span>
+    <a href="bridgr-creator-editor.html" class="nav-edit">Edit profile</a>
+  </div>
+</nav>
+
+<div class="profile">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-avatar">&#128105;</div>
+    <div class="hero-info">
+      <div class="hero-badges">
+        <span class="hb hb-g">Active creator</span>
+        <span class="hb hb-g">Skincare</span>
+        <span class="hb hb-a">Ingredient science</span>
+        <span class="hb hb-n">Hybrid</span>
+      </div>
+      <div class="hero-name">Jessica Huang</div>
+      <div class="hero-handle">@jessicaglows</div>
+      <div class="hero-pitch">"I break down complex skincare ingredients into honest, no-nonsense reviews for sensitive skin."</div>
+      <div class="hero-meta">
+        <span>&#127758; London, UK</span>
+        <span>&#128247; Instagram + TikTok</span>
+        <span>&#128197; Posting 4&#8211;6x/week</span>
+        <span>&#128200; 3&#8211;6% engagement</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATFORM STANDING -->
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-val g">74</div><div class="stat-label">Match score</div></div>
+    <div class="stat-card"><div class="stat-val a">Active</div><div class="stat-label">Standing tier</div></div>
+    <div class="stat-card"><div class="stat-val g">6</div><div class="stat-label">Cycles active</div></div>
+    <div class="stat-card"><div class="stat-val a">4.6</div><div class="stat-label">Brand avg rating</div></div>
+  </div>
+
+  <!-- PLATFORM CREDIT — total interactions -->
+  <div class="section-title">Platform activity &amp; credit</div>
+  <div class="credit-grid">
+    <div class="credit-card">
+      <div class="cc-icon">&#10084;&#65039;</div>
+      <div class="cc-val g">127</div>
+      <div class="cc-label">Products liked</div>
+    </div>
+    <div class="credit-card">
+      <div class="cc-icon">&#128172;</div>
+      <div class="cc-val g">84</div>
+      <div class="cc-label">Comments given</div>
+    </div>
+    <div class="credit-card">
+      <div class="cc-icon">&#128717;&#65039;</div>
+      <div class="cc-val a">31</div>
+      <div class="cc-label">Buy intent clicks</div>
+    </div>
+    <div class="credit-card">
+      <div class="cc-icon">&#128227;</div>
+      <div class="cc-val a">19</div>
+      <div class="cc-label">Promote signals</div>
+    </div>
+    <div class="credit-card">
+      <div class="cc-icon">&#9733;</div>
+      <div class="cc-val g">52</div>
+      <div class="cc-label">Products scored</div>
+    </div>
+  </div>
+
+  <!-- BIO -->
+  <div class="section-title">About</div>
+  <div class="bio-card">
+    <div class="bio-text">I'm a UK-based skincare creator with a focus on sensitive and melanin-rich skin. I test every product for at least 4 weeks before sharing it with my audience. I say no to anything that doesn't meet my standards &#8212; because that's exactly why my community trusts me.
+
+I'm looking for brand partners whose values genuinely align: transparency, efficacy, and accessibility.</div>
+  </div>
+
+  <!-- AUTHORITY + CAPABILITIES -->
+  <div class="two-col">
+    <div class="info-card">
+      <div class="ic-label">Authority pillar</div>
+      <div class="ic-value">Ingredient science &amp; formulation</div>
+      <div class="ic-sub">Women 28&#8211;42, UK-based, ingredient-conscious, spending &#163;30&#8211;80 on skincare monthly</div>
+      <div class="chip-row">
+        <span class="chip chip-g">Hyperpigmentation</span>
+        <span class="chip chip-g">SPF education</span>
+        <span class="chip chip-a">Fragrance-free</span>
+        <span class="chip chip-n">Sensitive skin</span>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="ic-label">Technical capabilities</div>
+      <div class="ic-value">Production-ready</div>
+      <div class="ic-sub">On-camera, studio lighting, editing, voiceover, photography</div>
+      <div class="chip-row">
+        <span class="chip chip-g">On-camera</span>
+        <span class="chip chip-g">Video editing</span>
+        <span class="chip chip-a">Photography</span>
+        <span class="chip chip-n">Voiceover</span>
+        <span class="chip chip-n">Lighting</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT STRATEGY -->
+  <div class="two-col">
+    <div class="info-card">
+      <div class="ic-label">Content strategy</div>
+      <div class="ic-value">Short-form video</div>
+      <div class="ic-sub">Reels &amp; TikTok &#8212; Hybrid creator (UGC + own audience)</div>
+      <div class="chip-row">
+        <span class="chip chip-g">Educator</span>
+        <span class="chip chip-g">Honest reviewer</span>
+        <span class="chip chip-a">Transformer</span>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="ic-label">Product categories</div>
+      <div class="ic-value">3 categories</div>
+      <div class="ic-sub">Brands in these categories will see this creator in their match pool</div>
+      <div class="chip-row">
+        <span class="chip chip-g">Functional skincare</span>
+        <span class="chip chip-g">Clean beauty</span>
+        <span class="chip chip-a">Supplements</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATFORM LINKS -->
+  <div class="section-title">Platform profiles</div>
+  <div class="plat-links">
+    <a href="#" class="plat-link"><span class="plat-ico">&#128247;</span><div><div class="plat-name">Instagram</div><div class="plat-handle">@jessicaglows</div></div></a>
+    <a href="#" class="plat-link"><span class="plat-ico">&#127916;</span><div><div class="plat-name">TikTok</div><div class="plat-handle">@jessicaglows</div></div></a>
+  </div>
+
+  <!-- FINALIZED DEALS -->
+  <div class="section-title">Brand partnerships (3 deals)</div>
+  <div class="deal-list">
+    <div class="deal-card">
+      <div class="deal-brand">
+        <div class="deal-avatar">&#129524;</div>
+        <div class="deal-info">
+          <div class="deal-name">Nouri Skincare</div>
+          <div class="deal-product">Vitamin C Serum &#8212; 20% commission &#8212; 3 Reels</div>
+        </div>
+      </div>
+      <div class="deal-meta">
+        <span class="deal-status ds-live">Live</span>
+        <div class="deal-score">
+          <div class="deal-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="deal-score-label">Brand rating</div>
+        </div>
+      </div>
+    </div>
+    <div class="deal-card">
+      <div class="deal-brand">
+        <div class="deal-avatar">&#127807;</div>
+        <div class="deal-info">
+          <div class="deal-name">Botaniq Wellness</div>
+          <div class="deal-product">Gut Health Probiotic &#8212; 15% commission &#8212; 2 TikToks + 1 Reel</div>
+        </div>
+      </div>
+      <div class="deal-meta">
+        <span class="deal-status ds-complete">Completed</span>
+        <div class="deal-score">
+          <div class="deal-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+          <div class="deal-score-label">Brand rating</div>
+        </div>
+      </div>
+    </div>
+    <div class="deal-card">
+      <div class="deal-brand">
+        <div class="deal-avatar">&#9728;&#65039;</div>
+        <div class="deal-info">
+          <div class="deal-name">SolShield SPF</div>
+          <div class="deal-product">Invisible SPF 50 &#8212; Flat fee UGC &#8212; 4 assets delivered</div>
+        </div>
+      </div>
+      <div class="deal-meta">
+        <span class="deal-status ds-complete">Completed</span>
+        <div class="deal-score">
+          <div class="deal-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="deal-score-label">Brand rating</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRAND FEEDBACK AGGREGATE -->
+  <div class="section-title">Brand feedback scores</div>
+  <div class="feedback-grid">
+    <div class="fb-card">
+      <div class="fb-label">Content quality</div>
+      <div class="fb-val" style="color:var(--green)">4.8</div>
+      <div class="fb-bar"><div class="fb-fill" style="width:96%;background:var(--green)"></div></div>
+    </div>
+    <div class="fb-card">
+      <div class="fb-label">Communication</div>
+      <div class="fb-val" style="color:var(--green)">4.5</div>
+      <div class="fb-bar"><div class="fb-fill" style="width:90%;background:var(--green)"></div></div>
+    </div>
+    <div class="fb-card">
+      <div class="fb-label">Deadline reliability</div>
+      <div class="fb-val" style="color:var(--amber)">4.0</div>
+      <div class="fb-bar"><div class="fb-fill" style="width:80%;background:var(--amber)"></div></div>
+    </div>
+  </div>
+
+  <!-- COLLAB PREFS -->
+  <div class="section-title">Collaboration preferences</div>
+  <div class="collab-card">
+    <div class="collab-row"><span class="collab-k">Preferred deal types</span><span class="collab-v">Affiliate, Long-term ambassador</span></div>
+    <div class="collab-row"><span class="collab-k">Monthly availability</span><span class="collab-v a">8 hours / month</span></div>
+    <div class="collab-row"><span class="collab-k">Preferred commission rate</span><span class="collab-v g">20%</span></div>
+    <div class="collab-row"><span class="collab-k">Creator role</span><span class="collab-v">Hybrid &#8212; UGC + own audience</span></div>
+    <div class="collab-row"><span class="collab-k">Content format</span><span class="collab-v">Short-form video (Reels / TikTok)</span></div>
+  </div>
+
+  <!-- WORKING NOTES -->
+  <div class="section-title">Working notes from this creator</div>
+  <div class="notes-card">
+    <div class="notes-text">"I only work with fragrance-free products due to my own skin sensitivities. I require a 2-week usage period before posting any review. I don't do scripted-to-camera content &#8212; my audience trusts me because the words are mine."</div>
+  </div>
+
+</div>
+</body>
+</html>

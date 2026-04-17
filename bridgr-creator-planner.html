@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bridgr — Creator Intelligence Planner</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0e12;
+  --panel:#0f1119;
+  --form:#13161e;
+  --card:#1a1e2c;
+  --card2:#202438;
+  --stroke:rgba(255,255,255,0.08);
+  --stroke2:rgba(255,255,255,0.04);
+  --focus:rgba(58,170,120,0.55);
+  --creator:#1c5c3f;
+  --creator-g:rgba(28,92,63,0.18);
+  --creator-b:rgba(58,170,120,0.12);
+  --green:#3aaa78;
+  --green-d:#2d8a60;
+  --amber:#c9a245;
+  --amber-g:rgba(201,162,69,0.11);
+  --brand:#c03b1b;
+  --brand-g:rgba(192,59,27,0.12);
+  --cream:#f0ece4;
+  --cream2:#9e9890;
+  --muted:#545a6e;
+  --danger-bg:rgba(192,59,27,0.07);
+  --success-bg:rgba(58,170,120,0.07);
+  --warning-bg:rgba(201,162,69,0.07);
+}
+html,body{height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--cream);font-size:14px;line-height:1.6}
+
+/* ── NAV ── */
+.nav{
+  height:56px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;background:var(--panel);border-bottom:1px solid var(--stroke);
+  flex-shrink:0;
+}
+.nav-l{display:flex;align-items:center;gap:12px}
+.nav-logo{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;letter-spacing:.04em;color:var(--cream)}
+.nav-badge{font-size:11px;font-weight:600;padding:4px 12px;background:var(--creator-b);color:var(--green);border-radius:20px;letter-spacing:.05em}
+.nav-step{font-size:14px;font-weight:500;color:var(--cream2)}
+.nav-r{display:flex;align-items:center;gap:14px}
+.eng-row{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.eng-led{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:all .3s}
+.eng-led.on{background:var(--green);box-shadow:0 0 6px var(--green);animation:led 2s ease-in-out infinite}
+@keyframes led{0%,100%{opacity:1}50%{opacity:.35}}
+.nav-cta{padding:9px 20px;background:var(--green-d);border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .2s}
+.nav-cta:hover{background:var(--creator)}
+
+/* ── 3-PANE ── */
+.shell{display:grid;grid-template-columns:278px 1fr 420px;height:calc(100vh - 56px);overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--panel);border-right:1px solid var(--stroke);display:flex;flex-direction:column}
+.sb-steps{flex:1;padding:22px 14px;display:flex;flex-direction:column;gap:3px;overflow-y:auto}
+.sb-steps::-webkit-scrollbar{width:0}
+.snav{
+  display:flex;align-items:flex-start;gap:13px;padding:13px 13px;
+  border-radius:10px;cursor:pointer;transition:all .22s;
+  border:1.5px solid transparent;position:relative;
+}
+.snav:hover{background:var(--card)}
+.snav.active{background:var(--card2);border-color:rgba(58,170,120,.22)}
+.snav.active::before{content:'';position:absolute;left:0;top:13px;bottom:13px;width:3px;background:var(--green);border-radius:0 3px 3px 0}
+.snav.done .sn-bub{background:rgba(58,170,120,.15);border-color:rgba(58,170,120,.4);color:var(--green)}
+.sn-bub{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--card);border:1.5px solid var(--stroke);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:10px;font-weight:500;
+  color:var(--muted);transition:all .2s;flex-shrink:0;margin-top:1px;
+}
+.snav.active .sn-bub{background:var(--green-d);border-color:var(--green-d);color:#fff}
+.sn-step{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:2px}
+.snav.active .sn-step{color:rgba(58,170,120,.8)}
+.sn-name{font-size:13px;font-weight:700;color:var(--cream2);line-height:1.2}
+.snav.active .sn-name{color:var(--cream)}
+.sn-hint{font-size:11px;color:var(--muted);margin-top:2px}
+.sb-foot{padding:16px 18px;border-top:1px solid var(--stroke);font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);line-height:2;letter-spacing:.04em}
+
+/* ── CENTRE ── */
+.centre{background:var(--form);display:flex;flex-direction:column;overflow:hidden}
+.sv{display:none;flex-direction:column;height:100%}
+.sv.show{display:flex}
+.sv-head{padding:30px 38px 20px;border-bottom:1px solid var(--stroke);flex-shrink:0}
+.sv-eye{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:9px;display:block}
+.sv-h{font-family:'Playfair Display',serif;font-size:clamp(22px,2vw,30px);font-weight:700;color:var(--cream);letter-spacing:-.02em;margin-bottom:6px;line-height:1.1}
+.sv-d{font-size:13px;color:var(--cream2);line-height:1.7;max-width:460px}
+.sv-body{flex:1;padding:24px 38px;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
+.sv-body::-webkit-scrollbar{width:3px}
+.sv-body::-webkit-scrollbar-thumb{background:var(--card2);border-radius:2px}
+.sv-foot{padding:14px 38px;border-top:1px solid var(--stroke);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.prog-row{display:flex;gap:5px}
+.pdot{width:22px;height:4px;border-radius:3px;background:var(--stroke);transition:background .3s}
+.pdot.done{background:var(--green)}.pdot.now{background:var(--amber)}
+.act-row{display:flex;gap:9px}
+
+/* ── FORM ATOMS ── */
+.fg{display:flex;flex-direction:column;gap:6px}
+.fg>label{font-size:12px;font-weight:700;color:var(--cream);display:flex;align-items:center;gap:7px}
+.fg>label .sub{font-size:11px;font-weight:400;color:var(--muted)}
+.fg input,.fg select,.fg textarea{
+  background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;
+  padding:12px 15px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;
+  color:var(--cream);outline:none;transition:border-color .2s,background .2s;width:100%;
+  appearance:none;-webkit-appearance:none;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--focus);background:var(--card2)}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--muted);opacity:.65}
+.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23545a6e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.fg select option{background:var(--card)}
+.fg textarea{resize:vertical;min-height:70px}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fhint{font-size:11px;color:var(--muted);opacity:.7;margin-top:-13px}
+.fdiv{height:1px;background:var(--stroke);margin:2px 0}
+
+/* BUTTONS */
+.btn-p{padding:11px 24px;background:var(--green-d);border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .2s}
+.btn-p:hover{background:var(--creator)}
+.btn-b{padding:11px 18px;background:transparent;border:1.5px solid var(--stroke);border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;color:var(--cream2);cursor:pointer;transition:all .2s}
+.btn-b:hover{border-color:var(--cream2);color:var(--cream)}
+.btn-g{padding:11px 18px;background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:500;color:var(--cream2);cursor:pointer;transition:all .2s}
+.btn-g:hover{border-color:var(--green);color:var(--green)}
+
+.platform-links{display:flex;flex-direction:column;gap:10px}
+.pl-row{display:flex;gap:8px;align-items:stretch}
+.pl-platform{
+  width:110px;
+  min-width:110px;
+  max-width:110px;
+  flex:0 0 110px;
+  background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;
+  padding:11px 26px 11px 11px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;
+  color:var(--cream2);outline:none;appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6'%3E%3Cpath d='M1 1l3.5 3.5L8 1' stroke='%23545a6e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 9px center;
+  transition:border-color .2s,background .2s;cursor:pointer;
+}
+.pl-platform:focus{border-color:var(--focus);background-color:var(--card2)}
+.pl-platform option{background:var(--card)}
+.pl-input{
+  flex:1 1 0;
+  min-width:0;
+  background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;
+  padding:11px 14px;
+  font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.01em;
+  color:var(--cream);outline:none;
+  transition:border-color .2s,background .2s;
+}
+.pl-input:focus{border-color:var(--focus);background:var(--card2)}
+.pl-input::placeholder{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;color:var(--muted);opacity:.6;letter-spacing:0;
+}
+.pl-del{
+  flex:0 0 38px;width:38px;
+  background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;
+  color:var(--muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:all .15s;
+}
+.pl-del:hover{border-color:var(--brand);color:var(--brand)}
+.add-pl{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;color:var(--muted);
+  cursor:pointer;background:none;border:none;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  padding:3px 0;transition:color .2s;
+}
+.add-pl:hover{color:var(--green)}
+.add-pl::before{content:'+';font-size:15px}
+
+/* TAG INPUT */
+.tagwrap{background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;padding:9px 13px;display:flex;flex-wrap:wrap;gap:6px;cursor:text;min-height:46px;transition:border-color .2s,background .2s;align-items:center}
+.tagwrap:focus-within{border-color:var(--focus);background:var(--card2)}
+.tagwrap input{background:transparent;border:none;outline:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);min-width:80px;flex:1;padding:2px 0}
+.tagwrap input::placeholder{color:var(--muted);opacity:.6}
+.tchip{display:inline-flex;align-items:center;gap:5px;background:var(--card2);border:1px solid var(--stroke);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;color:var(--cream2)}
+.tchip-x{cursor:pointer;opacity:.4;font-size:11px;line-height:1;transition:opacity .15s}
+.tchip-x:hover{opacity:1}
+
+/* CHECKBOX CARDS */
+.check-grid{display:flex;flex-direction:column;gap:7px}
+.check-card{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;cursor:pointer;transition:all .2s}
+.check-card:hover{background:var(--card2)}
+.check-card.on{background:var(--creator-g);border-color:rgba(58,170,120,.3)}
+.cc-box{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--stroke);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s;font-size:11px;color:transparent}
+.check-card.on .cc-box{background:var(--green-d);border-color:var(--green-d);color:#fff}
+.cc-info{}
+.cc-name{font-size:13px;font-weight:700;color:var(--cream2);margin-bottom:2px}
+.check-card.on .cc-name{color:var(--cream)}
+.cc-desc{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* RADIO CARDS */
+.radio-grid{display:flex;flex-direction:column;gap:7px}
+.radio-card{display:flex;align-items:flex-start;gap:12px;padding:13px 15px;background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;cursor:pointer;transition:all .2s}
+.radio-card:hover{background:var(--card2)}
+.radio-card.on{background:var(--creator-g);border-color:rgba(58,170,120,.3)}
+.rc-dot{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--stroke);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s}
+.radio-card.on .rc-dot{border-color:var(--green-d);background:var(--green-d)}
+.radio-card.on .rc-dot::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff}
+
+/* CATEGORY CHIPS */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.cat-chip{padding:10px 14px;background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;text-align:center}
+.cat-chip:hover{background:var(--card2);color:var(--cream2)}
+.cat-chip.on{background:var(--creator-b);border-color:rgba(58,170,120,.35);color:var(--green)}
+
+/* COMMITMENT SLIDER */
+.commit-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--green);letter-spacing:-.02em;margin-bottom:8px}
+.commit-range{-webkit-appearance:none;width:100%;height:4px;background:var(--stroke);border-radius:2px;outline:none;margin-top:2px}
+.commit-range::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--green-d);cursor:pointer;border:3px solid var(--form);box-shadow:0 0 0 3px rgba(58,170,120,.2)}
+
+/* ── RIGHT PANEL ── */
+.rp{background:var(--panel);border-left:1px solid var(--stroke);display:flex;flex-direction:column;overflow:hidden}
+.rp-top{padding:14px 20px;border-bottom:1px solid var(--stroke);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.rp-title{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cream2);display:flex;align-items:center;gap:8px}
+.rp-live{font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--card);color:var(--muted);transition:all .3s}
+.rp-live.on{background:var(--creator-b);color:var(--green)}
+.rp-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.rp-scroll::-webkit-scrollbar{width:3px}
+.rp-scroll::-webkit-scrollbar-thumb{background:var(--card2);border-radius:2px}
+
+/* Profile sections */
+.psec{padding:14px 18px;border-bottom:1px solid var(--stroke);display:flex;flex-direction:column;gap:9px;transition:opacity .4s}
+.psec.dim{opacity:.22}
+.ps-head{display:flex;align-items:center;justify-content:space-between}
+.ps-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.ps-title.filled{color:var(--green)}
+.ps-tag{font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--card);color:var(--muted)}
+.ps-tag.done{background:var(--creator-b);color:var(--green)}
+.ps-tag.running{background:var(--amber-g);color:var(--amber)}
+.ph{height:20px;border-radius:4px;background:var(--card);border:1px dashed rgba(255,255,255,.04)}
+
+/* Data atoms in right panel */
+.dtiles{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.dtile{background:var(--card);border:1px solid var(--stroke);border-radius:8px;padding:11px 13px}
+.dt-l{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;display:block}
+.dt-v{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1;display:block;margin-bottom:2px}
+.tv-g{color:var(--green)}.tv-a{color:var(--amber)}.tv-r{color:var(--brand)}
+.dt-s{font-size:10px;color:var(--muted);display:block}
+
+.dkv{display:flex;flex-direction:column}
+.kvr{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--stroke2)}
+.kvr:last-child{border-bottom:none}
+.kv-k{font-size:11px;color:var(--muted)}
+.kv-v{font-size:12px;font-weight:700;color:var(--cream);font-family:'DM Mono',monospace;text-align:right}
+.kv-v.g{color:var(--green)}.kv-v.a{color:var(--amber)}
+
+.dchips{display:flex;flex-wrap:wrap;gap:4px}
+.dc{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px}
+.dc-g{background:var(--creator-b);color:var(--green)}
+.dc-a{background:var(--amber-g);color:var(--amber)}
+.dc-n{background:var(--card2);color:var(--muted)}
+
+.dbars{display:flex;flex-direction:column;gap:6px}
+.dbar{display:flex;align-items:center;gap:8px}
+.dbar-l{font-size:10px;color:var(--muted);width:110px;flex-shrink:0;line-height:1.3}
+.dbar-t{flex:1;height:4px;background:var(--stroke);border-radius:2px;overflow:hidden}
+.dbar-f{height:100%;border-radius:2px;transition:width 1.2s ease}
+.dbf-g{background:var(--green)}.dbf-a{background:var(--amber)}.dbf-r{background:var(--brand)}
+.dbar-v{font-family:'DM Mono',monospace;font-size:9px;width:28px;text-align:right;flex-shrink:0}
+.dbv-g{color:var(--green)}.dbv-a{color:var(--amber)}
+
+.score-ring-wrap{display:flex;align-items:center;gap:14px;padding:4px 0}
+.score-ring{width:66px;height:66px;flex-shrink:0;position:relative}
+.score-ring svg{transform:rotate(-90deg)}
+.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--green)}
+.score-label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;display:block}
+.score-tier{font-size:15px;font-weight:700;color:var(--cream)}
+.score-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+.dacts{display:flex;flex-direction:column;gap:5px}
+.dact{display:flex;gap:8px;padding:9px 11px;border-radius:7px;border-left:2.5px solid var(--stroke)}
+.dact.block{border-left-color:var(--brand);background:var(--danger-bg)}
+.dact.strength{border-left-color:var(--green);background:var(--success-bg)}
+.dact.next{border-left-color:var(--amber);background:var(--warning-bg)}
+.da-ico{font-size:10px;flex-shrink:0;margin-top:1px;opacity:.7}
+.da-txt{font-size:11px;color:var(--cream2);line-height:1.55}
+.da-txt strong{color:var(--cream);font-weight:700}
+
+.apply-section{padding:14px 18px 20px}
+.apply-card{background:var(--creator-g);border:1.5px solid rgba(58,170,120,.2);border-radius:12px;padding:18px}
+.apply-card p{font-size:12px;color:var(--cream2);line-height:1.65;margin-bottom:14px}
+.apply-card button{width:100%;padding:11px;background:var(--green-d);border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;cursor:pointer;transition:background .2s}
+.apply-card button:hover{background:var(--creator)}
+
+.shimmer{height:12px;border-radius:4px;background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);background-size:200% 100%;animation:shm 1.4s infinite}
+@keyframes shm{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-l">
+    <span class="nav-logo">Bridgr</span>
+    <span class="nav-badge">Creator Planner</span>
+  </div>
+  <span class="nav-step" id="nav-step">Step 1 — Identity & Reach</span>
+  <div class="nav-r">
+    <div class="eng-row"><div class="eng-led" id="eng-led"></div><span id="eng-txt">Ready</span></div>
+    <button class="nav-cta" onclick="nextStep()">Next Phase →</button>
+  </div>
+</nav>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-steps">
+    <div class="snav active" id="snav-1" onclick="goStep(1)">
+      <div class="sn-bub" id="snb-1">1</div>
+      <div><div class="sn-step">Step 1</div><div class="sn-name">Identity & Reach</div><div class="sn-hint">Who you are & where you create</div></div>
+    </div>
+    <div class="snav" id="snav-2" onclick="goStep(2)">
+      <div class="sn-bub" id="snb-2">2</div>
+      <div><div class="sn-step">Step 2</div><div class="sn-name">Content Focus & Expertise</div><div class="sn-hint">Your authority pillar & skills</div></div>
+    </div>
+    <div class="snav" id="snav-3" onclick="goStep(3)">
+      <div class="sn-bub" id="snb-3">3</div>
+      <div><div class="sn-step">Step 3</div><div class="sn-name">Conversion & Strategy</div><div class="sn-hint">Format, style & commercial fit</div></div>
+    </div>
+    <div class="snav" id="snav-4" onclick="goStep(4)">
+      <div class="sn-bub" id="snb-4">4</div>
+      <div><div class="sn-step">Step 4</div><div class="sn-name">Strategic Alignment</div><div class="sn-hint">Categories, roles & deal type</div></div>
+    </div>
+    <div class="snav" id="snav-5" onclick="goStep(5)">
+      <div class="sn-bub" id="snb-5">5</div>
+      <div><div class="sn-step">Step 5</div><div class="sn-name">Creator Readiness Report</div><div class="sn-hint">Self-evaluation & match profile</div></div>
+    </div>
+  </div>
+  <div class="sb-foot">Creator Intelligence Engine v1.0<br>Bridgr Platform · UK 2025–2026<br>Status: Development</div>
+</aside>
+
+<!-- CENTRE FORMS -->
+<main class="centre">
+
+  <!-- ─── STEP 1 ─── -->
+  <div class="sv show" id="view-1">
+    <div class="sv-head">
+      <span class="sv-eye">Step 1 — Identity & Reach</span>
+      <div class="sv-h">Establish Your Creator Identity</div>
+      <div class="sv-d">Your profile, platforms, and audience geography form the foundation of every brand match. The more precise you are, the stronger your matches will be.</div>
+    </div>
+    <div class="sv-body">
+      <div class="r2">
+        <div class="fg"><label>Full name</label><input id="s1-name" placeholder="e.g. Jessica Huang"></div>
+        <div class="fg"><label>Creator handle <span class="sub">— your main username</span></label><input id="s1-handle" placeholder="e.g. @jessicaglows"></div>
+      </div>
+
+      <div class="r2">
+        <div class="fg">
+          <label>Date of birth</label>
+          <input type="date" id="s1-dob" style="color-scheme:dark">
+          <div class="fhint">Used to verify age eligibility for brand campaigns. Not shown publicly.</div>
+        </div>
+        <div class="fg">
+          <label>Gender <span class="sub">— optional</span></label>
+          <select id="s1-gender">
+            <option value="">Prefer not to say</option>
+            <option>Female</option>
+            <option>Male</option>
+            <option>Non-binary</option>
+            <option>Other</option>
+          </select>
+          <div class="fhint">Helps brands match campaigns to creator profiles relevant to their audience.</div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Platform profiles <span class="sub">— select platform + paste your profile link</span></label>
+        <div class="platform-links" id="platform-list">
+          <div class="pl-row">
+            <select class="pl-platform"><option value="">Platform</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>Pinterest</option><option>Lemon8</option><option>X / Twitter</option><option>LinkedIn</option><option>Snapchat</option><option>Facebook</option><option>Other</option></select>
+            <input type="url" class="pl-input" placeholder="Paste your profile link here…">
+            <button class="pl-del" onclick="delPlatform(this)">×</button>
+          </div>
+          <div class="pl-row">
+            <select class="pl-platform"><option value="">Platform</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>Pinterest</option><option>Lemon8</option><option>X / Twitter</option><option>LinkedIn</option><option>Snapchat</option><option>Facebook</option><option>Other</option></select>
+            <input type="url" class="pl-input" placeholder="Paste your profile link here…">
+            <button class="pl-del" onclick="delPlatform(this)">×</button>
+          </div>
+        </div>
+        <button class="add-pl" onclick="addPlatform()">Add another platform</button>
+      </div>
+
+      <div class="fg">
+        <label>Self-introduction <span class="sub">— tell brands who you are in your own words</span></label>
+        <textarea id="s1-intro" rows="4" placeholder="e.g. I'm a UK-based skincare creator with a focus on sensitive and melanin-rich skin. I test everything for at least 4 weeks before I share it, and my audience trusts me because I say no to products that don't meet my standards. I'm looking for brands whose values genuinely align with mine — transparency, efficacy, and accessibility."></textarea>
+        <div class="fhint">This appears at the top of your creator profile. Write in first person. Be specific — generic introductions don't build trust with brands.</div>
+      </div>
+
+      <div class="r2">
+        <div class="fg">
+          <label>Primary audience region</label>
+          <select id="s1-region" onchange="toggleRegionCustom(this.value)">
+            <option value="">Select primary region</option>
+            <optgroup label="Europe">
+              <option value="UK">United Kingdom</option>
+              <option value="France">France</option>
+              <option value="Germany">Germany</option>
+              <option value="Italy">Italy</option>
+              <option value="Spain">Spain</option>
+              <option value="Netherlands">Netherlands</option>
+              <option value="Nordics">Nordics (Sweden, Norway, Denmark)</option>
+              <option value="Western Europe">Western Europe (broad)</option>
+            </optgroup>
+            <optgroup label="North America">
+              <option value="United States">United States</option>
+              <option value="Canada">Canada</option>
+              <option value="US & Canada">US & Canada</option>
+            </optgroup>
+            <optgroup label="Asia">
+              <option value="China">China (Mainland)</option>
+              <option value="Japan">Japan</option>
+              <option value="South Korea">South Korea</option>
+              <option value="Hong Kong">Hong Kong</option>
+              <option value="Taiwan">Taiwan</option>
+              <option value="Singapore">Singapore</option>
+              <option value="Southeast Asia">Southeast Asia (TH, MY, ID, PH, VN)</option>
+              <option value="South Asia">South Asia (IN, PK, BD)</option>
+            </optgroup>
+            <optgroup label="Pacific & Middle East">
+              <option value="Australia">Australia</option>
+              <option value="Australia & NZ">Australia & New Zealand</option>
+              <option value="Middle East">Middle East (UAE, SA, KW)</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option value="Global / Mixed">Global / Mixed (multiple regions)</option>
+              <option value="other">Other — specify below</option>
+            </optgroup>
+          </select>
+          <input type="text" id="s1-region-custom" placeholder="e.g. East Africa, Brazil, Eastern Europe…" style="display:none;margin-top:8px;background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;padding:11px 14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);outline:none;width:100%;transition:border-color .2s" onfocus="this.style.borderColor='var(--focus)'" onblur="this.style.borderColor='var(--stroke)'">
+        </div>
+        <div class="fg">
+          <label>Content posting frequency</label>
+          <select id="s1-freq">
+            <option value="">Select frequency</option>
+            <option>Daily</option>
+            <option>4–6 times per week</option>
+            <option>2–3 times per week</option>
+            <option>Weekly</option>
+            <option>A few times per month</option>
+            <option>Just starting out</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Where are you in your creator journey?</label>
+        <div class="radio-grid" id="journey-group">
+          <div class="radio-card" onclick="pickRadio(this,'journey-group')">
+            <div class="rc-dot"></div>
+            <div><div class="cc-name">Established creator</div><div class="cc-desc">Active audience, consistent posting history, at least one prior brand collaboration</div></div>
+          </div>
+          <div class="radio-card" onclick="pickRadio(this,'journey-group')">
+            <div class="rc-dot"></div>
+            <div><div class="cc-name">Growing creator</div><div class="cc-desc">Posting regularly and building an audience — looking for first or early brand partnerships</div></div>
+          </div>
+          <div class="radio-card" onclick="pickRadio(this,'journey-group')">
+            <div class="rc-dot"></div>
+            <div><div class="cc-name">Exploring & learning</div><div class="cc-desc">Haven't started yet or in early experimentation — open to UGC-only to build portfolio</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sv-foot">
+      <div class="prog-row"><div class="pdot now"></div><div class="pdot"></div><div class="pdot"></div><div class="pdot"></div><div class="pdot"></div></div>
+      <div class="act-row"><button class="btn-p" onclick="runStep(1)">Analyse ↗</button><button class="btn-g" onclick="goStep(2)">Next →</button></div>
+    </div>
+  </div>
+
+  <!-- ─── STEP 2 ─── -->
+  <div class="sv" id="view-2">
+    <div class="sv-head">
+      <span class="sv-eye">Step 2 — Content Focus & Expertise</span>
+      <div class="sv-h">Define Your Authority Pillar</div>
+      <div class="sv-d">Brands don't just want reach — they want trust in a specific niche. The more precisely you can articulate what you're known for, the higher the quality of your matches.</div>
+    </div>
+    <div class="sv-body">
+      <div class="fg">
+        <label>Primary content pillar <span class="sub">— your main niche focus</span></label>
+        <select id="s2-pillar">
+          <option value="">Select your primary niche</option>
+          <optgroup label="Skincare">
+            <option>Skincare — Ingredient science & formulation</option>
+            <option>Skincare — Sensitive & reactive skin</option>
+            <option>Skincare — Anti-ageing & longevity</option>
+            <option>Skincare — Clean & natural beauty</option>
+            <option>Skincare — Budget & accessible beauty</option>
+            <option>Skincare — Dermatology & clinical approach</option>
+            <option>Skincare — Melanin-rich & inclusive beauty</option>
+          </optgroup>
+          <optgroup label="Health & Wellness">
+            <option>Health — Gut health & microbiome</option>
+            <option>Health — Hormones & women's health</option>
+            <option>Health — Supplements & nutrition</option>
+            <option>Health — Mental wellness & self-care</option>
+            <option>Health — Fitness & active lifestyle</option>
+          </optgroup>
+          <optgroup label="Lifestyle">
+            <option>Lifestyle — Sustainable & ethical living</option>
+            <option>Lifestyle — Wellness routines & habits</option>
+            <option>Lifestyle — Beauty & self-confidence</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label>Secondary sub-niches <span class="sub">— type + Enter</span></label>
+        <div class="tagwrap" id="tw-niche"><input id="ti-niche" placeholder="e.g. Hyperpigmentation, SPF education, fragrance-free, minimalist routines…"></div>
+      </div>
+
+      <div class="fg">
+        <label>Your strength pitch <span class="sub">— one sentence describing your unique content style</span></label>
+        <input id="s2-pitch" placeholder="e.g. I break down complex skincare ingredients into honest, no-nonsense reviews for sensitive skin.">
+        <div class="fhint">This becomes the first line of your creator profile — make it specific, not generic.</div>
+      </div>
+
+      <div class="fg">
+        <label>Your typical audience profile <span class="sub">— who actually watches/reads your content</span></label>
+        <input id="s2-audience" placeholder="e.g. Women 28–42, UK-based, ingredient-conscious, spending £30–80 on skincare monthly">
+      </div>
+
+      <div class="fg">
+        <label>Technical capabilities <span class="sub">— select everything that applies to your current setup</span></label>
+        <div class="check-grid">
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">On-camera presenting</div><div class="cc-desc">Comfortable presenting face-to-camera — talking head, tutorials, reviews</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Professional lighting / studio setup</div><div class="cc-desc">Ring light, softbox, or a dedicated well-lit filming space</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Video editing & post-production</div><div class="cc-desc">Can cut, colour-grade, add captions, sound design, and export finished assets</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Voiceover & narration</div><div class="cc-desc">Can record clear, professional voice commentary without on-camera appearance</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Photography & still imagery</div><div class="cc-desc">Product flatlay, lifestyle photography, editorial-quality stills for brand use</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Scriptwriting & copywriting</div><div class="cc-desc">Can write brand briefs, captions, scripts, and long-form written reviews</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sv-foot">
+      <div class="prog-row"><div class="pdot done"></div><div class="pdot now"></div><div class="pdot"></div><div class="pdot"></div><div class="pdot"></div></div>
+      <div class="act-row"><button class="btn-b" onclick="goStep(1)">← Back</button><button class="btn-p" onclick="runStep(2)">Analyse ↗</button><button class="btn-g" onclick="goStep(3)">Next →</button></div>
+    </div>
+  </div>
+
+  <!-- ─── STEP 3 ─── -->
+  <div class="sv" id="view-3">
+    <div class="sv-head">
+      <span class="sv-eye">Step 3 — Conversion & Strategy</span>
+      <div class="sv-h">Your Commercial Approach</div>
+      <div class="sv-d">Brands need to know how you create and what formats perform best for your audience. This shapes which campaign types you'll be matched with.</div>
+    </div>
+    <div class="sv-body">
+      <div class="fg">
+        <label>Which content format drives the most engagement for you?</label>
+        <div class="radio-grid" id="format-group">
+          <div class="radio-card" onclick="pickRadio(this,'format-group')"><div class="rc-dot"></div><div><div class="cc-name">Short-form video (Reels / TikTok)</div><div class="cc-desc">Under 90 seconds — quick reviews, routines, reactions, before/after</div></div></div>
+          <div class="radio-card" onclick="pickRadio(this,'format-group')"><div class="rc-dot"></div><div><div class="cc-name">Long-form video (YouTube reviews)</div><div class="cc-desc">5+ minute deep dives, first impressions, ingredient breakdowns</div></div></div>
+          <div class="radio-card" onclick="pickRadio(this,'format-group')"><div class="rc-dot"></div><div><div class="cc-name">Aesthetic photo & carousel (Instagram)</div><div class="cc-desc">Editorial stills, product flatlay, lifestyle photography, swipeable carousels</div></div></div>
+          <div class="radio-card" onclick="pickRadio(this,'format-group')"><div class="rc-dot"></div><div><div class="cc-name">Written reviews & editorial</div><div class="cc-desc">In-depth written content — blog, newsletter, long-form caption with real detail</div></div></div>
+          <div class="radio-card" onclick="pickRadio(this,'format-group')"><div class="rc-dot"></div><div><div class="cc-name">Mixed / platform-agnostic UGC</div><div class="cc-desc">Adaptable assets the brand can repurpose across their own channels</div></div></div>
+          <div class="radio-card" onclick="pickRadio(this,'format-group')"><div class="rc-dot"></div><div><div class="cc-name">I haven't established this yet</div><div class="cc-desc">Still exploring formats — open to brand guidance on what works for their product</div></div></div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Self-reported average engagement rate <span class="sub">— on your primary platform</span></label>
+        <select id="s3-eng">
+          <option value="">Select range</option>
+          <option>Under 1% (low — needs improvement)</option>
+          <option>1–3% (average for the platform)</option>
+          <option>3–6% (above average — strong signal)</option>
+          <option>6–10% (high — loyal niche audience)</option>
+          <option>Over 10% (exceptional — highly engaged community)</option>
+          <option>I don't know yet / just starting</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label>Best-performing content example <span class="sub">— paste a link to a post that best shows your work</span></label>
+        <input id="s3-example" type="url" placeholder="https://www.instagram.com/p/… or https://www.tiktok.com/@…">
+        <div class="fhint">This is optional but strongly recommended — it's the first thing brands look at when reviewing your profile.</div>
+      </div>
+
+      <div class="fg">
+        <label>Creator role — which best describes how you work?</label>
+        <div class="radio-grid" id="role-group">
+          <div class="radio-card" onclick="pickRadio(this,'role-group')"><div class="rc-dot"></div><div><div class="cc-name">UGC only — I create for brands to post</div><div class="cc-desc">I produce the assets. The brand owns and posts the content. I don't post to my feed.</div></div></div>
+          <div class="radio-card" onclick="pickRadio(this,'role-group')"><div class="rc-dot"></div><div><div class="cc-name">Influencer — I post to my own audience</div><div class="cc-desc">I post to my feed and drive my audience to the brand's product or link.</div></div></div>
+          <div class="radio-card" onclick="pickRadio(this,'role-group')"><div class="rc-dot"></div><div><div class="cc-name">Hybrid — I do both</div><div class="cc-desc">I can provide raw UGC assets and also post to my audience depending on the deal.</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sv-foot">
+      <div class="prog-row"><div class="pdot done"></div><div class="pdot done"></div><div class="pdot now"></div><div class="pdot"></div><div class="pdot"></div></div>
+      <div class="act-row"><button class="btn-b" onclick="goStep(2)">← Back</button><button class="btn-p" onclick="runStep(3)">Analyse ↗</button><button class="btn-g" onclick="goStep(4)">Next →</button></div>
+    </div>
+  </div>
+
+  <!-- ─── STEP 4 ─── -->
+  <div class="sv" id="view-4">
+    <div class="sv-head">
+      <span class="sv-eye">Step 4 — Strategic Alignment</span>
+      <div class="sv-h">Define Your Partnership Parameters</div>
+      <div class="sv-d">The more specific your preferences, the higher the quality of brand matches. These parameters filter every brand that will ever see your profile.</div>
+    </div>
+    <div class="sv-body">
+      <div class="fg">
+        <label>Product categories you will focus on <span class="sub">— select all that genuinely fit your content</span></label>
+        <div class="cat-grid" id="cat-grid">
+          <div class="cat-chip" onclick="togCat(this)">Functional Skincare</div>
+          <div class="cat-chip" onclick="togCat(this)">Clean Beauty</div>
+          <div class="cat-chip" onclick="togCat(this)">Colour Cosmetics</div>
+          <div class="cat-chip" onclick="togCat(this)">Hair Care</div>
+          <div class="cat-chip" onclick="togCat(this)">Supplements & Vitamins</div>
+          <div class="cat-chip" onclick="togCat(this)">Women's Health</div>
+          <div class="cat-chip" onclick="togCat(this)">Gut Health & Nutrition</div>
+          <div class="cat-chip" onclick="togCat(this)">Mental Wellness</div>
+          <div class="cat-chip" onclick="togCat(this)">Fitness & Sports</div>
+          <div class="cat-chip" onclick="togCat(this)">Sustainable / Eco</div>
+          <div class="cat-chip" onclick="togCat(this)">Pet Wellness</div>
+          <div class="cat-chip" onclick="togCat(this)">Baby & Family</div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>How do you approach skincare or health product content?</label>
+        <div class="check-grid">
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">The Educator</div><div class="cc-desc">Break down ingredients, mechanisms, clinical evidence — your audience trusts you to do the research</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">The Honest Reviewer</div><div class="cc-desc">Test products over time, share real results with no filter — positive and negative alike</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">The Transformer</div><div class="cc-desc">Before/after documentation, skin journey storytelling, visible results over weeks or months</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">The Lifestyle Integrator</div><div class="cc-desc">Products woven naturally into daily routine content — aspirational, aesthetic, habitual</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">The Entertainer</div><div class="cc-desc">Comedy, reaction, storytelling — entertainment-first with product placement that doesn't feel like an ad</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">The Community Builder</div><div class="cc-desc">Q&A, polls, comment-driven content — your audience participates in your product decisions</div></div></div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Collaboration deal types — what are you open to?</label>
+        <div class="check-grid">
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Affiliate / commission-based</div><div class="cc-desc">Earn a % of each sale you drive — long-term income potential, scales with your audience</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Flat fee per asset</div><div class="cc-desc">Fixed payment per piece of content delivered — predictable income, UGC-focused</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Product seeding only</div><div class="cc-desc">Free product in exchange for honest review — best for building portfolio early in your journey</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Long-term brand ambassador</div><div class="cc-desc">Ongoing relationship with a single brand — recurring content, deeper integration, stronger trust signal</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sv-foot">
+      <div class="prog-row"><div class="pdot done"></div><div class="pdot done"></div><div class="pdot done"></div><div class="pdot now"></div><div class="pdot"></div></div>
+      <div class="act-row"><button class="btn-b" onclick="goStep(3)">← Back</button><button class="btn-p" onclick="runStep(4)">Analyse ↗</button><button class="btn-g" onclick="goStep(5)">Next →</button></div>
+    </div>
+  </div>
+
+  <!-- ─── STEP 5 ─── -->
+  <div class="sv" id="view-5">
+    <div class="sv-head">
+      <span class="sv-eye">Step 5 — Creator Readiness Report</span>
+      <div class="sv-h">Your Honest Self-Evaluation</div>
+      <div class="sv-d">This is the most important step. Brands on Bridgr have access to your self-assessment. Honesty here builds trust — and trust is what converts into long-term deals.</div>
+    </div>
+    <div class="sv-body">
+      <div class="fg">
+        <label>What is currently blocking your growth as a creator?</label>
+        <div class="check-grid">
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Inconsistent posting schedule</div><div class="cc-desc">Struggling to maintain regular output due to time, energy, or motivation</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Limited production quality</div><div class="cc-desc">Equipment, lighting, or editing skills not yet where I want them</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Audience growth has plateaued</div><div class="cc-desc">Reach is not increasing despite consistent content</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Unclear niche or content direction</div><div class="cc-desc">Haven't found a specific angle that strongly resonates with an audience</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">No brand collaboration experience yet</div><div class="cc-desc">Haven't worked with any brands — looking for a first partnership to build the portfolio</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Don't know how to price or negotiate deals</div><div class="cc-desc">Unsure what to charge and how to structure a fair deal with brands</div></div></div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>What are your strongest assets right now?</label>
+        <div class="check-grid">
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Deep niche authority & credibility</div><div class="cc-desc">My audience trusts me specifically because of what I know about this category</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">High engagement relative to following</div><div class="cc-desc">My audience is small but highly interactive — comments, shares, saves, DMs</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Strong production quality</div><div class="cc-desc">My content looks and sounds professional even on a modest setup</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Proven conversion track record</div><div class="cc-desc">I have data showing my recommendations drive actual purchases or actions</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Clear authentic voice</div><div class="cc-desc">My audience would immediately notice if I promoted something I didn't genuinely believe in</div></div></div>
+        </div>
+      </div>
+
+      <div class="fdiv"></div>
+
+      <div class="fg">
+        <label>Monthly time commitment available for brand partnerships</label>
+        <div class="commit-val" id="commit-val">8 hours / month</div>
+        <input type="range" class="commit-range" id="commit-sl" min="2" max="40" step="1" value="8" oninput="updCommit(this.value)">
+        <div class="fhint">This helps brands understand your realistic capacity — be honest, not aspirational.</div>
+      </div>
+
+      <div class="fg">
+        <label>What does a successful brand deal look like for you?</label>
+        <div class="check-grid">
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Products I genuinely use and believe in</div><div class="cc-desc">I'll promote anything I'd recommend to my closest friends — nothing else</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Creative freedom within a brief</div><div class="cc-desc">I need space to make the content feel like me — over-scripted briefs don't perform</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Recurring partnership, not a one-off</div><div class="cc-desc">I build trust with my audience through repeated, genuine endorsement — not single posts</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Fair commission structure with upside</div><div class="cc-desc">I'd rather earn 20% of real sales than a flat fee that doesn't reward performance</div></div></div>
+          <div class="check-card" onclick="toggleCheck(this)"><div class="cc-box">✓</div><div class="cc-info"><div class="cc-name">Clear communication and fast feedback</div><div class="cc-desc">I want brands who brief clearly, give feedback quickly, and treat me professionally</div></div></div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>Anything else brands should know about working with you? <span class="sub">(optional)</span></label>
+        <textarea id="s5-extra" placeholder="e.g. I only work with fragrance-free products due to my own skin sensitivities. I require a 2-week usage period before posting any review. I don't do 'scripted to camera' content."></textarea>
+      </div>
+    </div>
+    <div class="sv-foot">
+      <div class="prog-row"><div class="pdot done"></div><div class="pdot done"></div><div class="pdot done"></div><div class="pdot done"></div><div class="pdot now"></div></div>
+      <div class="act-row"><button class="btn-b" onclick="goStep(4)">← Back</button><button class="btn-p" onclick="runStep(5)">Generate Creator Report ↗</button></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- RIGHT PANEL -->
+<aside class="rp">
+  <div class="rp-top">
+    <div class="rp-title">◈ Creator Intelligence Profile</div>
+    <div class="rp-live" id="rp-live">Building…</div>
+  </div>
+  <div class="rp-scroll" id="rp-scroll">
+
+    <div class="psec dim" id="ps-1">
+      <div class="ps-head"><span class="ps-title" id="pst-1">01 — Identity</span><span class="ps-tag" id="ptg-1">Pending</span></div>
+      <div id="psc-1"><div class="ph" style="margin-bottom:5px"></div><div class="ph" style="width:65%"></div></div>
+    </div>
+
+    <div class="psec dim" id="ps-2">
+      <div class="ps-head"><span class="ps-title" id="pst-2">02 — Platform Presence</span><span class="ps-tag" id="ptg-2">Pending</span></div>
+      <div id="psc-2"><div class="ph"></div></div>
+    </div>
+
+    <div class="psec dim" id="ps-3">
+      <div class="ps-head"><span class="ps-title" id="pst-3">03 — Authority Pillar</span><span class="ps-tag" id="ptg-3">Pending</span></div>
+      <div id="psc-3"><div class="ph"></div></div>
+    </div>
+
+    <div class="psec dim" id="ps-4">
+      <div class="ps-head"><span class="ps-title" id="pst-4">04 — Technical Capabilities</span><span class="ps-tag" id="ptg-4">Pending</span></div>
+      <div id="psc-4"><div class="ph"></div></div>
+    </div>
+
+    <div class="psec dim" id="ps-5">
+      <div class="ps-head"><span class="ps-title" id="pst-5">05 — Content Strategy</span><span class="ps-tag" id="ptg-5">Pending</span></div>
+      <div id="psc-5"><div class="ph"></div></div>
+    </div>
+
+    <div class="psec dim" id="ps-6">
+      <div class="ps-head"><span class="ps-title" id="pst-6">06 — Category & Deal Fit</span><span class="ps-tag" id="ptg-6">Pending</span></div>
+      <div id="psc-6"><div class="ph"></div></div>
+    </div>
+
+    <div class="psec dim" id="ps-7">
+      <div class="ps-head"><span class="ps-title" id="pst-7">07 — Creator Readiness</span><span class="ps-tag" id="ptg-7">Pending</span></div>
+      <div id="psc-7"><div class="ph"></div></div>
+    </div>
+
+    <div class="psec dim" id="ps-8" style="display:none">
+      <div class="ps-head"><span class="ps-title" id="pst-8">08 — Match Score & Report</span><span class="ps-tag" id="ptg-8">Pending</span></div>
+      <div id="psc-8"><div class="ph"></div></div>
+    </div>
+
+    <div id="apply-cta" style="display:none">
+      <div class="apply-section">
+        <div class="apply-card">
+          <p>Your creator intelligence profile is complete. Create an account to publish your creator profile, start browsing the product pool, and receive brand match notifications.</p>
+          <button onclick="alert('Redirecting to creator account setup…')">Build my creator profile →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</aside>
+
+</div><!-- /shell -->
+
+<script>
+let cur = 1;
+const titles = ['Identity & Reach','Content Focus & Expertise','Conversion & Strategy','Strategic Alignment','Creator Readiness Report'];
+
+/* ── Navigation ── */
+function goStep(n) {
+  document.getElementById('view-' + cur).classList.remove('show');
+  document.querySelectorAll('.snav').forEach((el,i) => {
+    el.classList.remove('active');
+    if (i+1 < n) el.classList.add('done'); else el.classList.remove('done');
+  });
+  cur = n;
+  document.getElementById('view-' + n).classList.add('show');
+  document.getElementById('snav-' + n).classList.add('active');
+  document.getElementById('nav-step').textContent = 'Step ' + n + ' — ' + titles[n-1];
+}
+function nextStep() { if (cur < 5) goStep(cur+1); }
+
+/* ── Form interactions ── */
+function toggleCheck(el) {
+  el.classList.toggle('on');
+  el.querySelector('.cc-box').textContent = el.classList.contains('on') ? '✓' : '';
+}
+function pickRadio(el, groupId) {
+  document.querySelectorAll('#' + groupId + ' .radio-card').forEach(r => r.classList.remove('on'));
+  el.classList.add('on');
+}
+function togCat(el) { el.classList.toggle('on'); }
+
+function addPlatform() {
+  const list = document.getElementById('platform-list');
+  if (list.children.length >= 5) return;
+  const row = document.createElement('div'); row.className = 'pl-row';
+  row.innerHTML = `<select class="pl-platform"><option value="">Platform</option><option>Instagram</option><option>TikTok</option><option>YouTube</option><option>Pinterest</option><option>Lemon8</option><option>X / Twitter</option><option>LinkedIn</option><option>Snapchat</option><option>Facebook</option><option>Other</option></select><input type="url" class="pl-input" placeholder="Paste your profile link here…"><button class="pl-del" onclick="delPlatform(this)">×</button>`;
+  list.appendChild(row); row.querySelector('input').focus();
+}
+function delPlatform(btn) {
+  const list = document.getElementById('platform-list');
+  if (list.children.length > 1) btn.parentElement.remove();
+}
+
+function initTag(wid, iid) {
+  const wrap = document.getElementById(wid);
+  const inp = document.getElementById(iid);
+  if (!wrap || !inp) return;
+  inp.addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ',') && inp.value.trim()) {
+      e.preventDefault();
+      const chip = document.createElement('div'); chip.className = 'tchip';
+      chip.innerHTML = inp.value.trim().replace(',','') + ' <span class="tchip-x" onclick="this.parentElement.remove()">×</span>';
+      wrap.insertBefore(chip, inp); inp.value = '';
+    }
+  });
+  wrap.addEventListener('click', () => inp.focus());
+}
+initTag('tw-niche', 'ti-niche');
+
+function updCommit(v) {
+  document.getElementById('commit-val').textContent = v + ' hours / month';
+}
+
+/* ── Engine status ── */
+function setEngine(on) {
+  document.getElementById('eng-led').className = on ? 'eng-led on' : 'eng-led';
+  document.getElementById('eng-txt').textContent = on ? 'Analysing…' : 'Ready';
+  const b = document.getElementById('rp-live');
+  b.className = on ? 'rp-live on' : 'rp-live';
+  b.textContent = on ? 'Live' : 'Building…';
+}
+
+/* ── Section helpers ── */
+function shimSec(id) {
+  const sec = document.getElementById('ps-' + id);
+  sec.classList.remove('dim');
+  document.getElementById('ptg-' + id).className = 'ps-tag running';
+  document.getElementById('ptg-' + id).textContent = 'Analysing…';
+  document.getElementById('psc-' + id).innerHTML = `<div style="display:flex;flex-direction:column;gap:6px"><div class="shimmer" style="width:55%"></div><div class="shimmer"></div><div class="shimmer" style="width:72%"></div></div>`;
+}
+function fillSec(id, html) {
+  document.getElementById('ps-' + id).classList.remove('dim');
+  document.getElementById('pst-' + id).className = 'ps-title filled';
+  document.getElementById('ptg-' + id).className = 'ps-tag done';
+  document.getElementById('ptg-' + id).textContent = 'Done';
+  document.getElementById('psc-' + id).innerHTML = html;
+  setTimeout(() => {
+    document.getElementById('psc-' + id).querySelectorAll('.dbar-f').forEach(b => {
+      const w = b.dataset.w || b.style.width;
+      b.style.width = '0'; setTimeout(() => b.style.width = w, 60);
+    });
+  }, 60);
+}
+
+/* ── Run analyses ── */
+function runStep(step) {
+  setEngine(true);
+  setTimeout(() => setEngine(false), 1700);
+
+  if (step === 1) {
+    shimSec(1); shimSec(2);
+    setTimeout(() => {
+      fillSec(1, `<div class="dkv">
+        <div class="kvr"><span class="kv-k">Creator handle</span><span class="kv-v g">${document.getElementById('s1-handle').value || '@yourhandle'}</span></div>
+        <div class="kvr"><span class="kv-k">Age</span><span class="kv-v">${calcAge(document.getElementById('s1-dob').value)}</span></div>
+        <div class="kvr"><span class="kv-k">Primary region</span><span class="kv-v">${document.getElementById('s1-region').value === 'other' ? (document.getElementById('s1-region-custom').value || 'Other') : (document.getElementById('s1-region').value || 'United Kingdom')}</span></div>
+        <div class="kvr"><span class="kv-k">Posting frequency</span><span class="kv-v">${document.getElementById('s1-freq').value || '2–3× per week'}</span></div>
+        <div class="kvr"><span class="kv-k">Journey stage</span><span class="kv-v g">${getSelected('journey-group') || 'Growing creator'}</span></div>
+      </div>
+      ${document.getElementById('s1-intro').value ? `<div style="margin-top:9px;padding:10px 12px;background:var(--card);border-radius:8px;border:1px solid var(--stroke)"><div style="font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px">Self-introduction</div><div style="font-size:11px;color:var(--cream2);line-height:1.6">${document.getElementById('s1-intro').value.slice(0,160)}${document.getElementById('s1-intro').value.length > 160 ? '…' : ''}</div></div>` : ''}`);
+      fillSec(2, `<div class="dtiles">
+        <div class="dtile"><span class="dt-l">Platforms linked</span><span class="dt-v tv-g">${document.getElementById('platform-list').children.length}</span><span class="dt-s">Connected profiles</span></div>
+        <div class="dtile"><span class="dt-l">Primary region</span><span class="dt-v tv-a" style="font-size:16px;margin-top:4px">${(document.getElementById('s1-region').value || 'UK').split(' ')[0]}</span><span class="dt-s">Audience geography</span></div>
+      </div>
+      <div class="dchips" style="margin-top:8px">
+        <span class="dc dc-g">Instagram</span><span class="dc dc-g">TikTok</span><span class="dc dc-n">Profile linked</span>
+      </div>`);
+    }, 1600);
+  }
+
+  if (step === 2) {
+    shimSec(3); shimSec(4);
+    setTimeout(() => {
+      const pillar = document.getElementById('s2-pillar').value || 'Skincare — Ingredient science';
+      const pitch = document.getElementById('s2-pitch').value || 'Honest, ingredient-led skincare reviews for sensitive skin';
+      const caps = document.querySelectorAll('#view-2 .check-card.on').length;
+      fillSec(3, `<div class="dkv">
+        <div class="kvr"><span class="kv-k">Authority pillar</span><span class="kv-v g" style="font-size:10px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;max-width:180px;text-align:right;line-height:1.3">${pillar.split('—')[1]?.trim() || pillar}</span></div>
+        <div class="kvr"><span class="kv-k">Audience profile</span><span class="kv-v" style="font-size:10px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:400;max-width:180px;text-align:right;line-height:1.3">${document.getElementById('s2-audience').value || 'Women 28–42, UK, ingredient-conscious'}</span></div>
+      </div>
+      <div style="margin-top:9px;padding:10px 12px;background:var(--card);border-radius:8px;border:1px solid var(--stroke)">
+        <div style="font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Strength pitch</div>
+        <div style="font-size:12px;color:var(--cream2);line-height:1.55;font-style:italic">"${pitch}"</div>
+      </div>`);
+      fillSec(4, `<div class="dkv">
+        <div class="kvr"><span class="kv-k">Technical capabilities</span><span class="kv-v g">${caps} selected</span></div>
+        <div class="kvr"><span class="kv-k">Production readiness</span><span class="kv-v a">${caps >= 4 ? 'High' : caps >= 2 ? 'Medium' : 'Building'}</span></div>
+      </div>
+      <div class="dbars" style="margin-top:9px">
+        <div class="dbar"><div class="dbar-l">On-camera</div><div class="dbar-t"><div class="dbar-f dbf-g" style="width:80%" data-w="80%"></div></div><div class="dbar-v dbv-g">Ready</div></div>
+        <div class="dbar"><div class="dbar-l">Production</div><div class="dbar-t"><div class="dbar-f dbf-a" style="width:65%" data-w="65%"></div></div><div class="dbar-v dbv-a">Good</div></div>
+        <div class="dbar"><div class="dbar-l">Editing</div><div class="dbar-t"><div class="dbar-f dbf-g" style="width:55%" data-w="55%"></div></div><div class="dbar-v dbv-g">Set</div></div>
+      </div>`);
+    }, 1600);
+  }
+
+  if (step === 3) {
+    shimSec(5);
+    setTimeout(() => {
+      const format = getSelected('format-group') || 'Short-form video (Reels / TikTok)';
+      const role = getSelected('role-group') || 'Hybrid — I do both';
+      const eng = document.getElementById('s3-eng').value || '3–6% (above average)';
+      fillSec(5, `<div class="dkv">
+        <div class="kvr"><span class="kv-k">Best format</span><span class="kv-v g" style="font-size:10px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;max-width:160px;text-align:right;line-height:1.3">${format.split('(')[0].trim()}</span></div>
+        <div class="kvr"><span class="kv-k">Creator role</span><span class="kv-v" style="font-size:10px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;max-width:160px;text-align:right;line-height:1.3">${role.split('—')[0].trim()}</span></div>
+        <div class="kvr"><span class="kv-k">Engagement rate</span><span class="kv-v a">${eng.split('(')[0].trim()}</span></div>
+      </div>
+      <div class="dchips" style="margin-top:8px">
+        <span class="dc dc-g">Short-form video</span>
+        <span class="dc dc-a">Hybrid creator</span>
+        <span class="dc dc-n">UGC capable</span>
+      </div>`);
+    }, 1600);
+  }
+
+  if (step === 4) {
+    shimSec(6);
+    setTimeout(() => {
+      const cats = document.querySelectorAll('#cat-grid .cat-chip.on');
+      const catNames = Array.from(cats).map(c => c.textContent).slice(0,4);
+      const roles = document.querySelectorAll('#view-4 .check-card.on').length;
+      fillSec(6, `<div class="dkv">
+        <div class="kvr"><span class="kv-k">Categories selected</span><span class="kv-v g">${cats.length}</span></div>
+        <div class="kvr"><span class="kv-k">Content approaches</span><span class="kv-v g">${roles}</span></div>
+        <div class="kvr"><span class="kv-k">Brand match pool</span><span class="kv-v a">34 brands</span></div>
+      </div>
+      <div class="dchips" style="margin-top:8px">
+        ${catNames.map(n => `<span class="dc dc-g">${n}</span>`).join('')}
+        ${cats.length > 4 ? `<span class="dc dc-n">+${cats.length-4} more</span>` : ''}
+      </div>
+      <div class="dbars" style="margin-top:9px">
+        <div class="dbar"><div class="dbar-l">Affiliate</div><div class="dbar-t"><div class="dbar-f dbf-g" style="width:90%" data-w="90%"></div></div><div class="dbar-v dbv-g">Open</div></div>
+        <div class="dbar"><div class="dbar-l">UGC flat fee</div><div class="dbar-t"><div class="dbar-f dbf-g" style="width:75%" data-w="75%"></div></div><div class="dbar-v dbv-g">Open</div></div>
+        <div class="dbar"><div class="dbar-l">Seeding</div><div class="dbar-t"><div class="dbar-f dbf-a" style="width:50%" data-w="50%"></div></div><div class="dbar-v dbv-a">Maybe</div></div>
+      </div>`);
+    }, 1600);
+  }
+
+  if (step === 5) {
+    document.getElementById('ps-8').style.display = '';
+    shimSec(7); shimSec(8);
+    const commit = document.getElementById('commit-sl').value;
+    setTimeout(() => {
+      const blocks = document.querySelectorAll('#view-5 .check-card.on').length;
+      fillSec(7, `<div class="dkv">
+        <div class="kvr"><span class="kv-k">Monthly availability</span><span class="kv-v g">${commit} hrs / month</span></div>
+        <div class="kvr"><span class="kv-k">Blockers identified</span><span class="kv-v a">${Math.min(blocks, 3)}</span></div>
+        <div class="kvr"><span class="kv-k">Strengths confirmed</span><span class="kv-v g">${Math.max(blocks - 3, 2)}</span></div>
+        <div class="kvr"><span class="kv-k">Deal expectations</span><span class="kv-v">Defined</span></div>
+      </div>
+      <div class="dacts" style="margin-top:9px">
+        <div class="dact block"><span class="da-ico">⚠</span><div class="da-txt"><strong>Watch:</strong> Inconsistent posting is the top reason brands don't re-engage after a first deal.</div></div>
+        <div class="dact strength"><span class="da-ico">↑</span><div class="da-txt"><strong>Strength:</strong> Niche authority + honest voice is the combination brands on Bridgr value most.</div></div>
+      </div>`);
+
+      setTimeout(() => {
+        fillSec(8, `<div class="score-ring-wrap">
+          <div class="score-ring">
+            <svg width="66" height="66" viewBox="0 0 66 66">
+              <circle cx="33" cy="33" r="27" fill="none" stroke="var(--stroke)" stroke-width="5"/>
+              <circle cx="33" cy="33" r="27" fill="none" stroke="var(--green)" stroke-width="5"
+                stroke-dasharray="${2*Math.PI*27}"
+                stroke-dashoffset="${2*Math.PI*27*(1-0.74)}"
+                stroke-linecap="round"/>
+            </svg>
+            <div class="score-num">74</div>
+          </div>
+          <div>
+            <span class="score-label">Creator Match Score</span>
+            <div class="score-tier">Ready to Partner</div>
+            <div class="score-sub">Niche-led, high-trust profile</div>
+          </div>
+        </div>
+        <div class="dacts" style="margin-top:9px">
+          <div class="dact block"><span class="da-ico">⚠</span><div class="da-txt"><strong>Gap:</strong> No verified engagement data yet — link a platform to unlock verified stats and increase your score.</div></div>
+          <div class="dact block"><span class="da-ico">⚠</span><div class="da-txt"><strong>Gap:</strong> No prior brand collaboration on record — a product seeding deal would close this gap quickly.</div></div>
+          <div class="dact strength"><span class="da-ico">↑</span><div class="da-txt"><strong>Strength:</strong> Clear authority pillar + defined content approach — brands know exactly what they're getting.</div></div>
+          <div class="dact strength"><span class="da-ico">↑</span><div class="da-txt"><strong>Strength:</strong> Open to affiliate commission — aligns incentives with brand outcomes, making you a stronger long-term partner.</div></div>
+          <div class="dact next"><span class="da-ico">→</span><div class="da-txt"><strong>First step:</strong> Complete your creator profile and browse the product pool. Review 3 products to begin building your standing score.</div></div>
+          <div class="dact next"><span class="da-ico">→</span><div class="da-txt"><strong>Second step:</strong> Apply to the next Bridgr event — meet brands who've already seen your profile.</div></div>
+        </div>`);
+        document.getElementById('apply-cta').style.display = '';
+        setTimeout(() => {
+          document.getElementById('rp-scroll').scrollTop = document.getElementById('rp-scroll').scrollHeight;
+        }, 300);
+        setTimeout(() => showCreatorSignup(), 2200);
+      }, 600);
+    }, 1600);
+  }
+}
+
+function toggleRegionCustom(val) {
+  const custom = document.getElementById('s1-region-custom');
+  if (val === 'other') {
+    custom.style.display = 'block';
+    custom.focus();
+  } else {
+    custom.style.display = 'none';
+    custom.value = '';
+  }
+}
+
+function calcAge(dob) {
+  if (!dob) return '—';
+  const today = new Date();
+  const birth = new Date(dob);
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  if (age < 0 || age > 100) return '—';
+  return age + ' years old';
+}
+
+function getSelected(groupId) {
+  const el = document.querySelector('#' + groupId + ' .radio-card.on .cc-name');
+  return el ? el.textContent : null;
+}
+
+function updCommit(v) {
+  document.getElementById('commit-val').textContent = v + ' hours / month';
+}
+
+/* ── Creator signup modal ── */
+function showCreatorSignup() {
+  document.getElementById('creator-overlay').style.display = 'flex';
+}
+function closeCreatorModal() {
+  document.getElementById('creator-overlay').style.display = 'none';
+}
+function switchCreatorTab(t) {
+  const su = document.getElementById('cform-signup');
+  const li = document.getElementById('cform-login');
+  const tsu = document.getElementById('ctab-su');
+  const tli = document.getElementById('ctab-li');
+  if (t === 'signup') {
+    su.style.display = 'flex'; li.style.display = 'none';
+    tsu.style.background = 'var(--green-d)'; tsu.style.color = '#fff';
+    tli.style.background = 'transparent'; tli.style.color = 'var(--muted)';
+  } else {
+    su.style.display = 'none'; li.style.display = 'flex';
+    tli.style.background = 'var(--green-d)'; tli.style.color = '#fff';
+    tsu.style.background = 'transparent'; tsu.style.color = 'var(--muted)';
+  }
+}
+function doCreatorSignup() {
+  document.getElementById('cform-signup').style.display = 'none';
+  document.getElementById('cform-login').style.display = 'none';
+  document.getElementById('csuccess').style.display = 'flex';
+}
+</script>
+
+<!-- CREATOR SIGNUP MODAL -->
+<div id="creator-overlay" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(8,10,16,0.88);backdrop-filter:blur(10px);align-items:center;justify-content:center">
+  <div style="background:#13161e;border:1.5px solid rgba(255,255,255,0.1);border-radius:18px;width:100%;max-width:500px;margin:20px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.7);animation:min .35s cubic-bezier(.22,.68,0,1.2) both">
+
+    <!-- Header -->
+    <div style="padding:26px 30px 0;display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:8px">Your profile is ready</div>
+        <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--cream);letter-spacing:-.02em;line-height:1.2">Build your creator profile.<br>Get matched with brands.</div>
+      </div>
+      <button onclick="closeCreatorModal()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:0;line-height:1;margin-top:2px">×</button>
+    </div>
+
+    <!-- Unlock cards -->
+    <div style="padding:18px 30px;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--card);border-radius:9px;border:1px solid var(--stroke)">
+        <div style="width:34px;height:34px;border-radius:8px;background:var(--creator-b);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">👤</div>
+        <div><div style="font-size:13px;font-weight:700;color:var(--cream);margin-bottom:2px">Live creator profile</div><div style="font-size:11px;color:var(--cream2)">Visible to vetted brands in your category on Bridgr</div></div>
+        <div style="margin-left:auto;font-size:10px;font-weight:700;color:var(--green);background:var(--creator-b);padding:2px 8px;border-radius:20px;flex-shrink:0">Included</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--card);border-radius:9px;border:1px solid var(--stroke)">
+        <div style="width:34px;height:34px;border-radius:8px;background:var(--amber-g);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🛍️</div>
+        <div><div style="font-size:13px;font-weight:700;color:var(--cream);margin-bottom:2px">Product pool access</div><div style="font-size:11px;color:var(--cream2)">Browse, review, and score brands — build your standing</div></div>
+        <div style="margin-left:auto;font-size:10px;font-weight:700;color:var(--green);background:var(--creator-b);padding:2px 8px;border-radius:20px;flex-shrink:0">Included</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--card);border-radius:9px;border:1px solid var(--stroke)">
+        <div style="width:34px;height:34px;border-radius:8px;background:var(--creator-g);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">📊</div>
+        <div><div style="font-size:13px;font-weight:700;color:var(--cream);margin-bottom:2px">Creator intelligence report</div><div style="font-size:11px;color:var(--cream2)">Your match score, strengths, blockers & recommended first steps</div></div>
+        <div style="margin-left:auto;font-size:10px;font-weight:700;color:var(--green);background:var(--creator-b);padding:2px 8px;border-radius:20px;flex-shrink:0">Included</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="padding:0 30px 12px">
+      <div style="display:flex;gap:0;background:var(--card);border-radius:9px;padding:3px">
+        <button id="ctab-su" onclick="switchCreatorTab('signup')" style="flex:1;padding:9px;border-radius:7px;border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;background:var(--green-d);color:#fff;transition:all .2s">Create account</button>
+        <button id="ctab-li" onclick="switchCreatorTab('login')" style="flex:1;padding:9px;border-radius:7px;border:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s">Log in</button>
+      </div>
+    </div>
+
+    <!-- Signup form -->
+    <div id="cform-signup" style="padding:0 30px 26px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <input placeholder="First name" style="background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;padding:11px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);outline:none;width:100%" onfocus="this.style.borderColor='var(--focus)'" onblur="this.style.borderColor='var(--stroke)'">
+        <input placeholder="Last name" style="background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;padding:11px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);outline:none;width:100%" onfocus="this.style.borderColor='var(--focus)'" onblur="this.style.borderColor='var(--stroke)'">
+      </div>
+      <input type="email" placeholder="Email address" style="background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;padding:11px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);outline:none;width:100%" onfocus="this.style.borderColor='var(--focus)'" onblur="this.style.borderColor='var(--stroke)'">
+      <input type="password" placeholder="Create a password" style="background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;padding:11px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);outline:none;width:100%" onfocus="this.style.borderColor='var(--focus)'" onblur="this.style.borderColor='var(--stroke)'">
+      <button onclick="doCreatorSignup()" style="width:100%;padding:12px;background:var(--green-d);border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--creator)'" onmouseout="this.style.background='var(--green-d)'">Create creator account →</button>
+      <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.6">By creating an account you agree to Bridgr's Terms of Service and Privacy Policy</div>
+    </div>
+
+    <!-- Login form -->
+    <div id="cform-login" style="display:none;padding:0 30px 26px;flex-direction:column;gap:10px">
+      <input type="email" placeholder="Email address" style="background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;padding:11px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);outline:none;width:100%" onfocus="this.style.borderColor='var(--focus)'" onblur="this.style.borderColor='var(--stroke)'">
+      <input type="password" placeholder="Password" style="background:var(--card);border:1.5px solid var(--stroke);border-radius:9px;padding:11px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);outline:none;width:100%" onfocus="this.style.borderColor='var(--focus)'" onblur="this.style.borderColor='var(--stroke)'">
+      <button onclick="doCreatorSignup()" style="width:100%;padding:12px;background:var(--green-d);border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer">Log in and continue →</button>
+    </div>
+
+    <!-- Success state -->
+    <div id="csuccess" style="display:none;flex-direction:column;align-items:center;text-align:center;padding:32px 30px">
+      <div style="width:52px;height:52px;border-radius:50%;background:var(--creator-b);display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:22px">✓</div>
+      <div style="font-size:20px;font-weight:700;color:var(--cream);margin-bottom:8px">Welcome to Bridgr!</div>
+      <div style="font-size:13px;color:var(--cream2);line-height:1.7;max-width:320px;margin-bottom:20px">Your creator profile is being set up. Head to your dashboard to complete it, browse the product pool, and start building your standing.</div>
+      <button onclick="closeCreatorModal()" style="padding:11px 28px;background:var(--green-d);border:none;border-radius:9px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer">Go to my dashboard →</button>
+    </div>
+
+  </div>
+</div>
+
+<style>@keyframes min{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}</style>
+</body>
+</html>

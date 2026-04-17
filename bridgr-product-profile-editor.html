@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bridgr — Product Profile Editor</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0e14;--panel:#11121a;--card:#1c1f2e;--card2:#222538;
+  --stroke:rgba(255,255,255,0.09);--stroke-hi:rgba(201,162,69,0.5);
+  --brand:#c03b1b;--brand-g:rgba(192,59,27,0.12);
+  --amber:#c9a245;--amber-g:rgba(201,162,69,0.11);
+  --green:#3aaa78;--green-g:rgba(58,170,120,0.11);
+  --cream:#f2ede4;--cream2:#a09890;--muted:#5a6070;
+}
+html,body{height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--cream);font-size:14px;line-height:1.6}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 28px;background:var(--panel);border-bottom:1px solid var(--stroke);flex-shrink:0}
+.nav-l{display:flex;align-items:center;gap:12px}
+.nav-logo{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;letter-spacing:.04em;color:var(--cream)}
+.nav-crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.nav-crumb span{color:var(--cream2)}
+.nav-r{display:flex;align-items:center;gap:10px}
+
+/* visibility selector */
+.vis-select{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--card);border:1.5px solid var(--stroke);border-radius:8px;font-size:13px;font-weight:600;color:var(--cream2);cursor:pointer;gap:8px}
+.vis-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0}
+.vis-dot.pub{background:var(--green)}
+.vis-dot.inv{background:var(--brand)}
+
+.btn-preview{padding:9px 18px;background:transparent;border:1.5px solid var(--stroke);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;color:var(--cream2);cursor:pointer;transition:all .2s}
+.btn-preview:hover{border-color:var(--cream2);color:var(--cream)}
+.btn-publish{padding:9px 22px;background:var(--brand);border:none;border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .2s}
+.btn-publish:hover{background:#a83018}
+
+/* LAYOUT */
+.shell{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 56px);overflow:hidden}
+
+/* LEFT SIDEBAR */
+.sidebar{background:var(--panel);border-right:1px solid var(--stroke);display:flex;flex-direction:column;overflow:hidden}
+.sb-head{padding:20px 18px 10px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sb-list{flex:1;padding:0 10px 20px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.sb-list::-webkit-scrollbar{width:0}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:all .2s;font-size:13px;font-weight:500;color:var(--muted)}
+.sb-item:hover{background:var(--card);color:var(--cream2)}
+.sb-item.active{background:var(--card2);color:var(--cream)}
+.sb-item.filled .sb-dot{background:var(--green)}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--stroke);flex-shrink:0;transition:background .2s}
+.sb-item.active .sb-dot{background:var(--amber)}
+.sb-foot{padding:14px 18px;border-top:1px solid var(--stroke)}
+.profile-score{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.ps-label{font-size:11px;color:var(--muted)}
+.ps-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--amber)}
+.progress-bar{height:4px;background:var(--stroke);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--amber);border-radius:2px;transition:width .5s ease}
+
+/* CENTRE EDITOR */
+.editor{flex:1;overflow-y:auto;padding:32px 40px;display:flex;flex-direction:column;gap:0}
+.editor::-webkit-scrollbar{width:4px}
+.editor::-webkit-scrollbar-thumb{background:var(--card2);border-radius:2px}
+
+/* PROFILE HEADER SECTION */
+.profile-header-section{display:flex;align-items:flex-start;gap:24px;padding-bottom:32px;border-bottom:1px solid var(--stroke);margin-bottom:32px}
+.product-images-area{flex-shrink:0;display:flex;flex-direction:column;gap:8px}
+.main-img{width:180px;height:180px;border-radius:12px;background:var(--card);border:1.5px dashed var(--stroke);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.main-img:hover{border-color:var(--amber)}
+.main-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:10px}
+.main-img .upload-hint{font-size:11px;color:var(--muted);text-align:center;line-height:1.5;z-index:1}
+.main-img .upload-icon{font-size:24px;z-index:1}
+.img-thumbs{display:flex;gap:6px}
+.img-thumb{width:52px;height:52px;border-radius:8px;background:var(--card);border:1.5px dashed var(--stroke);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:all .2s;flex-shrink:0;overflow:hidden;position:relative}
+.img-thumb:hover{border-color:var(--amber)}
+.img-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.img-thumb .add-icon{color:var(--muted);font-size:18px;z-index:1}
+
+.profile-meta{flex:1;display:flex;flex-direction:column;gap:14px}
+.meta-badges{display:flex;gap:6px;flex-wrap:wrap}
+.mbadge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid var(--stroke);color:var(--cream2)}
+.mbadge-cat{background:var(--amber-g);border-color:rgba(201,162,69,.3);color:var(--amber)}
+.mbadge-reg{background:var(--green-g);border-color:rgba(58,170,120,.3);color:var(--green)}
+.edit-field-inline{
+  background:transparent;border:none;border-bottom:1.5px solid transparent;
+  font-family:'Playfair Display',serif;font-size:28px;font-weight:700;
+  color:var(--cream);outline:none;width:100%;transition:border-color .2s;
+  padding:2px 0;letter-spacing:-.02em;
+}
+.edit-field-inline:hover{border-bottom-color:var(--stroke)}
+.edit-field-inline:focus{border-bottom-color:var(--amber)}
+.edit-tagline{
+  background:transparent;border:none;border-bottom:1.5px solid transparent;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:500;
+  color:var(--cream2);outline:none;width:100%;transition:border-color .2s;padding:2px 0;
+}
+.edit-tagline:hover{border-bottom-color:var(--stroke)}
+.edit-tagline:focus{border-bottom-color:var(--amber)}
+.price-row{display:flex;align-items:center;gap:10px}
+.price-label{font-size:12px;color:var(--muted)}
+.price-input{
+  background:var(--card);border:1.5px solid var(--stroke);border-radius:8px;
+  padding:8px 12px;font-family:'DM Mono',monospace;font-size:20px;font-weight:500;
+  color:var(--amber);width:120px;outline:none;transition:border-color .2s;
+}
+.price-input:focus{border-color:var(--amber)}
+.link-input{
+  background:var(--card);border:1.5px solid var(--stroke);border-radius:8px;
+  padding:9px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;
+  color:var(--cream2);outline:none;transition:border-color .2s;flex:1;
+}
+.link-input:focus{border-color:var(--amber)}
+.link-input::placeholder{color:var(--muted);opacity:.6}
+
+/* EDIT SECTIONS */
+.edit-section{margin-bottom:28px;border:1.5px solid var(--stroke);border-radius:12px;overflow:hidden;transition:border-color .2s}
+.edit-section:hover{border-color:rgba(255,255,255,0.14)}
+.edit-section.focused{border-color:rgba(201,162,69,.4)}
+.es-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--card);cursor:pointer;user-select:none}
+.es-title{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--cream2);display:flex;align-items:center;gap:8px}
+.es-icon{font-size:14px}
+.es-actions{display:flex;align-items:center;gap:8px}
+.es-badge-filled{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:var(--green-g);color:var(--green)}
+.es-chevron{font-size:12px;color:var(--muted);transition:transform .2s}
+.es-chevron.open{transform:rotate(180deg)}
+.es-body{padding:18px;display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--stroke)}
+.es-body.closed{display:none}
+
+/* field styles inside sections */
+.ef{display:flex;flex-direction:column;gap:6px}
+.ef label{font-size:12px;font-weight:600;color:var(--muted)}
+.ef input,.ef select,.ef textarea{
+  background:var(--bg);border:1.5px solid var(--stroke);border-radius:9px;
+  padding:11px 14px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;
+  color:var(--cream);outline:none;transition:border-color .2s,background .2s;width:100%;
+}
+.ef input:focus,.ef select:focus,.ef textarea:focus{border-color:var(--stroke-hi);background:var(--card)}
+.ef input::placeholder,.ef textarea::placeholder{color:var(--muted);opacity:.6}
+.ef select option{background:var(--card)}
+.ef textarea{resize:vertical;min-height:80px}
+.ef-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* selling points */
+.sp-list{display:flex;flex-direction:column;gap:8px}
+.sp-row{display:flex;gap:8px;align-items:center}
+.sp-num{width:24px;height:24px;border-radius:6px;background:var(--brand-g);border:1px solid rgba(192,59,27,.2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--brand);flex-shrink:0}
+.sp-input{flex:1;background:var(--bg);border:1.5px solid var(--stroke);border-radius:9px;padding:10px 13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:var(--cream);outline:none;transition:border-color .2s}
+.sp-input:focus{border-color:var(--stroke-hi)}
+
+/* tag chips */
+.chip-row{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--card2);border:1px solid var(--stroke);border-radius:20px;padding:4px 11px;font-size:12px;font-weight:500;color:var(--cream2)}
+.chip-x{cursor:pointer;opacity:.4;font-size:11px;transition:opacity .15s}
+.chip-x:hover{opacity:1}
+
+/* VISIBILITY PANEL */
+.vis-panel{background:var(--panel);border:1.5px solid var(--stroke);border-radius:12px;padding:20px;margin-bottom:28px}
+.vis-title{font-size:13px;font-weight:700;color:var(--cream);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.vis-opts{display:flex;flex-direction:column;gap:8px}
+.vis-opt{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:10px;border:1.5px solid var(--stroke);cursor:pointer;transition:all .2s}
+.vis-opt:hover{background:var(--card)}
+.vis-opt.selected{background:var(--card2);border-color:rgba(201,162,69,.4)}
+.vis-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--stroke);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.vis-opt.selected .vis-radio{border-color:var(--amber);background:var(--amber)}
+.vis-opt.selected .vis-radio::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
+.vis-opt-info{}
+.vis-opt-name{font-size:13px;font-weight:700;color:var(--cream2);margin-bottom:2px}
+.vis-opt.selected .vis-opt-name{color:var(--cream)}
+.vis-opt-desc{font-size:12px;color:var(--muted)}
+
+/* publish hint */
+.publish-hint{text-align:center;padding:10px 0 20px;font-size:12px;color:var(--muted);line-height:1.7}
+
+/* floating save indicator */
+.save-toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--green-g);border:1px solid rgba(58,170,120,.3);
+  border-radius:8px;padding:10px 20px;
+  font-size:12px;font-weight:600;color:var(--green);
+  opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;
+  display:flex;align-items:center;gap:7px;
+}
+.save-toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-l">
+    <span class="nav-logo">Bridgr</span>
+    <div class="nav-crumb">
+      <span>/</span>
+      <span>Brand dashboard</span>
+      <span>/</span>
+      <span>Edit product profile</span>
+    </div>
+  </div>
+  <div class="nav-r">
+    <!-- Visibility selector -->
+    <div class="vis-select" id="vis-pill" onclick="toggleVisDropdown()">
+      <div class="vis-dot" id="vis-dot"></div>
+      <span id="vis-label">Registered creators only</span>
+      <span style="font-size:10px;color:var(--muted)">▾</span>
+    </div>
+    <button class="btn-preview" onclick="window.location.href='bridgr-product-profile.html'">Preview live page →</button>
+    <button class="btn-publish" onclick="publishProfile()">Publish profile</button>
+  </div>
+</nav>
+
+<!-- visibility dropdown -->
+<div id="vis-dropdown" style="
+  display:none;position:fixed;top:64px;right:28px;z-index:300;
+  background:var(--panel);border:1.5px solid var(--stroke);border-radius:12px;
+  padding:8px;min-width:260px;box-shadow:0 20px 40px rgba(0,0,0,.4);
+">
+  <div class="vis-opt-dd" onclick="setVis('pub','Public — anyone can view','pub')" style="padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='transparent'">
+    <div style="font-size:13px;font-weight:700;color:var(--cream);display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span>Public</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:2px;padding-left:16px">Anyone on Bridgr or the web can view</div>
+  </div>
+  <div class="vis-opt-dd" onclick="setVis('reg','Registered creators only','amber')" style="padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='transparent'">
+    <div style="font-size:13px;font-weight:700;color:var(--cream);display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span>Registered creators only</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:2px;padding-left:16px">Visible to verified creators on platform</div>
+  </div>
+  <div class="vis-opt-dd" onclick="setVis('inv','By invitation only','inv')" style="padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--card)'" onmouseout="this.style.background='transparent'">
+    <div style="font-size:13px;font-weight:700;color:var(--cream);display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:var(--brand);display:inline-block"></span>By invitation only</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:2px;padding-left:16px">Only creators you invite can view</div>
+  </div>
+</div>
+
+<div class="shell">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-head">Profile sections</div>
+  <div class="sb-list">
+    <div class="sb-item filled active" onclick="scrollTo('sec-identity')"><div class="sb-dot"></div>Product identity</div>
+    <div class="sb-item filled" onclick="scrollTo('sec-story')"><div class="sb-dot"></div>Brand story</div>
+    <div class="sb-item filled" onclick="scrollTo('sec-selling')"><div class="sb-dot"></div>Key selling points</div>
+    <div class="sb-item filled" onclick="scrollTo('sec-audience')"><div class="sb-dot"></div>Target audience</div>
+    <div class="sb-item" onclick="scrollTo('sec-certifications')"><div class="sb-dot"></div>Certifications</div>
+    <div class="sb-item" onclick="scrollTo('sec-channels')"><div class="sb-dot"></div>Where to buy</div>
+    <div class="sb-item" onclick="scrollTo('sec-founder')"><div class="sb-dot"></div>Founder note</div>
+    <div class="sb-item" onclick="scrollTo('sec-visibility')"><div class="sb-dot"></div>Visibility settings</div>
+  </div>
+  <div class="sb-foot">
+    <div class="profile-score">
+      <span class="ps-label">Profile completeness</span>
+      <span class="ps-val">68%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div>
+  </div>
+</div>
+
+<!-- EDITOR -->
+<div class="editor" id="editor-scroll">
+
+  <!-- Header: images + name + meta -->
+  <div class="profile-header-section" id="sec-identity">
+    <div class="product-images-area">
+      <!-- Main image -->
+      <div class="main-img" onclick="triggerUpload('main-upload')" title="Click to upload main product image">
+        <img id="main-img-preview" src="" style="display:none">
+        <span class="upload-icon" id="main-upload-icon">🖼️</span>
+        <div class="upload-hint" id="main-upload-hint">Click to upload<br>main product image</div>
+      </div>
+      <input type="file" id="main-upload" accept="image/*" style="display:none" onchange="previewImg('main-upload','main-img-preview','main-upload-icon','main-upload-hint')">
+      <!-- Thumbnail row -->
+      <div class="img-thumbs">
+        <div class="img-thumb" onclick="triggerUpload('thumb1')" title="Add image"><img id="thumb1-preview" src="" style="display:none"><span class="add-icon" id="thumb1-icon">+</span><input type="file" id="thumb1" accept="image/*" style="display:none" onchange="previewThumb('thumb1','thumb1-preview','thumb1-icon')"></div>
+        <div class="img-thumb" onclick="triggerUpload('thumb2')" title="Add image"><img id="thumb2-preview" src="" style="display:none"><span class="add-icon" id="thumb2-icon">+</span><input type="file" id="thumb2" accept="image/*" style="display:none" onchange="previewThumb('thumb2','thumb2-preview','thumb2-icon')"></div>
+        <div class="img-thumb" onclick="triggerUpload('thumb3')" title="Add image"><img id="thumb3-preview" src="" style="display:none"><span class="add-icon" id="thumb3-icon">+</span><input type="file" id="thumb3" accept="image/*" style="display:none" onchange="previewThumb('thumb3','thumb3-preview','thumb3-icon')"></div>
+      </div>
+    </div>
+
+    <div class="profile-meta">
+      <div class="meta-badges">
+        <span class="mbadge mbadge-cat">Active Skincare</span>
+        <span class="mbadge mbadge-reg">UKCA Certified</span>
+        <span class="mbadge mbadge-reg">Cruelty-free</span>
+      </div>
+      <input class="edit-field-inline" value="Nouri Vitamin C Serum" placeholder="Product name" oninput="autoSave()">
+      <input class="edit-tagline" value="High-efficacy antioxidant serum with 15% L-Ascorbic Acid. Fragrance-free. Clinically tested for sensitive skin." placeholder="Product tagline or key claim" oninput="autoSave()">
+      <div class="price-row">
+        <span class="price-label">Retail price</span>
+        <input class="price-input" value="£45" oninput="autoSave()">
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:12px;color:var(--muted)">Buy link</span>
+        <input class="link-input" placeholder="https://yourshop.com/product" value="https://nouriskin.co.uk/vitamin-c-serum" oninput="autoSave()">
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Brand story -->
+  <div class="edit-section" id="sec-story">
+    <div class="es-head" onclick="toggleSection(this)">
+      <div class="es-title"><span class="es-icon">✍️</span>Brand story &amp; product description</div>
+      <div class="es-actions"><span class="es-badge-filled">Filled</span><span class="es-chevron open">▾</span></div>
+    </div>
+    <div class="es-body">
+      <div class="ef">
+        <label>Full product description</label>
+        <textarea oninput="autoSave()" placeholder="Describe your product — what it is, how it works, and what makes it different">Nouri Vitamin C Serum is formulated with 15% L-Ascorbic Acid — the most clinically validated form of Vitamin C — combined with Hyaluronic Acid and Ferulic Acid for enhanced stability and skin penetration.
+
+Developed in the UK for sensitive skin, it is entirely free from synthetic fragrance, parabens, and artificial colourants. Every batch is third-party tested for efficacy and tolerance.
+
+Designed for women who want genuinely effective skincare at a price that doesn't require compromise.</textarea>
+      </div>
+      <div class="ef">
+        <label>Founder note <span style="font-weight:400;color:var(--muted)">(optional — adds personal credibility)</span></label>
+        <textarea oninput="autoSave()" placeholder="A short personal message from the founder about why this product was created" rows="3">I created Nouri after spending years looking for a Vitamin C serum that actually worked without irritating my sensitive skin — and finding nothing in the accessible price bracket that delivered. That gap is exactly what we built to fill.</textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Selling points -->
+  <div class="edit-section" id="sec-selling">
+    <div class="es-head" onclick="toggleSection(this)">
+      <div class="es-title"><span class="es-icon">⚡</span>Key selling points</div>
+      <div class="es-actions"><span class="es-badge-filled">Filled</span><span class="es-chevron open">▾</span></div>
+    </div>
+    <div class="es-body">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:-4px">Up to 5 selling points. Keep each under 120 characters — the constraint forces clarity.</div>
+      <div class="sp-list">
+        <div class="sp-row"><div class="sp-num">1</div><input class="sp-input" value="15% L-Ascorbic Acid — the highest clinically effective concentration at this price point" oninput="autoSave()"></div>
+        <div class="sp-row"><div class="sp-num">2</div><input class="sp-input" value="100% fragrance-free and tested for sensitive and reactive skin types" oninput="autoSave()"></div>
+        <div class="sp-row"><div class="sp-num">3</div><input class="sp-input" value="UK-manufactured. Third-party efficacy tested. Cruelty-free certified." oninput="autoSave()"></div>
+        <div class="sp-row"><div class="sp-num">4</div><input class="sp-input" placeholder="Add a fourth selling point…" oninput="autoSave()"></div>
+        <div class="sp-row"><div class="sp-num">5</div><input class="sp-input" placeholder="Add a fifth selling point…" oninput="autoSave()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Target audience -->
+  <div class="edit-section" id="sec-audience">
+    <div class="es-head" onclick="toggleSection(this)">
+      <div class="es-title"><span class="es-icon">👤</span>Target audience</div>
+      <div class="es-actions"><span class="es-badge-filled">Filled</span><span class="es-chevron open">▾</span></div>
+    </div>
+    <div class="es-body">
+      <div class="ef-row">
+        <div class="ef"><label>Age range</label><input value="25 – 44" oninput="autoSave()"></div>
+        <div class="ef"><label>Primary gender</label>
+          <select oninput="autoSave()"><option selected>Primarily female</option><option>Primarily male</option><option>All genders equally</option></select></div>
+      </div>
+      <div class="ef">
+        <label>Skin concerns &amp; health goals</label>
+        <div class="chip-row">
+          <div class="chip">Anti-ageing <span class="chip-x">×</span></div>
+          <div class="chip">Hyperpigmentation <span class="chip-x">×</span></div>
+          <div class="chip">Uneven skin tone <span class="chip-x">×</span></div>
+          <div class="chip">Sensitive skin <span class="chip-x">×</span></div>
+        </div>
+      </div>
+      <div class="ef">
+        <label>Lifestyle interests</label>
+        <div class="chip-row">
+          <div class="chip">Clean beauty <span class="chip-x">×</span></div>
+          <div class="chip">Wellness <span class="chip-x">×</span></div>
+          <div class="chip">Ingredient-conscious <span class="chip-x">×</span></div>
+        </div>
+      </div>
+      <div class="ef-row">
+        <div class="ef"><label>Price sensitivity tier</label>
+          <select oninput="autoSave()"><option>Budget</option><option selected>Mid-range</option><option>Premium</option><option>Luxury</option></select></div>
+        <div class="ef"><label>Commission offered to creators</label><input value="20%" oninput="autoSave()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Certifications -->
+  <div class="edit-section" id="sec-certifications">
+    <div class="es-head" onclick="toggleSection(this)">
+      <div class="es-title"><span class="es-icon">✅</span>Compliance &amp; certifications</div>
+      <div class="es-actions"><span class="es-chevron">▾</span></div>
+    </div>
+    <div class="es-body closed">
+      <div class="ef">
+        <label>Certifications</label>
+        <div class="chip-row">
+          <div class="chip">UKCA <span class="chip-x">×</span></div>
+          <div class="chip">Cruelty-free <span class="chip-x">×</span></div>
+          <div class="chip">Fragrance-free <span class="chip-x">×</span></div>
+        </div>
+      </div>
+      <div class="ef"><label>Regulatory notes <span style="font-weight:400;color:var(--muted)">(internal — not shown publicly)</span></label>
+        <textarea placeholder="e.g. CPSR completed. pH stability verified at 3.2." rows="2"></textarea></div>
+    </div>
+  </div>
+
+  <!-- SECTION: Where to buy -->
+  <div class="edit-section" id="sec-channels">
+    <div class="es-head" onclick="toggleSection(this)">
+      <div class="es-title"><span class="es-icon">🛒</span>Where to buy</div>
+      <div class="es-actions"><span class="es-chevron">▾</span></div>
+    </div>
+    <div class="es-body closed">
+      <div class="ef"><label>Primary shop link</label><input value="https://nouriskin.co.uk" oninput="autoSave()"></div>
+      <div class="ef"><label>Amazon listing</label><input placeholder="https://amazon.co.uk/…" oninput="autoSave()"></div>
+      <div class="ef"><label>TikTok Shop</label><input placeholder="https://www.tiktok.com/shop/…" oninput="autoSave()"></div>
+      <div class="ef"><label>Other channels <span style="font-weight:400;color:var(--muted)">(one per line)</span></label>
+        <textarea placeholder="https://…" rows="3"></textarea></div>
+    </div>
+  </div>
+
+  <!-- SECTION: Founder note -->
+  <div class="edit-section" id="sec-founder">
+    <div class="es-head" onclick="toggleSection(this)">
+      <div class="es-title"><span class="es-icon">👤</span>Founder profile</div>
+      <div class="es-actions"><span class="es-chevron">▾</span></div>
+    </div>
+    <div class="es-body closed">
+      <div class="ef-row">
+        <div class="ef"><label>Founder name</label><input placeholder="e.g. Sarah Chen" oninput="autoSave()"></div>
+        <div class="ef"><label>Title / role</label><input placeholder="e.g. Founder &amp; CEO" oninput="autoSave()"></div>
+      </div>
+      <div class="ef"><label>Short bio <span style="font-weight:400;color:var(--muted)">(max 200 chars)</span></label>
+        <textarea placeholder="Visible to creators on your product profile" rows="2" maxlength="200"></textarea></div>
+      <div class="ef"><label>LinkedIn or website</label><input placeholder="https://linkedin.com/in/…" oninput="autoSave()"></div>
+    </div>
+  </div>
+
+  <!-- SECTION: Visibility -->
+  <div id="sec-visibility">
+    <div style="font-size:13px;font-weight:700;color:var(--cream);margin-bottom:14px;display:flex;align-items:center;gap:8px"><span>🔒</span> Who can see this profile?</div>
+    <div class="vis-opts">
+      <div class="vis-opt" onclick="selectVis(this,'pub')">
+        <div class="vis-radio"></div>
+        <div class="vis-opt-info">
+          <div class="vis-opt-name">🌐 Public</div>
+          <div class="vis-opt-desc">Anyone on Bridgr or the open web can view your product profile and interact with it.</div>
+        </div>
+      </div>
+      <div class="vis-opt selected" onclick="selectVis(this,'reg')">
+        <div class="vis-radio"></div>
+        <div class="vis-opt-info">
+          <div class="vis-opt-name">👤 Registered creators only</div>
+          <div class="vis-opt-desc">Visible only to verified creators who are registered on Bridgr. Recommended for most brands.</div>
+        </div>
+      </div>
+      <div class="vis-opt" onclick="selectVis(this,'inv')">
+        <div class="vis-radio"></div>
+        <div class="vis-opt-info">
+          <div class="vis-opt-name">✉️ By invitation only</div>
+          <div class="vis-opt-desc">Only creators you personally invite via a private link can view the profile.</div>
+        </div>
+      </div>
+    </div>
+    <div class="publish-hint">
+      Changes save automatically. Hitting <strong style="color:var(--cream)">Publish profile</strong> makes your page live with the selected visibility.
+    </div>
+  </div>
+
+</div><!-- /editor -->
+
+</div><!-- /shell -->
+
+<!-- Save toast -->
+<div class="save-toast" id="save-toast">✓ &nbsp;Changes saved automatically</div>
+
+<script>
+/* ── Section toggle ── */
+function toggleSection(head) {
+  const body = head.nextElementSibling;
+  const chev = head.querySelector('.es-chevron');
+  const isOpen = !body.classList.contains('closed');
+  body.classList.toggle('closed');
+  if (chev) chev.classList.toggle('open', !isOpen);
+}
+
+/* ── Visibility ── */
+function toggleVisDropdown() {
+  const dd = document.getElementById('vis-dropdown');
+  dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#vis-pill') && !e.target.closest('#vis-dropdown')) {
+    document.getElementById('vis-dropdown').style.display = 'none';
+  }
+});
+function setVis(type, label, dotClass) {
+  document.getElementById('vis-label').textContent = label;
+  const dot = document.getElementById('vis-dot');
+  dot.className = 'vis-dot' + (dotClass === 'pub' ? ' pub' : dotClass === 'inv' ? ' inv' : '');
+  document.getElementById('vis-dropdown').style.display = 'none';
+  // sync inline visibility opts
+  document.querySelectorAll('.vis-opt').forEach(o => {
+    o.classList.remove('selected');
+    if ((type==='pub' && o.querySelector('.vis-opt-name').textContent.includes('Public')) ||
+        (type==='reg' && o.querySelector('.vis-opt-name').textContent.includes('Registered')) ||
+        (type==='inv' && o.querySelector('.vis-opt-name').textContent.includes('invitation'))) {
+      o.classList.add('selected');
+    }
+  });
+}
+function selectVis(el, type) {
+  document.querySelectorAll('.vis-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  const name = el.querySelector('.vis-opt-name').textContent;
+  const labels = {pub:'Public — anyone can view', reg:'Registered creators only', inv:'By invitation only'};
+  setVis(type, labels[type] || name, type);
+}
+
+/* ── Scroll to section ── */
+function scrollTo(id) {
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth', block:'start'});
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+}
+
+/* ── Image upload preview ── */
+function triggerUpload(id) { document.getElementById(id).click(); }
+function previewImg(inputId, imgId, iconId, hintId) {
+  const file = document.getElementById(inputId).files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = document.getElementById(imgId);
+  img.src = url; img.style.display = 'block';
+  document.getElementById(iconId).style.display = 'none';
+  document.getElementById(hintId).style.display = 'none';
+}
+function previewThumb(inputId, imgId, iconId) {
+  const file = document.getElementById(inputId).files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = document.getElementById(imgId);
+  img.src = url; img.style.display = 'block';
+  document.getElementById(iconId).style.display = 'none';
+}
+
+/* ── Auto-save ── */
+let saveTimer;
+function autoSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    const t = document.getElementById('save-toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }, 800);
+}
+
+/* ── Publish ── */
+function publishProfile() {
+  window.location.href = 'bridgr-product-profile.html';
+}
+</script>
+</body>
+</html>

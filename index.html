@@ -3,84 +3,1144 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bridgr Local Launcher</title>
+<title>Bridgr — The Platform Where Brands Launch & Creators Rise</title>
 <style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  min-height:100vh;
-  font-family:Georgia,serif;
-  background:linear-gradient(135deg,#f6f0e7 0%,#ece4d7 45%,#ddd4c7 100%);
-  color:#181512;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:32px;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0d0c0b;
+  --paper:#f8f5f0;
+  --warm:#ede8df;
+  --warm2:#e2dbd0;
+  --warm3:#d4cdc0;
+  --brand:#b83518;
+  --brand-soft:#f3e0da;
+  --brand-mid:#e8856e;
+  --creator:#1c5c3f;
+  --creator-soft:#d6ebe0;
+  --creator-mid:#5aad80;
+  --event:#1a1a2e;
+  --event-gold:#c49a3c;
+  --event-gold-soft:#f5ecd4;
+  --mid:#7a7468;
+  --faint:rgba(13,12,11,0.08);
+  --faint2:rgba(13,12,11,0.05);
+  --r:2px;
 }
-.shell{
-  width:min(920px,100%);
-  background:rgba(255,255,255,.72);
-  border:1px solid rgba(24,21,18,.08);
-  box-shadow:0 20px 60px rgba(24,21,18,.12);
-  backdrop-filter:blur(10px);
-  padding:32px;
-}
-h1{
-  margin:0 0 8px;
-  font-size:clamp(2rem,4vw,3.2rem);
-  line-height:1;
-}
-p{
-  margin:0 0 24px;
-  font:400 1rem/1.7 system-ui,sans-serif;
-  color:#5f564b;
-  max-width:60ch;
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:14px;
-}
-a{
-  display:block;
-  padding:16px 18px;
-  text-decoration:none;
-  color:#181512;
-  background:#fffaf4;
-  border:1px solid rgba(24,21,18,.08);
-  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-}
-a:hover{
-  transform:translateY(-2px);
-  border-color:rgba(184,53,24,.35);
-  box-shadow:0 12px 28px rgba(24,21,18,.08);
-}
-.label{
-  display:block;
-  font:600 1rem/1.3 system-ui,sans-serif;
-  margin-bottom:4px;
-}
-.meta{
-  display:block;
-  font:400 .86rem/1.5 system-ui,sans-serif;
-  color:#6f665c;
+html{scroll-behavior:smooth}
+body{font-family:'Barlow',sans-serif;background:var(--paper);color:var(--ink);overflow-x:hidden;line-height:1.65;font-size:15px}
+::selection{background:var(--brand-soft);color:var(--brand)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--warm3)}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:400;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:60px;background:rgba(248,245,240,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--faint)}
+.logo{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:7px}
+.logo-mark{width:8px;height:8px;border-radius:50%;background:var(--brand);display:inline-block;flex-shrink:0;box-shadow:0 0 0 0 rgba(184,53,24,0.4);animation:sonar 2.5s ease-out infinite}
+@keyframes sonar{0%{box-shadow:0 0 0 0 rgba(184,53,24,0.4)}70%{box-shadow:0 0 0 8px rgba(184,53,24,0)}100%{box-shadow:0 0 0 0 rgba(184,53,24,0)}}
+.nav-links{display:flex;gap:0;list-style:none;height:100%;align-items:center}
+.nav-links a{font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--mid);text-decoration:none;padding:0 18px;height:100%;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all .2s}
+.nav-links a:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.nav-links a.event-link{color:var(--event-gold);border-bottom-color:transparent}
+.nav-links a.event-link:hover{color:var(--ink)}
+.nav-ctas{display:flex;gap:8px}
+.nc{padding:8px 16px;border-radius:var(--r);font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:all .2s}
+.nc-ghost{background:transparent;color:var(--ink);border:1px solid var(--faint)}
+.nc-ghost:hover{border-color:var(--ink)}
+.nc-brand{background:var(--brand);color:#fff}
+.nc-brand:hover{background:#9e2c13}
+.nc-creator{background:var(--creator);color:#fff}
+.nc-creator:hover{background:#154f35}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:60px;overflow:hidden;position:relative}
+.hero-texture{position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(13,12,11,0.04) 1px,transparent 0);background-size:28px 28px;pointer-events:none}
+.hero-l{padding:72px 48px 72px 48px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}
+.hero-r{position:relative;border-left:1px solid var(--faint);display:grid;grid-template-rows:1fr 1fr}
+
+.h-kicker{display:inline-flex;align-items:center;gap:8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--mid);margin-bottom:32px}
+.hk-dot{width:5px;height:5px;border-radius:50%;background:var(--brand);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+h1{font-family:'Libre Baskerville',serif;font-size:clamp(44px,5vw,72px);font-weight:700;line-height:1.0;letter-spacing:-0.025em;margin-bottom:28px;color:var(--ink)}
+h1 em{font-style:italic;font-weight:400;color:var(--brand)}
+h1 .cw{color:var(--creator)}
+
+.hero-deck{font-size:16px;font-weight:300;color:var(--mid);max-width:430px;line-height:1.8;margin-bottom:40px}
+.hero-deck strong{color:var(--ink);font-weight:600}
+
+.entry-paths{display:flex;flex-direction:column;gap:10px;margin-bottom:48px}
+.epath{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1px solid var(--faint);background:white;text-decoration:none;border-radius:var(--r);transition:all .22s;cursor:pointer}
+.epath:hover{transform:translateX(5px)}
+.epath-b:hover{background:var(--brand-soft);border-color:var(--brand)}
+.epath-c:hover{background:var(--creator-soft);border-color:var(--creator)}
+.ep-badge{width:36px;height:36px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ep-badge-b{background:var(--brand-soft)}
+.ep-badge-c{background:var(--creator-soft)}
+.ep-text{flex:1}
+.ep-label{font-size:13px;font-weight:600;display:block;margin-bottom:1px}
+.ep-label-b{color:var(--brand)}
+.ep-label-c{color:var(--creator)}
+.ep-sub{font-size:11px;color:var(--mid);font-weight:400;display:block}
+.ep-arr{font-size:13px;color:var(--warm3)}
+
+.hero-nums{display:flex;gap:28px}
+.hn{border-left:2px solid var(--faint);padding-left:16px}
+.hn-n{font-family:'Libre Baskerville',serif;font-size:28px;font-weight:700;color:var(--ink);letter-spacing:-0.02em;line-height:1;display:block;margin-bottom:2px}
+.hn-l{font-size:11px;font-weight:500;color:var(--mid);letter-spacing:0.04em;text-transform:uppercase;display:block}
+
+/* Hero right — platform preview */
+.hero-r{position:relative;border-left:1px solid var(--faint);display:flex;align-items:stretch;padding:32px 32px 32px 28px;background:var(--warm)}
+
+.platform-preview{background:var(--ink);border-radius:8px;overflow:hidden;width:100%;box-shadow:0 24px 64px rgba(13,12,11,0.22);display:flex;flex-direction:column}
+.pp-topbar{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.02);flex-shrink:0}
+.pp-dots{display:flex;gap:5px}
+.pp-dot{width:8px;height:8px;border-radius:50%}
+.pp-dot:nth-child(1){background:#e85555}
+.pp-dot:nth-child(2){background:#e8b555}
+.pp-dot:nth-child(3){background:#55b855}
+.pp-url{font-family:'Barlow Condensed',monospace;font-size:10px;color:rgba(255,255,255,0.22);letter-spacing:0.04em;flex:1;text-align:center}
+.pp-tabs{display:flex;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,0.07)}
+.pp-tab{flex:1;padding:10px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.28);cursor:pointer;transition:all .2s;border-bottom:2px solid transparent}
+.pp-tab-active-b{color:#e8856e;border-bottom-color:var(--brand)}
+.pp-tab-active-c{color:#5aad80;border-bottom-color:var(--creator)}
+.pp-body{padding:16px;overflow-y:auto;flex:1}
+.pp-section-label{font-family:'Barlow Condensed',monospace;font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.22);margin-bottom:8px;margin-top:12px}
+.pp-section-label:first-child{margin-top:0}
+.pp-ai-block{background:rgba(61,48,117,0.18);border:1px solid rgba(61,48,117,0.28);border-radius:3px;padding:10px 12px;margin-bottom:10px}
+.pp-ai-title{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(168,157,224,0.8);margin-bottom:8px}
+.pp-ai-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.pp-ai-row:last-child{margin-bottom:0}
+.pp-ai-key{font-size:11px;color:rgba(255,255,255,0.38)}
+.pp-ai-val{font-size:11px;font-weight:600}
+.pp-val-green{color:#5aad80}
+.pp-val-amber{color:#c49a3c}
+.pp-val-purple{color:#a89de0}
+.pp-product-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:3px;padding:10px;display:flex;gap:10px;margin-bottom:8px;cursor:pointer;transition:background .2s}
+.pp-product-card:hover{background:rgba(255,255,255,0.08)}
+.pp-prod-img{width:36px;height:36px;border-radius:3px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.pp-prod-img-c{background:var(--creator-soft)}
+.pp-prod-content{flex:1;min-width:0}
+.pp-prod-name{font-size:12px;font-weight:600;color:#fff;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-prod-cat{font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:6px}
+.pp-bar-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.pp-bar{flex:1;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden}
+.pp-bar-fill{height:100%;border-radius:2px;transition:width 1.2s ease}
+.pp-bar-brand{background:var(--brand-mid)}
+.pp-bar-creator{background:var(--creator-mid)}
+.pp-bar-score{font-family:'Barlow Condensed',monospace;font-size:10px;color:rgba(255,255,255,0.4);white-space:nowrap}
+.pp-prod-meta{display:flex;align-items:center;justify-content:space-between}
+.pp-meta-likes{font-size:10px;color:rgba(255,255,255,0.35)}
+.pp-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px}
+.pp-badge-top{background:rgba(196,154,60,0.25);color:#c49a3c}
+.pp-badge-ai{background:rgba(61,48,117,0.3);color:#a89de0}
+.pp-decision-row{display:flex;gap:8px;margin-bottom:4px}
+.pp-btn{flex:1;padding:9px;border-radius:3px;font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.04em;border:none;cursor:pointer;transition:all .18s}
+.pp-btn-soft{background:rgba(184,53,24,0.2);color:#e8856e}
+.pp-btn-soft:hover{background:rgba(184,53,24,0.35)}
+.pp-btn-launch{background:rgba(184,53,24,0.45);color:#ff9f88;font-weight:700}
+.pp-btn-launch:hover{background:rgba(184,53,24,0.65)}
+.pp-act-btn{font-size:10px;padding:3px 8px;border-radius:20px;border:none;cursor:pointer;font-weight:600;transition:all .15s}
+.pp-act-like{background:rgba(184,53,24,0.2);color:#e8856e}
+.pp-act-like:hover{background:rgba(184,53,24,0.35)}
+.pp-act-note{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.45)}
+.pp-act-note:hover{background:rgba(255,255,255,0.15)}
+
+/* ── MARQUEE ── */
+.marq{overflow:hidden;border-top:1px solid var(--faint);border-bottom:1px solid var(--faint);padding:11px 0;background:var(--warm)}
+.marq-track{display:flex;animation:scrollx 32s linear infinite}
+.marq-track:hover{animation-play-state:paused}
+.mi{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--mid);padding:0 28px;white-space:nowrap;border-right:1px solid var(--faint)}
+@keyframes scrollx{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SHARED SECTION ── */
+.sec{padding:96px 48px}
+.inner{max-width:1200px;margin:0 auto}
+.stag{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--mid);margin-bottom:16px}
+.sh{font-family:'Libre Baskerville',serif;font-size:clamp(30px,3.5vw,48px);font-weight:700;letter-spacing:-0.025em;line-height:1.06;margin-bottom:14px}
+.ss{font-size:16px;font-weight:300;color:var(--mid);max-width:520px;line-height:1.8;margin-bottom:56px}
+
+/* ── PLATFORM FLOW ── */
+.flow-sec{background:var(--ink);padding:96px 48px}
+.flow-inner{max-width:1240px;margin:0 auto}
+.flow-top{text-align:center;margin-bottom:64px}
+.flow-top .stag{color:rgba(248,245,240,0.3)}
+.flow-top .sh{color:var(--paper)}
+.flow-top .ss{color:rgba(248,245,240,0.45);margin:0 auto}
+
+/* Two journeys side by side */
+.journey-split{display:grid;grid-template-columns:1fr 2px 1fr;gap:0;margin-bottom:48px}
+.journey-divider{background:rgba(255,255,255,0.08);position:relative;display:flex;align-items:center;justify-content:center}
+.journey-divider::after{content:'↔';color:rgba(255,255,255,0.2);font-size:14px;background:var(--ink);padding:8px 4px}
+.journey-col{padding:0 40px}
+.jc-header{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.jc-pill{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:12px}
+.jc-pill-b{background:rgba(184,53,24,0.2);color:#e8856e}
+.jc-pill-c{background:rgba(28,92,63,0.2);color:#5aad80}
+.jc-h{font-family:'Libre Baskerville',serif;font-size:19px;font-weight:700;color:var(--paper);line-height:1.2;margin-bottom:6px}
+.jc-sub{font-size:12px;color:rgba(248,245,240,0.38);line-height:1.6}
+
+.jstep{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.jstep:last-child{border-bottom:none}
+.js-num{width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);flex-shrink:0;margin-top:2px}
+.js-body{}
+.js-title{font-size:13px;font-weight:600;color:var(--paper);margin-bottom:4px;line-height:1.3}
+.js-value{font-size:12px;color:rgba(248,245,240,0.45);line-height:1.55}
+.js-gain{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border-radius:20px}
+.gain-b{background:rgba(184,53,24,0.15);color:#e8856e}
+.gain-c{background:rgba(28,92,63,0.15);color:#5aad80}
+.gain-e{background:rgba(196,154,60,0.15);color:#c49a3c}
+
+/* Convergence strip */
+.convergence{display:flex;align-items:center;gap:0;border:1px solid rgba(255,255,255,0.1);border-radius:var(--r);overflow:hidden}
+.conv-b{flex:1;padding:24px 28px;background:rgba(184,53,24,0.1)}
+.conv-c{flex:1;padding:24px 28px;background:rgba(28,92,63,0.1)}
+.conv-center{padding:24px 32px;background:rgba(255,255,255,0.04);border-left:1px solid rgba(255,255,255,0.08);border-right:1px solid rgba(255,255,255,0.08);text-align:center;min-width:180px}
+.conv-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:8px;display:block}
+.conv-b .conv-label{color:#e8856e}
+.conv-c .conv-label{color:#5aad80}
+.conv-center .conv-label{color:var(--event-gold)}
+.conv-item{font-size:12px;color:rgba(248,245,240,0.5);display:flex;align-items:flex-start;gap:7px;margin-bottom:6px;line-height:1.45}
+.conv-item::before{content:'✓';font-size:10px;flex-shrink:0;margin-top:1px;opacity:.5}
+.conv-center-icon{font-size:26px;margin-bottom:8px;display:block}
+.conv-center-text{font-family:'Libre Baskerville',serif;font-size:14px;font-style:italic;color:rgba(248,245,240,0.55);line-height:1.5}
+
+/* ── FLAGSHIP EVENT SECTION ── */
+.event-sec{background:var(--event);padding:112px 48px;position:relative;overflow:hidden}
+.event-bg-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(196,154,60,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(196,154,60,0.04) 1px,transparent 1px);background-size:80px 80px;pointer-events:none}
+.event-bg-glow{position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(196,154,60,0.06) 0%,transparent 70%);pointer-events:none}
+.event-inner{max-width:1200px;margin:0 auto;position:relative;z-index:2}
+
+.event-eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:48px}
+.event-flag{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:var(--event-gold);padding:6px 14px;border:1px solid rgba(196,154,60,0.3);border-radius:20px}
+.event-rule{flex:1;height:1px;background:rgba(196,154,60,0.15)}
+
+.event-main{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-bottom:72px}
+.event-left .sh{color:var(--paper);font-size:clamp(34px,4vw,56px);margin-bottom:20px}
+.event-left .sh em{color:var(--event-gold);font-style:italic;font-weight:400}
+.event-left .ss{color:rgba(248,245,240,0.45);max-width:440px;margin-bottom:36px}
+.event-badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:40px}
+.ev-badge{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:6px 14px;border-radius:20px}
+.evb-monthly{background:rgba(196,154,60,0.15);color:var(--event-gold);border:1px solid rgba(196,154,60,0.25)}
+.evb-curated{background:rgba(255,255,255,0.06);color:rgba(248,245,240,0.55);border:1px solid rgba(255,255,255,0.08)}
+.evb-london{background:rgba(255,255,255,0.06);color:rgba(248,245,240,0.55);border:1px solid rgba(255,255,255,0.08)}
+
+.event-card-grid{display:flex;flex-direction:column;gap:2px}
+.ev-card{padding:22px 24px;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.03);border-radius:var(--r);transition:background .2s;cursor:default}
+.ev-card:hover{background:rgba(255,255,255,0.06)}
+.ev-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.ev-card-title{font-size:13px;font-weight:600;color:var(--paper)}
+.ev-card-tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--event-gold);background:rgba(196,154,60,0.12);padding:3px 8px;border-radius:20px}
+.ev-card-body{font-size:12px;color:rgba(248,245,240,0.42);line-height:1.6}
+
+/* What happens on the night */
+.event-night{border:1px solid rgba(196,154,60,0.2);border-radius:var(--r);overflow:hidden;margin-bottom:64px}
+.en-header{padding:20px 28px;border-bottom:1px solid rgba(196,154,60,0.15);display:flex;align-items:center;gap:12px}
+.en-header-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--event-gold)}
+.en-header-rule{flex:1;height:1px;background:rgba(196,154,60,0.15)}
+.en-header-date{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(248,245,240,0.3)}
+.en-body{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.en-phase{padding:24px 22px;border-right:1px solid rgba(255,255,255,0.06)}
+.en-phase:last-child{border-right:none}
+.en-time{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--event-gold);opacity:.7;margin-bottom:8px;display:block}
+.en-phase-title{font-size:13px;font-weight:600;color:var(--paper);margin-bottom:6px}
+.en-phase-body{font-size:11px;color:rgba(248,245,240,0.38);line-height:1.6}
+
+/* Event CTAs */
+.event-ctas{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.ev-cta-card{padding:32px 28px;border:1px solid rgba(255,255,255,0.08);border-radius:var(--r);background:rgba(255,255,255,0.03)}
+.ec-tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:12px;display:block}
+.ec-tag-b{color:#e8856e}
+.ec-tag-c{color:#5aad80}
+.ec-h{font-size:16px;font-weight:600;color:var(--paper);margin-bottom:8px}
+.ec-body{font-size:12px;color:rgba(248,245,240,0.42);line-height:1.6;margin-bottom:20px}
+.ec-btn{display:inline-block;padding:12px 22px;border-radius:var(--r);font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:all .2s}
+.ec-btn-b{background:var(--brand);color:#fff}
+.ec-btn-b:hover{background:#9e2c13}
+.ec-btn-c{background:var(--creator);color:#fff}
+.ec-btn-c:hover{background:#154f35}
+
+/* ── BRAND SECTION ── */
+.brand-sec{background:var(--paper)}
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;border:1px solid var(--faint);margin-bottom:56px}
+.kpi{padding:28px 22px;border-right:1px solid var(--faint);background:white;position:relative;overflow:hidden;transition:background .2s;cursor:default}
+.kpi:last-child{border-right:none}
+.kpi:hover{background:var(--brand-soft)}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;height:2px;width:0;background:var(--brand);transition:width .3s ease}
+.kpi:hover::after{width:100%}
+.kpi-icon{font-size:20px;margin-bottom:14px;display:block}
+.kpi-label{font-size:13px;font-weight:600;margin-bottom:6px}
+.kpi-body{font-size:12px;color:var(--mid);line-height:1.6}
+
+/* Brand 4-step path */
+.brand-path{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border:1px solid var(--faint)}
+.bps{padding:32px 24px;border-right:1px solid var(--faint);background:white;position:relative}
+.bps:last-child{border-right:none}
+.bps-phase{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--mid);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.ph-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.ph-dot-b{background:var(--brand)}
+.ph-dot-ai{background:#5d4db0}
+.ph-dot-e{background:var(--event-gold)}
+.ph-dot-g{background:var(--creator)}
+.bps-title{font-size:14px;font-weight:600;margin-bottom:8px}
+.bps-body{font-size:12px;color:var(--mid);line-height:1.65;margin-bottom:14px}
+.bps-gain{display:flex;flex-direction:column;gap:5px}
+.gt{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:4px 10px;border-radius:20px;width:fit-content;font-weight:500}
+.gt-brand{background:var(--brand-soft);color:var(--brand)}
+.gt-ai{background:rgba(93,77,176,0.1);color:#5d4db0}
+.gt-gold{background:var(--event-gold-soft);color:#8a6b1e}
+.gt-creator{background:var(--creator-soft);color:var(--creator)}
+.bps-arr{position:absolute;top:50%;right:-14px;width:28px;height:28px;background:var(--warm);border:1px solid var(--faint);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;z-index:2;transform:translateY(-50%);color:var(--mid)}
+.bps:last-child .bps-arr{display:none}
+
+/* ── CREATOR SECTION ── */
+.creator-sec{background:var(--warm)}
+.c-cols{display:grid;grid-template-columns:1fr 1fr;gap:2px;border:1px solid var(--faint);margin-bottom:56px}
+.ccol{padding:44px 38px;background:white;border-right:1px solid var(--faint)}
+.ccol:last-child{border-right:none}
+.ccol-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:18px}
+.cb-pain{background:rgba(122,116,104,0.1);color:var(--mid)}
+.cb-gain{background:var(--creator-soft);color:var(--creator)}
+.ccol-h{font-family:'Libre Baskerville',serif;font-size:22px;font-weight:700;line-height:1.2;margin-bottom:18px}
+.clist{list-style:none;display:flex;flex-direction:column;gap:12px}
+.cli{display:flex;gap:10px;font-size:13px;color:var(--mid);line-height:1.6;align-items:flex-start}
+.clm{width:18px;height:18px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;margin-top:2px;font-weight:700}
+.clm-p{background:rgba(122,116,104,0.12);color:var(--mid)}
+.clm-g{background:var(--creator-soft);color:var(--creator)}
+
+/* Creator value pillars */
+.passion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border:1px solid var(--faint);margin-bottom:56px}
+.pg{padding:32px 26px;background:white;border-right:1px solid var(--faint);transition:background .2s;cursor:default}
+.pg:last-child{border-right:none}
+.pg:hover{background:var(--creator-soft)}
+.pg-icon{font-size:22px;margin-bottom:14px;display:block}
+.pg-title{font-size:14px;font-weight:600;margin-bottom:8px}
+.pg-body{font-size:12px;color:var(--mid);line-height:1.65;margin-bottom:14px}
+.pg-quote{font-family:'Libre Baskerville',serif;font-size:14px;font-style:italic;color:var(--creator);line-height:1.45}
+
+/* Creator recognition — abstracted, no algorithm exposed */
+.recognition-block{border:1px solid var(--faint);border-radius:var(--r);overflow:hidden;background:white}
+.rb-header{padding:20px 28px;border-bottom:1px solid var(--faint);display:flex;align-items:center;justify-content:space-between}
+.rb-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink)}
+.rb-note{font-size:11px;color:var(--mid)}
+.rb-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0}
+.rb-col{padding:28px 24px;border-right:1px solid var(--faint)}
+.rb-col:last-child{border-right:none}
+.rb-col-icon{font-size:20px;margin-bottom:12px;display:block}
+.rb-col-title{font-size:13px;font-weight:600;margin-bottom:6px}
+.rb-col-body{font-size:12px;color:var(--mid);line-height:1.6}
+
+/* ── TRUST PILLARS ── */
+.trust-sec{background:var(--warm2);padding:96px 48px;border-top:1px solid var(--faint);border-bottom:1px solid var(--faint)}
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border:1px solid var(--faint)}
+.tc{padding:34px 26px;border-right:1px solid var(--faint);background:white;position:relative;overflow:hidden}
+.tc:last-child{border-right:none}
+.tc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.tc:nth-child(1)::before{background:var(--brand)}
+.tc:nth-child(2)::before{background:var(--creator)}
+.tc:nth-child(3)::before{background:var(--event-gold)}
+.tc:nth-child(4)::before{background:#5d4db0}
+.tc-tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--mid);margin-bottom:12px;display:block}
+.tc-h{font-size:15px;font-weight:600;margin-bottom:8px}
+.tc-body{font-size:12px;color:var(--mid);line-height:1.65;margin-bottom:14px}
+.tc-quote{padding:12px 14px;background:var(--warm);border-left:2px solid var(--faint);font-family:'Libre Baskerville',serif;font-size:13px;font-style:italic;color:var(--ink);line-height:1.55}
+
+/* ── RESULTS ── */
+.results-sec{background:var(--ink);padding:96px 48px}
+.results-inner{max-width:1200px;margin:0 auto}
+.r3{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:2px}
+.rc{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);padding:38px 30px}
+.rc-n{font-family:'Libre Baskerville',serif;font-size:50px;font-weight:700;letter-spacing:-0.03em;line-height:1;margin-bottom:6px}
+.rc-n-b{color:var(--brand-mid)}
+.rc-n-c{color:var(--creator-mid)}
+.rc-n-g{color:var(--event-gold)}
+.rc-label{font-size:13px;font-weight:600;color:var(--paper);margin-bottom:8px}
+.rc-body{font-size:12px;color:rgba(248,245,240,0.38);line-height:1.65}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.rt{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:30px 26px}
+.rt-q{font-family:'Libre Baskerville',serif;font-size:15px;font-style:italic;color:rgba(248,245,240,0.7);line-height:1.7;margin-bottom:20px}
+.rt-who{display:flex;align-items:center;gap:10px}
+.rt-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.rt-name{font-size:12px;font-weight:600;color:var(--paper)}
+.rt-role{font-size:11px;color:rgba(248,245,240,0.3)}
+
+/* ── FINAL CTA ── */
+.cta-sec{background:var(--paper);padding:96px 48px;text-align:center}
+.cta-inner{max-width:640px;margin:0 auto}
+.cta-inner .sh{font-size:clamp(32px,4vw,54px);margin-bottom:14px}
+.cta-inner .ss{margin:0 auto 44px;max-width:460px}
+.event-info{display:flex;align-items:center;justify-content:center;gap:0;border:1px solid var(--faint);border-radius:var(--r);margin-bottom:36px;overflow:hidden;flex-wrap:wrap}
+.ei{padding:16px 24px;border-right:1px solid var(--faint)}
+.ei:last-child{border-right:none}
+.ei-l{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--mid);margin-bottom:4px;display:block}
+.ei-v{font-size:14px;font-weight:600;display:block}
+.ei-v-b{color:var(--brand)}
+.ei-v-c{color:var(--creator)}
+.cta-row{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
+.cta-note{font-size:12px;color:var(--mid)}
+.cta-note a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--faint)}
+
+/* ── FOOTER ── */
+footer{padding:28px 48px;border-top:1px solid var(--faint);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;background:var(--paper)}
+.fl{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.fl-mark{width:6px;height:6px;border-radius:50%;background:var(--brand)}
+.fc{font-size:11px;color:var(--mid)}
+.flinks{display:flex;gap:20px}
+.flinks a{font-size:11px;color:var(--mid);text-decoration:none;font-weight:500;letter-spacing:0.04em}
+.flinks a:hover{color:var(--ink)}
+
+/* ── REVEAL ── */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
+.rv.in{opacity:1;transform:none}
+.rv1{transition-delay:.05s}
+.rv2{transition-delay:.12s}
+.rv3{transition-delay:.19s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1080px){
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  .hero{grid-template-columns:1fr}
+  .hero-r{display:none}
+  .hero-l{padding:48px 24px}
+  .sec{padding:64px 24px}
+  .flow-sec,.event-sec,.trust-sec,.results-sec,.cta-sec{padding:64px 24px}
+  .flow-inner,.results-inner{max-width:100%}
+  .journey-split{grid-template-columns:1fr}
+  .journey-divider{display:none}
+  .journey-col{padding:0}
+  .journey-col+.journey-col{margin-top:32px}
+  .convergence{flex-direction:column}
+  .conv-center{border:none;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08)}
+  .event-main{grid-template-columns:1fr}
+  .en-body{grid-template-columns:1fr 1fr}
+  .event-ctas{grid-template-columns:1fr}
+  .kpi-strip{grid-template-columns:1fr 1fr}
+  .brand-path{grid-template-columns:1fr 1fr}
+  .c-cols{grid-template-columns:1fr}
+  .ccol{border-right:none;border-bottom:1px solid var(--faint)}
+  .passion-grid{grid-template-columns:1fr 1fr}
+  .rb-body{grid-template-columns:1fr}
+  .rb-col{border-right:none;border-bottom:1px solid var(--faint)}
+  .trust-grid{grid-template-columns:1fr 1fr}
+  .r3{grid-template-columns:1fr}
+  .r2{grid-template-columns:1fr}
+  .event-info{flex-direction:column;align-items:stretch}
+  .ei{border-right:none;border-bottom:1px solid var(--faint)}
+  .ei:last-child{border-bottom:none}
+  .cta-row{flex-direction:column;align-items:center}
+  footer{padding:20px 24px}
 }
 </style>
 </head>
 <body>
-  <main class="shell">
-    <h1>Bridgr</h1>
-    <p>Local launcher for the standalone HTML prototypes in this folder. Open any page directly from here without needing external font downloads.</p>
-    <section class="grid">
-      <a href="bridgr-landing%20page.html"><span class="label">Landing page</span><span class="meta">Marketing homepage</span></a>
-      <a href="bridgr-brand-planner.html"><span class="label">Brand planner</span><span class="meta">Original brand planning flow</span></a>
-      <a href="bridgr-brand-planner_updated.html"><span class="label">Brand planner updated</span><span class="meta">Revised brand planning flow</span></a>
-      <a href="bridgr-creator-planner.html"><span class="label">Creator planner</span><span class="meta">Creator planning flow</span></a>
-      <a href="bridgr-creator-editor.html"><span class="label">Creator editor</span><span class="meta">Editable creator profile</span></a>
-      <a href="bridgr-creator-profile.html"><span class="label">Creator profile</span><span class="meta">Published creator page</span></a>
-      <a href="bridgr-product-profile-editor.html"><span class="label">Product profile editor</span><span class="meta">Editable product page</span></a>
-      <a href="bridgr-product-profile.html"><span class="label">Product profile</span><span class="meta">Published product page</span></a>
-    </section>
-  </main>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="index.html"><span class="logo-mark"></span>Bridgr</a>
+  <ul class="nav-links">
+    <li><a href="#how">Platform</a></li>
+    <li><a href="#brands">Brands</a></li>
+    <li><a href="#creators">Creators</a></li>
+    <li><a href="#pages">Pages</a></li>
+    <li><a href="#event" class="event-link">★ Flagship Event</a></li>
+  </ul>
+  <div class="nav-ctas">
+    <a href="bridgr-creator-profile.html" class="nc nc-ghost">View creator profile</a>
+    <a href="bridgr-brand-planner_updated.html" class="nc nc-brand">For brands</a>
+    <a href="bridgr-creator-planner.html" class="nc nc-creator">For creators</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-texture"></div>
+  <div class="hero-l">
+    <div class="h-kicker"><span class="hk-dot"></span>Authentic Reviews.&nbsp;&nbsp;Seamless Matches.&nbsp;&nbsp;Local Trustpad.</div>
+    <h1>Bridgr.<br>Build <em>Real</em> Trust<br>and <span class="cw">Wins.</span></h1>
+    <p class="hero-deck">
+      Bridgr is a <strong>localised platform</strong> featuring a monthly flagship event — built to turn two-sided frustration into partnerships that actually work. <strong>Brands gain the social proof, high-fidelity content, and word-of-mouth momentum they need to launch.</strong> <strong>Creators get the vetted products, direct access, and the professional income they deserve.</strong>
+    </p>
+    <div class="entry-paths">
+      <a href="bridgr-brand-planner_updated.html" class="epath epath-b">
+        <span class="ep-badge ep-badge-b">🏷️</span>
+        <span class="ep-text">
+          <span class="ep-label ep-label-b">I'm launching a product</span>
+          <span class="ep-sub">Market intelligence, creator partnerships, and a launchpad event — all in one place</span>
+        </span>
+        <span class="ep-arr">→</span>
+      </a>
+      <a href="bridgr-creator-planner.html" class="epath epath-c">
+        <span class="ep-badge ep-badge-c">✨</span>
+        <span class="ep-text">
+          <span class="ep-label ep-label-c">I create content and want to earn doing it</span>
+          <span class="ep-sub">Discover products you believe in, build your reputation, and grow your income</span>
+        </span>
+        <span class="ep-arr">→</span>
+      </a>
+    </div>
+    <div class="hero-nums">
+      <div class="hn"><span class="hn-n">320+</span><span class="hn-l">Active creators</span></div>
+      <div class="hn"><span class="hn-n">47</span><span class="hn-l">Brands launched</span></div>
+      <div class="hn"><span class="hn-n">28d</span><span class="hn-l">Avg. to first sale</span></div>
+    </div>
+  </div>
+  <div class="hero-r">
+    <div class="platform-preview">
+      <div class="pp-topbar">
+        <div class="pp-dots"><div class="pp-dot"></div><div class="pp-dot"></div><div class="pp-dot"></div></div>
+        <div class="pp-url">app.bridgr.co/products</div>
+        <div style="width:60px"></div>
+      </div>
+      <div class="pp-tabs">
+        <div class="pp-tab pp-tab-active-b" id="tab-brand" onclick="previewTab('brand')">Brand View</div>
+        <div class="pp-tab" id="tab-creator" onclick="previewTab('creator')">Creator View</div>
+      </div>
+      <!-- BRAND VIEW -->
+      <div class="pp-body" id="preview-brand">
+        <div class="pp-section-label">AI Market Audit — Your Product</div>
+        <div class="pp-ai-block">
+          <div class="pp-ai-title">✦ AI Scoring — Nouri Skin Serum</div>
+          <div class="pp-ai-row"><span class="pp-ai-key">Market gap score</span><span class="pp-ai-val pp-val-green">87 / 100</span></div>
+          <div class="pp-ai-row"><span class="pp-ai-key">Competitor density</span><span class="pp-ai-val pp-val-amber">Medium</span></div>
+          <div class="pp-ai-row"><span class="pp-ai-key">Creator interest signals</span><span class="pp-ai-val pp-val-green">High ↑</span></div>
+          <div class="pp-ai-row"><span class="pp-ai-key">Top matching category</span><span class="pp-ai-val pp-val-purple">Clean Beauty</span></div>
+        </div>
+        <div class="pp-section-label">Creator Feedback on Your Product</div>
+        <div class="pp-product-card">
+          <div class="pp-prod-img">🧴</div>
+          <div class="pp-prod-content">
+            <div class="pp-prod-name">Nouri Skin Serum — Vitamin C+</div>
+            <div class="pp-prod-cat">Clean Beauty · Submitted 3 days ago</div>
+            <div class="pp-bar-row">
+              <div class="pp-bar"><div class="pp-bar-fill pp-bar-brand" style="width:82%"></div></div>
+              <span class="pp-bar-score">82 creator score</span>
+            </div>
+            <div class="pp-prod-meta">
+              <span class="pp-meta-likes">👍 34 likes · 12 comments</span>
+              <span class="pp-badge pp-badge-top">Top 10</span>
+            </div>
+          </div>
+        </div>
+        <div class="pp-section-label">Your Decision</div>
+        <div class="pp-decision-row">
+          <button class="pp-btn pp-btn-soft">Send products only</button>
+          <button class="pp-btn pp-btn-launch">Launch at event ★</button>
+        </div>
+      </div>
+      <!-- CREATOR VIEW -->
+      <div class="pp-body" id="preview-creator" style="display:none">
+        <div class="pp-section-label">Top Products This Month</div>
+        <div class="pp-product-card">
+          <div class="pp-prod-img">🧴</div>
+          <div class="pp-prod-content">
+            <div class="pp-prod-name">Nouri Skin Serum</div>
+            <div class="pp-prod-cat">Clean Beauty · London brand</div>
+            <div class="pp-bar-row">
+              <div class="pp-bar"><div class="pp-bar-fill pp-bar-creator" style="width:82%"></div></div>
+              <span class="pp-bar-score">82 / 100</span>
+            </div>
+            <div class="pp-prod-meta">
+              <div style="display:flex;gap:6px">
+                <button class="pp-act-btn pp-act-like">♥ 34</button>
+                <button class="pp-act-btn pp-act-note">+ Note</button>
+              </div>
+              <span class="pp-badge pp-badge-top">#1</span>
+            </div>
+          </div>
+        </div>
+        <div class="pp-product-card" style="opacity:.75">
+          <div class="pp-prod-img pp-prod-img-c">🌱</div>
+          <div class="pp-prod-content">
+            <div class="pp-prod-name">GreenLeaf Protein Bar</div>
+            <div class="pp-prod-cat">Health Food · Manchester brand</div>
+            <div class="pp-bar-row">
+              <div class="pp-bar"><div class="pp-bar-fill pp-bar-creator" style="width:74%"></div></div>
+              <span class="pp-bar-score">74 / 100</span>
+            </div>
+            <div class="pp-prod-meta">
+              <div style="display:flex;gap:6px">
+                <button class="pp-act-btn pp-act-like">♥ 28</button>
+                <button class="pp-act-btn pp-act-note">+ Note</button>
+              </div>
+              <span class="pp-badge pp-badge-ai">AI Pick</span>
+            </div>
+          </div>
+        </div>
+        <div class="pp-section-label">Your Creator Standing</div>
+        <div class="pp-ai-block">
+          <div class="pp-ai-title">✦ @maya.creates — this month</div>
+          <div class="pp-ai-row"><span class="pp-ai-key">Reviews contributed</span><span class="pp-ai-val pp-val-green">12 this month</span></div>
+          <div class="pp-ai-row"><span class="pp-ai-key">Avg. feedback quality</span><span class="pp-ai-val pp-val-green">4.8 / 5</span></div>
+          <div class="pp-ai-row"><span class="pp-ai-key">Category relevance</span><span class="pp-ai-val pp-val-purple">Beauty · Wellness</span></div>
+          <div class="pp-ai-row"><span class="pp-ai-key">This month ranking</span><span class="pp-ai-val pp-val-green">Top 10 ★</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marq">
+  <div class="marq-track">
+    <span class="mi">Platform + flagship event</span><span class="mi">Market intelligence</span><span class="mi">Curated both sides</span><span class="mi">Creator partnerships</span><span class="mi">Social proof engine</span><span class="mi">UGC & real-life demos</span><span class="mi">SEO content output</span><span class="mi">Zero follower minimum</span><span class="mi">Commission-only model</span><span class="mi">Monthly · London</span>
+    <span class="mi">Platform + flagship event</span><span class="mi">Market intelligence</span><span class="mi">Curated both sides</span><span class="mi">Creator partnerships</span><span class="mi">Social proof engine</span><span class="mi">UGC & real-life demos</span><span class="mi">SEO content output</span><span class="mi">Zero follower minimum</span><span class="mi">Commission-only model</span><span class="mi">Monthly · London</span>
+  </div>
+</div>
+
+<section class="sec" id="pages" style="background:var(--paper);border-bottom:1px solid var(--faint)">
+  <div class="inner">
+    <span class="stag rv">Browse the website</span>
+    <h2 class="sh rv">Start at the homepage, then move through the live prototype flows.</h2>
+    <p class="ss rv">These pages now behave like a small static site. Use the primary journeys first, or jump directly into a specific editor or profile page.</p>
+    <div class="kpi-strip rv" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:18px">
+      <a href="bridgr-brand-planner_updated.html" class="kpi" style="text-decoration:none;color:inherit">
+        <span class="kpi-icon">🏷️</span>
+        <div class="kpi-label">Brand journey</div>
+        <div class="kpi-body">Start with the updated brand planner, then move into the product editor and published product page.</div>
+      </a>
+      <a href="bridgr-creator-planner.html" class="kpi" style="text-decoration:none;color:inherit">
+        <span class="kpi-icon">✨</span>
+        <div class="kpi-label">Creator journey</div>
+        <div class="kpi-body">Start with the creator planner, then continue into the creator editor and live profile view.</div>
+      </a>
+      <a href="bridgr-product-profile-editor.html" class="kpi" style="text-decoration:none;color:inherit">
+        <span class="kpi-icon">🧴</span>
+        <div class="kpi-label">Product editor</div>
+        <div class="kpi-body">Open the editable product profile directly and preview the public-facing product page.</div>
+      </a>
+      <a href="bridgr-product-profile.html" class="kpi" style="text-decoration:none;color:inherit">
+        <span class="kpi-icon">🛍️</span>
+        <div class="kpi-label">Product page</div>
+        <div class="kpi-body">See the public product experience with reactions, comments, and purchase pathways.</div>
+      </a>
+      <a href="bridgr-creator-editor.html" class="kpi" style="text-decoration:none;color:inherit">
+        <span class="kpi-icon">📝</span>
+        <div class="kpi-label">Creator editor</div>
+        <div class="kpi-body">Edit the creator-facing profile and publish the current prototype state to the live profile page.</div>
+      </a>
+      <a href="bridgr-creator-profile.html" class="kpi" style="text-decoration:none;color:inherit">
+        <span class="kpi-icon">👤</span>
+        <div class="kpi-label">Creator profile</div>
+        <div class="kpi-body">View the public creator profile that a brand would see while evaluating a potential partnership.</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM FLOW -->
+<div class="flow-sec" id="how">
+  <div class="flow-inner">
+    <div class="flow-top rv">
+      <span class="stag">How it works</span>
+      <h2 class="sh">You arrive at the event<br>already knowing who you want to meet.</h2>
+      <p class="ss">The platform does the groundwork in the weeks before. The event is where everything that's been building — intelligence, interest, signals — comes to a head. Both sides walk in prepared. Deals happen fast.</p>
+    </div>
+
+    <div class="journey-split rv">
+      <!-- BRANDS -->
+      <div class="journey-col">
+        <div class="jc-header">
+          <span class="jc-pill jc-pill-b">Brands</span>
+          <div class="jc-h">From invisible to in-demand</div>
+          <div class="jc-sub">The platform builds your launchpad. The event ignites it.</div>
+        </div>
+        <div class="jstep">
+          <div class="js-num">1</div>
+          <div class="js-body">
+            <div class="js-title">Your product gets a full market picture</div>
+            <div class="js-value">The moment you submit, our system analyses your product against the market — giving you clarity on your positioning, competitive edge, and which creator audiences are most likely to respond.</div>
+            <span class="js-gain gain-b">Know your market position</span>
+          </div>
+        </div>
+        <div class="jstep">
+          <div class="js-num">2</div>
+          <div class="js-body">
+            <div class="js-title">Real creators tell you what they think</div>
+            <div class="js-value">Your product enters a curated pool where genuine creators browse, react, and leave comments. This is honest pre-market feedback you'd normally pay thousands for — delivered before the event.</div>
+            <span class="js-gain gain-b">Pre-launch market validation</span>
+          </div>
+        </div>
+        <div class="jstep">
+          <div class="js-num">3</div>
+          <div class="js-body">
+            <div class="js-title">Choose how you want to show up</div>
+            <div class="js-value">Early signals strong? Apply for a featured launch slot. Still building momentum? Send products to interested creators and keep collecting feedback. You decide the pace — the platform supports both.</div>
+            <span class="js-gain gain-b">Launch on your terms</span>
+          </div>
+        </div>
+        <div class="jstep">
+          <div class="js-num">4</div>
+          <div class="js-body">
+            <div class="js-title">Walk in knowing exactly who to meet</div>
+            <div class="js-value">You can see which creators engaged with your product, what they said, and how well they match your audience. The event isn't a cold room — it's a confirmed shortlist of people who already raised their hand.</div>
+            <span class="js-gain gain-b">Warm introductions, not cold networking</span>
+          </div>
+        </div>
+        <div class="jstep">
+          <div class="js-num">5</div>
+          <div class="js-body">
+            <div class="js-title">Deals agreed. Content starts. Sales tracked.</div>
+            <div class="js-value">Partnerships committed on the night. Trial products go home with creators. Reviews, reels, and affiliate content live within 30 days — building the SEO, social proof, and word-of-mouth your launch actually needs.</div>
+            <span class="js-gain gain-b">Real output. Real sales data.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey-divider"></div>
+
+      <!-- CREATORS -->
+      <div class="journey-col">
+        <div class="jc-header">
+          <span class="jc-pill jc-pill-c">Creators</span>
+          <div class="jc-h">From overlooked to recognised</div>
+          <div class="jc-sub">Build your reputation before you even enter the room.</div>
+        </div>
+        <div class="jstep">
+          <div class="js-num">1</div>
+          <div class="js-body">
+            <div class="js-title">Discover products genuinely worth your voice</div>
+            <div class="js-value">Browse a curated pool of new brands — each one reviewed before it enters. Every product comes with a clear, honest summary of what it is, who it's for, and why it might matter to your audience. No scrolling through junk.</div>
+            <span class="js-gain gain-c">Your time and taste, respected</span>
+          </div>
+        </div>
+        <div class="jstep">
+          <div class="js-num">2</div>
+          <div class="js-body">
+            <div class="js-title">Your opinion shapes what gets featured</div>
+            <div class="js-value">When you engage with a product — reacting, commenting, sharing your perspective — you're directly influencing which brands get the spotlight. Your voice has weight here. Brands read it as real market feedback.</div>
+            <span class="js-gain gain-c">Influence without a following requirement</span>
+          </div>
+        </div>
+        <div class="jstep">
+          <div class="js-num">3</div>
+          <div class="js-body">
+            <div class="js-title">Get recognised for showing up with real intent</div>
+            <div class="js-value">Creators who contribute thoughtfully — consistently, in their niche — are the ones who rise to the top of our monthly recognition programme. No follower count required. Quality of engagement is what matters.</div>
+            <span class="js-gain gain-c">Merit-based, not popularity-based</span>
+          </div>
+        </div>
+        <div class="jstep">
+          <div class="js-num">4</div>
+          <div class="js-body">
+            <div class="js-title">Arrive at the event with targets already in mind</div>
+            <div class="js-value">You've read the products. You know which brands are interesting. You may have already had a conversation online. The event isn't a blind date — it's the moment you meet the founder of the brand you've already decided to like.</div>
+            <span class="js-gain gain-c">Purposeful, not aimless</span>
+          </div>
+        </div>
+        <div class="jstep">
+          <div class="js-num">5</div>
+          <div class="js-body">
+            <div class="js-title">Walk away with a deal, a product, and a plan</div>
+            <div class="js-value">Commission terms agreed in the room. Trial product in your hands. Content commitment clear and manageable. Your portfolio of credible brand associations grows — and every future pitch gets easier because of it.</div>
+            <span class="js-gain gain-c">Income and career, built together</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Convergence strip -->
+    <div class="convergence rv">
+      <div class="conv-b">
+        <span class="conv-label">Brand arrives knowing</span>
+        <div class="conv-item">Which creators already engaged with their product</div>
+        <div class="conv-item">What the market says about their positioning</div>
+        <div class="conv-item">Exactly who they want to approach first</div>
+      </div>
+      <div class="conv-center">
+        <span class="conv-label">The event night</span>
+        <span class="conv-center-icon">🤝</span>
+        <div class="conv-center-text">Preparation becomes<br><em>partnership</em></div>
+      </div>
+      <div class="conv-c">
+        <span class="conv-label">Creator arrives knowing</span>
+        <div class="conv-item">Which products match their niche and values</div>
+        <div class="conv-item">Which brands have noticed their profile</div>
+        <div class="conv-item">Their personal target shortlist for the night</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ★ FLAGSHIP EVENT SECTION -->
+<section class="event-sec" id="event">
+  <div class="event-bg-lines"></div>
+  <div class="event-bg-glow"></div>
+  <div class="event-inner">
+
+    <div class="event-eyebrow rv">
+      <span class="event-flag">★ Bridgr Flagship Event</span>
+      <div class="event-rule"></div>
+    </div>
+
+    <div class="event-main rv">
+      <div class="event-left">
+        <h2 class="sh">The room where<br>real partnerships<br>begin. <em>Every month.</em></h2>
+        <p class="ss">Our flagship monthly event is the culmination of everything the platform builds towards. It's where the market intelligence, the creator engagement, and the mutual interest — all of it — crystallises into actual deals, in a single curated evening.</p>
+        <div class="event-badge-row">
+          <span class="ev-badge evb-monthly">Monthly cadence</span>
+          <span class="ev-badge evb-curated">Both sides curated</span>
+          <span class="ev-badge evb-london">London</span>
+        </div>
+        <div class="event-card-grid">
+          <div class="ev-card">
+            <div class="ev-card-header">
+              <span class="ev-card-title">Not a conference. Not a mixer.</span>
+              <span class="ev-card-tag">Different by design</span>
+            </div>
+            <div class="ev-card-body">Every other marketing event ends when you leave. The contacts go cold. Nothing ships. Bridgr events produce output — reviews published, content live, deals signed — that keep working long after the evening ends.</div>
+          </div>
+          <div class="ev-card">
+            <div class="ev-card-header">
+              <span class="ev-card-title">The Top 10 reveal</span>
+              <span class="ev-card-tag">Monthly spotlight</span>
+            </div>
+            <div class="ev-card-body">Each month, the platform surfaces the 10 most compelling products and the 10 most engaged creators — announced at the event. Being featured is earned, not bought. It creates real anticipation and real stakes.</div>
+          </div>
+          <div class="ev-card">
+            <div class="ev-card-header">
+              <span class="ev-card-title">Compounding trust, month by month</span>
+              <span class="ev-card-tag">The cadence advantage</span>
+            </div>
+            <div class="ev-card-body">The monthly rhythm creates something no one-off event can: urgency, accountability, and relationships that deepen over time. Miss one and you wait a month. Show up consistently and the room starts working for you.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- What happens on the night -->
+      <div>
+        <div class="event-night">
+          <div class="en-header">
+            <span class="en-header-title">What happens on the night</span>
+            <div class="en-header-rule"></div>
+            <span class="en-header-date">6pm – 10pm</span>
+          </div>
+          <div class="en-body">
+            <div class="en-phase">
+              <span class="en-time">6:00 – 6:45</span>
+              <div class="en-phase-title">Opening & Top 10 reveal</div>
+              <div class="en-phase-body">The monthly Top 10 products and creators are announced. The room sees who's featured. The energy shifts.</div>
+            </div>
+            <div class="en-phase">
+              <span class="en-time">6:45 – 8:00</span>
+              <div class="en-phase-title">Product demos & founder pitches</div>
+              <div class="en-phase-body">Featured brands run their demo stations. Creators move freely, try products, and hear founders speak for themselves.</div>
+            </div>
+            <div class="en-phase">
+              <span class="en-time">8:00 – 9:00</span>
+              <div class="en-phase-title">Structured matching rounds</div>
+              <div class="en-phase-body">Curated introductions based on platform signals. Both sides already know who they're meeting and why.</div>
+            </div>
+            <div class="en-phase">
+              <span class="en-time">9:00 – 10:00</span>
+              <div class="en-phase-title">Deal room</div>
+              <div class="en-phase-body">Partnerships committed. Trial products assigned. Commission terms agreed. Both parties leave with something concrete.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="event-ctas">
+          <div class="ev-cta-card">
+            <span class="ec-tag ec-tag-b">For brands</span>
+            <div class="ec-h">Apply for a launch slot</div>
+            <div class="ec-body">Present your product to a room full of creators who are already interested. 8 brand spots per event. Applications reviewed on a rolling basis.</div>
+            <a href="bridgr-brand-planner_updated.html" class="ec-btn ec-btn-b">Apply as a brand →</a>
+          </div>
+          <div class="ev-cta-card">
+            <span class="ec-tag ec-tag-c">For creators</span>
+            <div class="ec-h">Secure your creator spot</div>
+            <div class="ec-body">Attend as one of up to 60 curated creators. Meet the founders behind the products you've already been exploring on the platform.</div>
+            <a href="bridgr-creator-planner.html" class="ec-btn ec-btn-c">Join as a creator →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRANDS -->
+<section class="brand-sec sec" id="brands">
+  <div class="inner">
+    <span class="stag rv">For brands & product launchers</span>
+    <h2 class="sh rv">Five things your launch<br>needs. One platform to start them.</h2>
+    <p class="ss rv">This isn't influencer marketing. These are the five pillars that determine whether a new product builds a market — or disappears into it.</p>
+
+    <div class="kpi-strip rv">
+      <div class="kpi">
+        <span class="kpi-icon">🔍</span>
+        <div class="kpi-label">Search presence</div>
+        <div class="kpi-body">Every creator post is an indexed page: your product name, category keywords, real context. Ten creators posting means ten new pages Google can rank. Organic infrastructure no ad can replicate.</div>
+      </div>
+      <div class="kpi">
+        <span class="kpi-icon">⭐</span>
+        <div class="kpi-label">Reviews & social proof</div>
+        <div class="kpi-body">91% of buyers read reviews before purchasing. Creators who've tried your product write with real conviction. That authenticity is the difference between a browser and a buyer.</div>
+      </div>
+      <div class="kpi">
+        <span class="kpi-icon">🎬</span>
+        <div class="kpi-label">Real-life demos & UGC</div>
+        <div class="kpi-body">Video of your product in actual use converts at 4× the rate of studio content. Creators produce this naturally — to audiences who trust them personally. No agency brief. No studio budget.</div>
+      </div>
+      <div class="kpi">
+        <span class="kpi-icon">💬</span>
+        <div class="kpi-label">Word-of-mouth that sticks</div>
+        <div class="kpi-body">A recommendation from someone an audience genuinely follows carries a trusted friend's weight. One creator who believes in your product outperforms a £10k paid campaign in conversion quality.</div>
+      </div>
+      <div class="kpi">
+        <span class="kpi-icon">🔁</span>
+        <div class="kpi-label">A repeating cohort</div>
+        <div class="kpi-body">Not a one-off campaign spike. A group of creators that grows, posts again each month, and recruits others. This is how a launch becomes a category brand over time.</div>
+      </div>
+    </div>
+
+    <h3 class="sh rv" style="font-size:clamp(24px,2.6vw,36px);margin-bottom:12px">Your path — from submission to live content</h3>
+    <p class="ss rv" style="margin-bottom:32px;font-size:15px">Under 30 days from product submission to first creator content live.</p>
+    <div class="brand-path rv">
+      <div class="bps">
+        <div class="bps-arr">→</div>
+        <div class="bps-phase"><span class="ph-dot ph-dot-b"></span>Week 1</div>
+        <div class="bps-title">Submit your product</div>
+        <div class="bps-body">Share your product details, define your audience, and set your commission rate. Your listing enters the curated pool — immediately visible to the right creators.</div>
+        <div class="bps-gain"><span class="gt gt-brand">Live in the pool</span><span class="gt gt-brand">Visible to creators</span></div>
+      </div>
+      <div class="bps">
+        <div class="bps-arr">→</div>
+        <div class="bps-phase"><span class="ph-dot ph-dot-ai"></span>Week 1–2</div>
+        <div class="bps-title">Get market intelligence & creator signals</div>
+        <div class="bps-body">Your product is benchmarked against the market. Creators browse, react, and comment — giving you honest pre-launch feedback you'd normally pay an agency to gather.</div>
+        <div class="bps-gain"><span class="gt gt-ai">Market positioning clarity</span><span class="gt gt-brand">Real creator reactions</span></div>
+      </div>
+      <div class="bps">
+        <div class="bps-arr">→</div>
+        <div class="bps-phase"><span class="ph-dot ph-dot-e"></span>Week 2–3</div>
+        <div class="bps-title">Choose your event role</div>
+        <div class="bps-body">Strong signals? Apply for a featured launch slot at the next event. Still building? Send products to interested creators and keep gathering momentum. The choice is yours.</div>
+        <div class="bps-gain"><span class="gt gt-gold">Event launch or trial track</span></div>
+      </div>
+      <div class="bps">
+        <div class="bps-phase"><span class="ph-dot ph-dot-g"></span>Week 4+</div>
+        <div class="bps-title">Content live. Sales tracked.</div>
+        <div class="bps-body">Partnerships agreed at the event. Products go home with creators. Reviews, reels, and affiliate content go live within 30 days — building every pillar your launch needs, simultaneously.</div>
+        <div class="bps-gain"><span class="gt gt-creator">UGC & reviews live</span><span class="gt gt-creator">Commission sales tracked</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREATORS -->
+<section class="creator-sec sec" id="creators">
+  <div class="inner">
+    <span class="stag rv">For creators & side-income builders</span>
+    <h2 class="sh rv">Not just income.<br>A reputation that opens doors.</h2>
+    <p class="ss rv">The creators who build lasting careers aren't the ones with the most followers. They're the ones with the most credible brand associations — built on genuine taste, real trust, and a growing track record.</p>
+
+    <div class="c-cols rv">
+      <div class="ccol">
+        <span class="ccol-badge cb-pain">The frustration you know</span>
+        <div class="ccol-h">What's holding passionate creators back right now.</div>
+        <ul class="clist">
+          <li><span class="clm clm-p">—</span><span>Affiliate platforms full of products you'd never personally tell a friend about</span></li>
+          <li><span class="clm clm-p">—</span><span>Brands ignoring your DMs because your follower count doesn't hit their arbitrary threshold</span></li>
+          <li><span class="clm clm-p">—</span><span>No way to properly vet a product before you stake your audience's trust on it</span></li>
+          <li><span class="clm clm-p">—</span><span>Commission tracking that's opaque, links that break, payments that arrive weeks late</span></li>
+          <li><span class="clm clm-p">—</span><span>Figuring out pitches, deals, and content frameworks completely alone</span></li>
+        </ul>
+      </div>
+      <div class="ccol">
+        <span class="ccol-badge cb-gain">What changes on Bridgr</span>
+        <div class="ccol-h">A platform that works for you — before you even arrive at the event.</div>
+        <ul class="clist">
+          <li><span class="clm clm-g">✓</span><span>A curated product pool where every brand has been vetted — your reputation is never at risk from something untested</span></li>
+          <li><span class="clm clm-g">✓</span><span>Zero follower minimum. The brands here want genuine storytellers, not vanity metrics</span></li>
+          <li><span class="clm clm-g">✓</span><span>Try the product before you commit — at the event, you take it home and experience it for yourself first</span></li>
+          <li><span class="clm clm-g">✓</span><span>Commission terms agreed in the room, clearly, before you leave — no chasing, no ambiguity</span></li>
+          <li><span class="clm clm-g">✓</span><span>A growing track record of credible partnerships that makes every future brand conversation easier</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sh rv" style="font-size:clamp(22px,2.4vw,34px);margin-bottom:12px">Why creators who care choose Bridgr</h3>
+    <p class="ss rv" style="margin-bottom:32px;font-size:15px">Beyond the commission rate. These are the reasons that actually matter.</p>
+    <div class="passion-grid rv">
+      <div class="pg">
+        <span class="pg-icon">🏆</span>
+        <div class="pg-title">Be the one who found it first</div>
+        <div class="pg-body">Early partnerships with brands before they blow up define taste-makers. The credibility of discovery — "I promoted them when no one had heard of them" — is something no follower count can buy later.</div>
+        <div class="pg-quote">"I was there before anyone else."</div>
+      </div>
+      <div class="pg">
+        <span class="pg-icon">📁</span>
+        <div class="pg-title">A portfolio that makes the next pitch write itself</div>
+        <div class="pg-body">Each credible brand association you earn tells a story. Brands look at your history. A track record of real, well-chosen partnerships signals far more than a follower count ever could.</div>
+        <div class="pg-quote">"My work speaks for me before I open my mouth."</div>
+      </div>
+      <div class="pg">
+        <span class="pg-icon">🗣️</span>
+        <div class="pg-title">Content with conviction audiences feel</div>
+        <div class="pg-body">When you've met the founder, tried the product, and chosen it yourself — the content you make has a quality nothing scripted can replicate. Audiences sense belief. It's the rarest thing in creator marketing.</div>
+        <div class="pg-quote">"I actually believe in what I say."</div>
+      </div>
+    </div>
+
+    <!-- Recognition — abstracted -->
+    <div class="recognition-block rv">
+      <div class="rb-header">
+        <span class="rb-title">How creators rise on Bridgr</span>
+        <span class="rb-note">Full details visible after joining</span>
+      </div>
+      <div class="rb-body">
+        <div class="rb-col">
+          <span class="rb-col-icon">✍️</span>
+          <div class="rb-col-title">Show up with real intent</div>
+          <div class="rb-col-body">Creators who consistently engage with the product pool — thoughtfully, in their niche — are recognised. It's not about volume. It's about the quality and relevance of your voice.</div>
+        </div>
+        <div class="rb-col">
+          <span class="rb-col-icon">🎯</span>
+          <div class="rb-col-title">Be relevant to your category</div>
+          <div class="rb-col-body">Bridgr looks at how well your voice and audience fit the products in your chosen categories. A beauty creator who deeply engages with beauty brands is far more valuable than a generalist with ten times the followers.</div>
+        </div>
+        <div class="rb-col">
+          <span class="rb-col-icon">📈</span>
+          <div class="rb-col-title">Your standing compounds over time</div>
+          <div class="rb-col-body">Each month builds on the last. Creators who are consistently present and well-matched to their niche earn greater visibility, better partnership opportunities, and first access to new brands joining the platform.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST PILLARS -->
+<div class="trust-sec">
+  <div class="inner">
+    <span class="stag rv">Four things we stand by</span>
+    <h2 class="sh rv" style="margin-bottom:14px">Built so trust isn't a feature.<br>It's the foundation.</h2>
+    <p class="ss rv">These are the commitments that make Bridgr structurally different — for both sides.</p>
+    <div class="trust-grid rv">
+      <div class="tc">
+        <span class="tc-tag">01 — Editorial curation</span>
+        <div class="tc-h">We are editors, not a marketplace</div>
+        <div class="tc-body">Every brand and every creator is reviewed before they enter. Real products. Fair terms. Genuine intent. Bad actors on either side are never admitted — and that's the guarantee that makes the room worth being in.</div>
+        <div class="tc-quote">"Everyone there had earned their place. That changes the whole dynamic."</div>
+      </div>
+      <div class="tc">
+        <span class="tc-tag">02 — Physical trust</span>
+        <div class="tc-h">What no screen can replicate</div>
+        <div class="tc-body">You cannot feel a product through a profile page. You cannot read a founder through a pitch deck. Meeting in person — trying the product, hearing the story — compresses weeks of trust-building into one conversation.</div>
+        <div class="tc-quote">"I knew within five minutes whether I wanted to work with them."</div>
+      </div>
+      <div class="tc">
+        <span class="tc-tag">03 — Monthly accountability</span>
+        <div class="tc-h">Urgency that keeps both sides honest</div>
+        <div class="tc-body">The monthly rhythm creates something no one-off event has: urgency, accountability, and compounding trust. Results are visible to the community. Relationships deepen every cycle. Both sides have skin in the game.</div>
+        <div class="tc-quote">"By month three, I didn't need to explain myself to new brands anymore."</div>
+      </div>
+      <div class="tc">
+        <span class="tc-tag">04 — Output, not theatre</span>
+        <div class="tc-h">The event is just the beginning</div>
+        <div class="tc-body">Every other event ends when you leave the room. Bridgr produces output that lives on: reviews indexed by Google, videos that convert, affiliate content that earns while you sleep. The return on one evening compounds for months.</div>
+        <div class="tc-quote">"Three months later I was still getting sales from content posted that week."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="results-sec">
+  <div class="results-inner">
+    <span class="stag rv" style="color:rgba(248,245,240,0.3)">From the first year</span>
+    <h2 class="sh rv" style="color:var(--paper);margin-bottom:48px">Numbers from the room.</h2>
+    <div class="r3 rv">
+      <div class="rc">
+        <div class="rc-n rc-n-b">£0</div>
+        <div class="rc-label">Upfront cost per creator partnership</div>
+        <div class="rc-body">Every deal starts on commission. Brands pay only when sales happen — zero financial risk on the discovery phase.</div>
+      </div>
+      <div class="rc">
+        <div class="rc-n rc-n-c">320+</div>
+        <div class="rc-label">Active creators in the network</div>
+        <div class="rc-body">From 800-follower micro-creators to established voices. What they all have in common: they only promote what they actually believe in.</div>
+      </div>
+      <div class="rc">
+        <div class="rc-n rc-n-g">28d</div>
+        <div class="rc-label">Average time to first sale</div>
+        <div class="rc-body">From event night to live creator content to first tracked sale. The fastest brands see results in under a week.</div>
+      </div>
+    </div>
+    <div class="r2 rv">
+      <div class="rt">
+        <div class="rt-q">"I spent two months cold-messaging creators before I heard about Bridgr. One evening here gave me more genuine conversations than all of that — and three of those creators had content live within two weeks. My only regret is not coming sooner."</div>
+        <div class="rt-who">
+          <div class="rt-av" style="background:var(--brand)">SL</div>
+          <div><div class="rt-name">Sarah L.</div><div class="rt-role">Founder, skincare brand · attended 3 events</div></div>
+        </div>
+      </div>
+      <div class="rt">
+        <div class="rt-q">"I have 4,200 followers. Every affiliate platform I tried told me I wasn't big enough. At Bridgr I found a brand I genuinely loved, told them honestly what I thought of the product, and we agreed a deal in twenty minutes at the event. I made more in one month than six months of affiliate links."</div>
+        <div class="rt-who">
+          <div class="rt-av" style="background:var(--creator)">MO</div>
+          <div><div class="rt-name">Marcus O.</div><div class="rt-role">Lifestyle creator · 4,200 followers · 1st event</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="cta-inner">
+    <span class="stag rv">Next event</span>
+    <h2 class="sh rv" style="margin-bottom:14px">The room is being filled.</h2>
+    <p class="ss rv" style="margin:0 auto 40px">Both sides are curated before each event. Join the platform today — the product pool is open, the next event is close, and spots on both sides fill faster each month.</p>
+    <div class="event-info rv">
+      <div class="ei"><span class="ei-l">Date</span><span class="ei-v">15 May 2026</span></div>
+      <div class="ei"><span class="ei-l">Location</span><span class="ei-v">London, UK</span></div>
+      <div class="ei"><span class="ei-l">Brand spots</span><span class="ei-v ei-v-b">8 remaining</span></div>
+      <div class="ei"><span class="ei-l">Creator spots</span><span class="ei-v ei-v-c">40 remaining</span></div>
+      <div class="ei"><span class="ei-l">Product pool</span><span class="ei-v">Open now</span></div>
+    </div>
+    <div class="cta-row rv">
+      <a href="bridgr-product-profile-editor.html" class="nc nc-brand" style="padding:13px 28px;font-size:13px">Submit my product →</a>
+      <a href="bridgr-creator-editor.html" class="nc nc-creator" style="padding:13px 28px;font-size:13px">Join as a creator →</a>
+    </div>
+    <p class="cta-note rv">Not ready yet? <a href="mailto:hello@bridgr.co?subject=Bridgr%20waitlist">Join the waitlist</a> — first access to the next product pool opening.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="fl"><span class="fl-mark"></span>Bridgr</div>
+  <div class="fc">© 2026 Bridgr · Monthly brand–creator events · London</div>
+  <div class="flinks"><a href="#pages">Pages</a><a href="mailto:hello@bridgr.co">Contact</a><a href="bridgr-product-profile.html">Products</a><a href="bridgr-creator-profile.html">Creators</a></div>
+</footer>
+
+<script>
+// Platform preview tab switch
+function previewTab(role) {
+  document.getElementById('preview-brand').style.display = role === 'brand' ? 'block' : 'none';
+  document.getElementById('preview-creator').style.display = role === 'creator' ? 'block' : 'none';
+  document.getElementById('tab-brand').className = 'pp-tab' + (role === 'brand' ? ' pp-tab-active-b' : '');
+  document.getElementById('tab-creator').className = 'pp-tab' + (role === 'creator' ? ' pp-tab-active-c' : '');
+}
+
+// Animate bar fills on load
+window.addEventListener('load', () => {
+  document.querySelectorAll('.pp-bar-fill').forEach(b => {
+    const w = b.style.width; b.style.width = '0';
+    setTimeout(() => b.style.width = w, 600);
+  });
+});
+
+// Scroll reveal with stagger
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      const parent = e.target.parentElement;
+      const siblings = [...parent.querySelectorAll('.rv')].filter(el => !el.classList.contains('in'));
+      siblings.forEach((el, i) => {
+        setTimeout(() => el.classList.add('in'), i * 90);
+      });
+      obs.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.06, rootMargin: '0px 0px -40px 0px'});
+document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+</script>
 </body>
 </html>

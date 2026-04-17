@@ -124,6 +124,91 @@ body{min-height:100vh}
 /* Working notes */
 .notes-card{background:var(--panel);border:1px solid var(--stroke);border-radius:12px;padding:18px;margin-bottom:24px}
 .notes-text{font-size:13px;color:var(--cream2);line-height:1.7;font-style:italic}
+@media(max-width:760px){
+  .nav{
+    height:auto;
+    padding:12px 16px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .nav-r{
+    width:100%;
+    justify-content:space-between;
+  }
+  .nav-edit{
+    padding:8px 12px;
+    font-size:11px;
+  }
+  .profile{
+    padding:20px 16px 48px;
+  }
+  .hero{
+    flex-direction:column;
+    align-items:flex-start;
+    padding:20px;
+    gap:18px;
+  }
+  .hero-avatar{
+    width:84px;
+    height:84px;
+    font-size:34px;
+  }
+  .hero-pitch{font-size:13px}
+  .hero-meta{
+    gap:8px;
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .stats-grid,
+  .credit-grid,
+  .two-col,
+  .feedback-grid{
+    grid-template-columns:1fr 1fr;
+  }
+  .deal-card{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+  }
+  .deal-meta{
+    width:100%;
+    justify-content:space-between;
+  }
+  .collab-row{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:4px;
+  }
+  .collab-v{text-align:left}
+}
+@media(max-width:520px){
+  .nav-r{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .nav-tag{
+    width:fit-content;
+  }
+  .stats-grid,
+  .credit-grid,
+  .two-col,
+  .feedback-grid{
+    grid-template-columns:1fr;
+  }
+  .bio-card,
+  .info-card,
+  .collab-card,
+  .notes-card{
+    padding:16px;
+  }
+  .plat-links{
+    flex-direction:column;
+  }
+  .plat-link{
+    width:100%;
+  }
+}
 </style>
 </head>
 <body>

@@ -14,7 +14,7 @@
   --green:#3aaa78;--green-g:rgba(58,170,120,0.12);
   --cream:#f2ede4;--cream2:#a09890;--muted:#5a6070;
 }
-html,body{height:100%;background:var(--bg);color:var(--cream);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;line-height:1.6;overflow:hidden}
+html,body{min-height:100%;background:var(--bg);color:var(--cream);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;line-height:1.6;overflow-x:hidden}
 
 /* ── NAV ── */
 .nav{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 24px;background:rgba(13,14,20,0.95);border-bottom:1px solid var(--stroke);position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(12px)}
@@ -27,7 +27,7 @@ html,body{height:100%;background:var(--bg);color:var(--cream);font-family:'Plus 
 .vis-tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--amber-g);color:var(--amber)}
 
 /* ── PAGE LAYOUT ── */
-.page{display:flex;height:100vh;padding-top:52px;overflow:hidden}
+.page{display:flex;min-height:100vh;padding-top:52px;overflow:visible}
 
 /* LEFT: product showcase */
 .showcase{flex:1;overflow-y:auto;position:relative}
@@ -253,6 +253,132 @@ html,body{height:100%;background:var(--bg);color:var(--cream);font-family:'Plus 
 /* overlay backdrop for panels */
 .panel-backdrop{position:fixed;inset:0;z-index:88;display:none}
 .panel-backdrop.show{display:block}
+@media(max-width:900px){
+  .nav{
+    height:auto;
+    min-height:52px;
+    padding:10px 16px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .nav-r{
+    width:100%;
+    justify-content:space-between;
+  }
+  .page{
+    flex-direction:column;
+    min-height:auto;
+  }
+  .showcase{
+    overflow:visible;
+  }
+  .img-carousel{
+    height:50vh;
+    min-height:320px;
+  }
+  .product-content{
+    padding:20px 16px 170px;
+    max-width:none;
+  }
+  .p-meta-row{
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:flex-start;
+  }
+  .buy-btn{
+    width:100%;
+  }
+  .audience-grid{
+    grid-template-columns:1fr;
+  }
+  .action-bar{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    top:auto;
+    transform:none;
+    flex-direction:row;
+    justify-content:space-around;
+    gap:0;
+    padding:10px 8px calc(10px + env(safe-area-inset-bottom));
+    background:rgba(17,18,26,0.96);
+    border-top:1px solid var(--stroke);
+    backdrop-filter:blur(14px);
+  }
+  .ab-icon-wrap{
+    width:42px;
+    height:42px;
+    font-size:17px;
+  }
+  .ab-count{font-size:10px}
+  .ab-label{font-size:9px}
+  .comment-panel,
+  .promote-panel,
+  .dm-paywall,
+  .chat-window{
+    right:12px;
+    left:12px;
+    width:auto;
+    max-width:none;
+  }
+  .comment-panel{
+    top:74px;
+    bottom:88px;
+  }
+  .promote-panel{
+    bottom:94px;
+  }
+  .dm-paywall{
+    bottom:94px;
+  }
+  .chat-window{
+    bottom:94px;
+    height:min(64vh,460px);
+  }
+}
+@media(max-width:560px){
+  .nav-r{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .nav-back{
+    order:3;
+  }
+  .nav-edit{
+    justify-content:center;
+  }
+  .vis-tag{
+    width:fit-content;
+  }
+  .img-carousel{
+    min-height:260px;
+    height:42vh;
+  }
+  .carousel-prev,.carousel-next{
+    width:32px;
+    height:32px;
+  }
+  .placeholder-img div[style*="font-size:22px"],
+  .placeholder-img div[style*="font-size:20px"]{
+    font-size:18px !important;
+  }
+  .p-title{
+    font-size:30px;
+  }
+  .p-tagline{
+    font-size:14px;
+  }
+  .founder-card{
+    padding:14px;
+  }
+  .sp-item,
+  .buy-link,
+  .aud-card{
+    padding:12px;
+  }
+}
 </style>
 </head>
 <body>
